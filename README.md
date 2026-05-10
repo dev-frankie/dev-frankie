@@ -1,77 +1,59 @@
-## [1. Outline]
+<h1><img src="https://emojis.slackmojis.com/emojis/images/1531849430/4246/blob-sunglasses.gif?1531849430" width="30"/> Hey! Nice to see you.</h1>
 
-### [1.1. Profile]
+<p>I'm <b>Frankie</b>, a Frontend Engineer in Selectstar <br/>
+I enjoy <b>defining problems, solving them, and measuring the outcome in numbers</b>.</br>
+Passionate about <b>performance optimization</b> and <b>improving developer experience (DX)</b>.</p>
 
-이름: 안동주
+<h3>🚀 Things I code with</h3>
+<p>
+  <img alt="JavaScript" src="https://img.shields.io/badge/-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/-TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white" />
+  <img alt="React" src="https://img.shields.io/badge/-React-45b8d8?style=flat-square&logo=react&logoColor=white" />
+  <img alt="Next.js" src="https://img.shields.io/badge/-Next.js-000000?style=flat-square&logo=next.js&logoColor=white" />
+  <img alt="Redux" src="https://img.shields.io/badge/-Redux-764ABC?style=flat-square&logo=redux&logoColor=white" />
+  <img alt="Recoil" src="https://img.shields.io/badge/-Recoil-3578E5?style=flat-square&logo=recoil&logoColor=white" />
+  <img alt="HTML5" src="https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white" />
+  <img alt="CSS3" src="https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3&logoColor=white" />
+  <img alt="Sass" src="https://img.shields.io/badge/-Sass-CC6699?style=flat-square&logo=sass&logoColor=white" />
+  <img alt="Styled Components" src="https://img.shields.io/badge/-Styled_Components-db7092?style=flat-square&logo=styled-components&logoColor=white" />
+  <img alt="Node.js" src="https://img.shields.io/badge/-Node.js-43853d?style=flat-square&logo=Node.js&logoColor=white" />
+  <img alt="MongoDB" src="https://img.shields.io/badge/-MongoDB-13aa52?style=flat-square&logo=mongodb&logoColor=white" />
+  <img alt="Python" src="https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white" />
+  <img alt="FastAPI" src="https://img.shields.io/badge/-FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" />
+  <img alt="Docker" src="https://img.shields.io/badge/-Docker-46a2f1?style=flat-square&logo=docker&logoColor=white" />
+  <img alt="Git" src="https://img.shields.io/badge/-Git-F05032?style=flat-square&logo=git&logoColor=white" />
+  <img alt="GitHub" src="https://img.shields.io/badge/-GitHub-181717?style=flat-square&logo=github&logoColor=white" />
+</p>
 
-- 생년월일: 1993-07-15
-- 연락처: +82 10-6303-2184
-- 이메일: andongjoo1@naver.com
-- Github: https://github.com/dev-frankie
+<h3>📊 My GitHub Stats</h3>
 
-### [1.2. About Me]
+<p>
+  <a href="https://github.com/dev-frankie">
+    <img height="170" src="https://github-readme-stats.vercel.app/api?username=dev-frankie&show_icons=true&theme=tokyonight&hide_border=true&count_private=true" />
+  </a>
+  <a href="https://github.com/dev-frankie">
+    <img height="170" src="https://github-readme-stats.vercel.app/api/top-langs/?username=dev-frankie&layout=compact&theme=tokyonight&hide_border=true" />
+  </a>
+</p>
 
-- Field of Interest: Frontend Development
+<p>
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=dev-frankie&theme=tokyonight&hide_border=true" />
+</p>
 
-- Keywords: Performance-Driven, Scalable Code Architecture, Responsive UI Interaction, Passionate About Code Reviews
+<h3>📫 Where to find me</h3>
 
-- Objective: 성능 최적화와 정교한 UI 인터랙션을 고민하며 유저입장에서 최선의 제품을 만드는 것을 목표로 합니다. 변화에 유연하고, 새로운 도전을 즐기는 개발자입니다.
+<p>
+  <a href="https://github.com/dev-frankie" target="_blank"><img alt="Github" src="https://img.shields.io/badge/GitHub-%2312100E.svg?&style=for-the-badge&logo=Github&logoColor=white" /></a>
+  <a href="mailto:andongjoo1@naver.com" target="_blank"><img alt="Email" src="https://img.shields.io/badge/Email-D14836?&style=for-the-badge&logo=gmail&logoColor=white" /></a>
+</p>
 
-### [1.3. Education]
+------------
 
-상명대학교, 2016-03 ~ 2020-02
-
-- 주전공: 컴퓨터과학
-- 학점: 3.44 / 4.5
-
-### [1.4. Skills]
-
-| 분야                 | Experiences | Note                                                                                                                                                                                  |
-| -------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Frontend Engineering | 3 년        | Javascript, Typescript에 친숙함, Context API, Redux, Recoil, RTK-Query를 통한 상태관리, Next.js를 통한 CSR/SSR/SSE. 반응형 UI, 글로벌 서비스 개발, custom hook을 사용 선호                                       |
-| Backend Engineering  | 3 년        | Node.js, Next.js 기반의 웹 서비스 설계 및 API 개발, Swagger를 통한 API 문서화, MongoDB를 주로 사용하며 스키마 설계 및 복잡한 쿼리 경험, Docker, Jenkins, ArgoCD를 통한 배포 구축 경험 |
-| ML Engineering       | 8개월       | 정형/비정형 데이터 분석 및 다양한 AI 모델링 경험, Fast API를 통한 실시간 추론 모델 웹 서빙 경험                                                                                       |  
-
-***
-
-
-| Skill      | Experiences | Note                                                                                                 |
-| ---------- | ----------- | ---------------------------------------------------------------------------------------------------- |
-| JavaScript | 3 년        | ES6+ 문법 활용, 함수형 프로그래밍 (Currying, 고차 함수 즐겨 사용), 비동기 프로그래밍 (async/await, Promise), common JS, immutable JS 사용 경험                                                                                  |, 
-| TypeScript | 3 년        | 타입 정의 및 제네릭 활용, Strict Mode 사용, API 타입 정의 및 유지보수                                |
-| Python     | 1 년        | Pandas, Numpy 등 데이터 분석, Pytorch, Tensorflow 를 통한 AI 학습, Fast API 를 통한 간단한 서버 구축 |
-
-### [1.5. Work Experiences]
-
-- 총 경력 3년 7개월
-
-| Company       | Entry Date | Leave Date | Form   | Total     | 이직 사유 |
-| ------------- | ---------- | ---------- | ------ | --------- | ----|
-| Deepbrain AI  | 2022-03    | -          | 정규직 | 총 3년    |  - |
-| Deepbuild Inc | 2021-07    | 2022-02    | 정규직 | 총 8 개월 | 웹 개발자로 전향 희망 |
-
-### [1.6. Awards]
-
-- 제 3회 빅데이터 인공지능 스타트업 경진대회 가스 수요 예측 모델 부문 특별상 수상
-
-### [1.7. Certification]
-
-- 정보처리기사
-- ADsP (데이터 분석 준전문가)
-- SQLD (SQL 개발자)
-
-### [1.8. Language]
-
-- English
-  - 읽기/쓰기: 중급
-  - 회화: 초급
-
-
-## [4. Education & Activities]
-
-| Name                     | Affiliation          | Date              | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Special Note |
-| ------------------------ | -------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| 네이버 boostcamp AI Tech | 네이버               | 2021-01 ~ 2021-06 | AI 분야의 전문성을 키우기 위해, 현업에서 자주 쓰이는 모델의 이론과 실제 구현을 하였습니다. 매일 팀원들과 2시간씩 Vision, NLP, 추천 시스템 등 다양한 분야의 논문을 발표 및 리뷰하였습니다. 이후, 교육 내 자체 경진대회에서 Image Classification, Semantic Segmentation, Object Detection, OCR 4개의 분야에서 서로 순위를 다투며 실전적인 교육을 진행하였습니다. AI 분야의 전반적인 개념과 뛰어난 동료들과의 협업 및 경쟁으로 많은 성과를 이루었습니다.         |
-| 삼성 청년 SW 아카데미    | 삼성전자             | 2020-07 ~ 2020.12 | 웹 풀스택 학습과 알고리즘을 통한 코딩 역량 증진, 두 가지를 목표로 학습을 하였습니다. Java 기반 Servelt, JSP, Spring 을 학습하였고 Vue.js를 학습하여 웹의 전반적인 흐름을 파악하는 데 중점을 두었습니다.이를 통해 Vue.js를 통한 프론트엔드, Spring boot를 활용한 백엔드를 학습하여 부동산 정보를 제공 웹사이트를 제작하였습니다.또한, 매일 1 알고리즘을 실천하며 재귀, 탐색, DP 등을 학습하였고, 꾸준함에서 나오는 성취감을 느낄 수 있었습니다. |
-| 중국산업시찰             | 상명대학교           | 2018-01           | 상해지역의 우수의 글로벌 기업 알리바바, 트립 닷컴, 코스맥스 등을 탐방하며 기업의 우수사례와 업무체계 등을 학습하며, 해외창업 아이디어 공모를 하였습니다. 세계의 트렌드를 이해하고 변화를 이끌어 갈 수 있을지를 고민할 수 있는 글로벌 인재가 되겠다고 다짐하는 계기가 되었습니다.                                                                                                                                                                              |
-| 주니어 글로벌 봉사단     | 기아자동차, 기아대책 | 2016-07           | 라오스 방비엔 지역의 봉사단으로 파견되어 학교를 짓기 위한 건축봉사와 학습 프로그램을 제작하여 교육봉사를 진행하였습니다. 몸은 고되지만 자발성이 부여된 만큼 책임감을 갖고 임했습니다. 이로 인해 희생의 가치를 깨달았고 문화적 교류와 소통을 통해 인류애를 느낄 수 있었습니다.                                                                                                                                                                                 |
+<p align="center">
+  <i>"변화에 유연하고, 새로운 도전을 즐기는 개발자"</i> 🚀
+</p>
+<p align="center">
+  <img alt="Profile views" src="https://komarev.com/ghpvc/?username=dev-frankie&style=flat-square&color=blue" />
+  <img alt="Followers" src="https://img.shields.io/github/followers/dev-frankie?style=flat-square&labelColor=343b41" />
+  <img alt="Stars" src="https://img.shields.io/github/stars/dev-frankie?style=flat-square&labelColor=343b41" />
+</p>
