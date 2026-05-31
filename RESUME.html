@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>이력서 · 안동주</title>
+  <link rel="stylesheet" href="./assets/resume.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="site-header__brand" href="./README.md">dev-frankie</a>
+    <nav class="site-nav" aria-label="문서">
+      <a href="./RESUME.html" aria-current="page">이력서</a>
+      <a href="./WORKEXPERIENCE.html">경력기술서</a>
+      <a href="https://github.com/dev-frankie" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </nav>
+  </header>
+
+  <article class="page">
+    <header class="resume-hero">
+      <h1>안동주</h1>
+      <p class="role">Frontend Engineer · Frontend Lead</p>
+    </header>
+
+    <section class="section" aria-labelledby="contact-heading">
+      <h2 id="contact-heading">연락처</h2>
+      <dl class="contact-grid">
+        <div class="contact-row">
+          <dt>이메일</dt>
+          <dd><a href="mailto:andongjoo1@naver.com">andongjoo1@naver.com</a></dd>
+        </div>
+        <div class="contact-row">
+          <dt>전화</dt>
+          <dd>+82 10-6303-2184</dd>
+        </div>
+        <div class="contact-row">
+          <dt>GitHub</dt>
+          <dd><a href="https://github.com/dev-frankie" target="_blank" rel="noopener noreferrer">dev-frankie</a></dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="section" aria-labelledby="intro-heading">
+      <h2 id="intro-heading">소개</h2>
+      <ul class="intro-list">
+        <li>TypeScript, React, Next.js, Redux/Recoil/Zustand, RTK-Query/TanStack Query, Vitest, Node.js, Docker 실무</li>
+        <li>AI 분야 스타트업에서 프론트엔드를 주력으로 백엔드, CI/CD까지 폭넓은 분야를 경험하며, 10여 종의 제품을 개발·런칭</li>
+        <li>프론트엔드 성능 최적화에 강점</li>
+        <li>문제를 정의하고 수치로 가능한 개선을 일상으로 만드는 개발자</li>
+        <li>AI 도메인에 대한 지식이 깊고 AI Assistant 활용에 강점</li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="skills-heading">
+      <h2 id="skills-heading">기술 스택</h2>
+      <table class="skills-table">
+        <tbody>
+          <tr>
+            <th scope="row">Language</th>
+            <td>TypeScript, JavaScript, Python</td>
+          </tr>
+          <tr>
+            <th scope="row">Frontend</th>
+            <td>React, Next.js, Redux, Recoil, Zustand, RTK-Query, TanStack Query</td>
+          </tr>
+          <tr>
+            <th scope="row">Backend / Infra</th>
+            <td>Node.js, Docker, Redis, Jenkins, ArgoCD, GitHub Actions</td>
+          </tr>
+          <tr>
+            <th scope="row">Testing / Quality</th>
+            <td>Vitest, Playwright, ESLint, Husky, Lighthouse CI, Sentry</td>
+          </tr>
+          <tr>
+            <th scope="row">기타</th>
+            <td>Canvas/Fabric.js, D3.js, NextAuth, OpenAPI, SSE, FSD</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" aria-labelledby="experience-heading">
+      <h2 id="experience-heading">경력</h2>
+
+      <article class="experience-item">
+        <h3>셀렉트스타 · 프론트엔드 리드</h3>
+        <p class="experience-meta">2025.07 – 현재 · 서울</p>
+
+        <h4 class="experience-sub">Dtumo Eval — LLM 평가 플랫폼 프론트엔드 리드 (2025.07 – 2026.02)</h4>
+        <p class="experience-stack">Tech Stack: TypeScript, Next.js, Zustand, TanStack Query</p>
+        <p class="experience-desc">LLM의 정량/정성 평가, Red Teaming, 실시간 모니터링 SaaS 플랫폼의 프론트엔드 아키텍처 리팩토링 및 핵심 기능 개발</p>
+        <ul>
+          <li>SSG → 동적 아키텍처 전환, Next.js 14→16, NextAuth + Middleware 인증·권한 라우팅</li>
+          <li>FSD 패턴 도입, Polling → SSE 전환, Recoil → Zustand 마이그레이션</li>
+          <li>openapi-typescript 기반 API 타입 자동 생성, D3.js 시각화, shadcn UI + Storybook</li>
+          <li>Vitest + Playwright, Lighthouse CI Budget Gate, Sentry, AI 코딩 컨벤션 가이드</li>
+        </ul>
+      </article>
+
+      <article class="experience-item">
+        <h3>주식회사 딥브레인AI · 웹 개발</h3>
+        <p class="experience-meta">2022.03 – 2025.03 (3년) · 정규직 · 서울</p>
+
+        <h4 class="experience-sub">AI Studios V3 (2023.08 – 2025.02)</h4>
+        <p class="experience-stack">Tech Stack: TypeScript, Next.js, Redux/RTK Query, Canvas, Fabric.js</p>
+        <ul>
+          <li>v2→v3 리팩토링, FCP/LCP/TTI 평균 30% 이상 단축</li>
+          <li>캔버스 에디터, 1,000만 건 통계 대시보드 (FCP 1.2s→0.4s, LCP 4.5s→2.2s)</li>
+          <li>요금제 확장·구독 해지 방어 → 1개월 구독 200명 증가</li>
+          <li>10개국어 지역화, 마케팅 자동화 A/B 테스트</li>
+        </ul>
+
+        <h4 class="experience-sub">백오피스 및 로그인 통합 (2022.11 – 2023.06)</h4>
+        <ul>
+          <li>NextAuth.js 기반 통합 인증 NPM 패키지, SSO, 소셜 로그인</li>
+          <li>기업/부서/멤버/AI 리소스 통합 관리 대시보드</li>
+        </ul>
+
+        <h4 class="experience-sub">B2B Project (2022.03 – 2023.11)</h4>
+        <ul>
+          <li>KB증권 드림아바타, 농협 AI 통역·허브·Kiosk, 서울시교육청 AI 교과서</li>
+          <li>AI 학습용 데이터 플랫폼 — 학습용 이미지 13만 장 제작</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="section" aria-labelledby="education-heading">
+      <h2 id="education-heading">학력</h2>
+      <table class="edu-table">
+        <thead>
+          <tr>
+            <th scope="col">기간</th>
+            <th scope="col">학교</th>
+            <th scope="col">전공</th>
+            <th scope="col">상태</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2026.03 –</td>
+            <td>고려대학교 융합데이터과학 대학원</td>
+            <td>융합데이터과학</td>
+            <td>재학 중</td>
+          </tr>
+          <tr>
+            <td>2016.03 – 2020.02</td>
+            <td>상명대학교</td>
+            <td>컴퓨터과학</td>
+            <td>졸업</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" aria-labelledby="etc-heading">
+      <h2 id="etc-heading">수상 · 교육 · 자격증</h2>
+      <table class="edu-table">
+        <thead>
+          <tr>
+            <th scope="col">기간</th>
+            <th scope="col">구분</th>
+            <th scope="col">내용</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2021.12</td>
+            <td>수상</td>
+            <td>제3회 인공지능 스타트업 경진대회 — 가스 수요 예측 모델 부문 특별상</td>
+          </tr>
+          <tr>
+            <td>2021.01</td>
+            <td>교육</td>
+            <td>네이버 부스트캠프 AI Tech</td>
+          </tr>
+          <tr>
+            <td>2020.07</td>
+            <td>교육</td>
+            <td>삼성 청년 SW 아카데미</td>
+          </tr>
+          <tr>
+            <td>2020.09</td>
+            <td>자격증</td>
+            <td>ADsP (데이터분석 준전문가)</td>
+          </tr>
+          <tr>
+            <td>2020.06</td>
+            <td>자격증</td>
+            <td>SQLD (SQL 개발자)</td>
+          </tr>
+          <tr>
+            <td>2019.09</td>
+            <td>자격증</td>
+            <td>정보처리기사</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <p class="note">
+      상세 프로젝트 및 성과는
+      <a href="./WORKEXPERIENCE.html">경력기술서</a>를 참고해 주세요.
+    </p>
+
+    <p class="print-hint">인쇄/PDF 저장: 브라우저 메뉴 → 인쇄 → PDF로 저장</p>
+  </article>
+</body>
+</html>

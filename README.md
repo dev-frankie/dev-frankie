@@ -40,6 +40,13 @@ Passionate about <b>performance optimization</b> and <b>improving developer expe
   <img src="https://github-readme-streak-stats.herokuapp.com/?user=dev-frankie&theme=tokyonight&hide_border=true" />
 </p>
 
+<h3>📄 Documents</h3>
+
+<p>
+  <a href="./WORKEXPERIENCE.html"><img alt="경력기술서" src="https://img.shields.io/badge/경력기술서-Work_Experience-45b8d8?style=for-the-badge" /></a>
+  <a href="./RESUME.html"><img alt="이력서" src="https://img.shields.io/badge/이력서-Resume-764ABC?style=for-the-badge" /></a>
+</p>
+
 <h3>📫 Where to find me</h3>
 
 <p>
