@@ -110,3 +110,184 @@
   height: auto;
   border-radius: 6px;
 }
+
+/* ── Resume variant — document layout (이수빈-style) ──────────────── */
+.resume {
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+/* ----- header: name + role (left) · contact (right) · thick rule ----- */
+
+/* contact line = first paragraph (placed above the name in source) → top-right */
+.resume > :global(p:first-child) {
+  float: right;
+  max-width: 50%;
+  margin: 0.4rem 0 0;
+  text-align: right;
+  color: var(--muted);
+}
+
+/* name + role sit inline on one line */
+.resume :global(h1) {
+  display: inline;
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.resume :global(h1 + p) {
+  display: inline;
+  margin-left: 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+/* ----- section headers (ABOUT ME / EXPERIENCE / SKILL …) ----- */
+.resume :global(h2) {
+  margin: 2rem 0 0.9rem;
+  padding-top: 1.1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  border-top: 1px solid var(--border);
+}
+
+.resume :global(h2:first-of-type) {
+  margin-top: 1rem;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* ----- company (h3): accent name · right-aligned date · gray description ----- */
+.resume :global(h3) {
+  margin: 2.4rem 0 0.15rem;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* the date line precedes the company heading → float it to the right */
+.resume :global(p:has(+ h3)) {
+  float: right;
+  margin: 2.4rem 0 0;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.resume :global(h3 + p) {
+  clear: right;
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+}
+
+/* ----- product sub-header (h4) + optional gray description ----- */
+.resume :global(h4) {
+  margin: 2rem 0 0.3rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.resume :global(h4 + p) {
+  margin: 0 0 0.4rem;
+  color: var(--muted);
+}
+
+/* ----- case-study title ([n] …, h5) + 기술/역할 meta line ----- */
+.resume :global(h5) {
+  margin: 1.5rem 0 0.3rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.resume :global(h4 + h5) {
+  margin-top: 0.7rem;
+}
+
+.resume :global(h5 + p) {
+  margin: 0 0 0.45rem;
+  color: var(--muted);
+}
+
+.resume :global(h5 + p strong) {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ----- body ----- */
+.resume :global(p) {
+  margin: 0.2rem 0;
+}
+
+.resume :global(ul),
+.resume :global(ol) {
+  padding-left: 1.1rem;
+}
+
+.resume :global(li) {
+  margin: 0.15rem 0;
+}
+
+.resume :global(blockquote) {
+  margin: 0.5rem 0 0.85rem;
+  padding: 0.1rem 0 0.1rem 0.8rem;
+  font-size: 0.95em;
+  background: none;
+  border-left: 2px solid var(--border);
+  border-radius: 0;
+  color: var(--muted);
+}
+
+.resume :global(blockquote p) {
+  margin: 0.2rem 0;
+}
+
+.resume :global(table) {
+  margin: 0.5rem 0 1rem;
+  font-size: 0.95em;
+}
+
+.resume :global(th),
+.resume :global(td) {
+  padding: 0.4rem 0.6rem;
+}
+
+.resume :global(th) {
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.resume :global(code) {
+  padding: 0.05em 0.35em;
+  font-size: 0.9em;
+  color: var(--muted);
+}
+
+.resume :global(strong) {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.resume :global(hr) {
+  clear: both;
+  margin: 1.1rem 0;
+}
+
+/* thick header rule under name + contact */
+.resume :global(hr:first-of-type) {
+  margin-top: 0.7rem;
+  border-top: 2px solid var(--text);
+}
+
+@media (max-width: 640px) {
+  .resume > :global(p:first-child),
+  .resume :global(p:has(+ h3)) {
+    float: none;
+    max-width: none;
+    margin-top: 0.5rem;
+    text-align: left;
+  }
+}

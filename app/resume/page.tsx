@@ -13,10 +13,8 @@ export default function ResumePage() {
 
   return (
     <main className={styles.main}>
-        <div className={styles.container}>
-          <h1 className={styles.pageTitle}>Resume</h1>
-          <p className={styles.pageDescription}>이력서</p>
-          <MarkdownContent content={content} />
+        <div className={styles.containerResume}>
+          <MarkdownContent content={content} variant="resume" />
         </div>
       </main>
   );

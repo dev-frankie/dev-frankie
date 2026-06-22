@@ -3,8 +3,15 @@ import styles from "./Prose.module.css";
 
 interface ProseProps {
   children: ReactNode;
+  variant?: "resume";
 }
 
-export const Prose = ({ children }: ProseProps) => (
-  <article className={styles.prose}>{children}</article>
+export const Prose = ({ children, variant }: ProseProps) => (
+  <article
+    className={
+      variant === "resume" ? `${styles.prose} ${styles.resume}` : styles.prose
+    }
+  >
+    {children}
+  </article>
 );
