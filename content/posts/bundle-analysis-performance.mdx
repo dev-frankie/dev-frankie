@@ -1,0 +1,159 @@
+---
+title: "번들 분석 & 성능 최적화 가이드"
+date: "2026-07-10"
+description: "프론트엔드 번들 크기 분석과 최적화 권고, 페이지별 Core Web Vitals 측정 방법을 정리한 가이드입니다."
+tags: ["Performance", "Bundle", "Lighthouse", "Next.js"]
+---
+
+> 📦 프론트엔드 번들 크기 분석·최적화 권고, 페이지별 Core Web Vitals 측정 사용법입니다. 모든 산출물은 `.reports/`(gitignore) 아래에 생성됩니다.
+
+## 1. 한눈에 보기
+
+| 목적 | 명령어 | 산출물 |
+| --- | --- | --- |
+| 번들 크기 랭킹 + 최적화 권고 | `pnpm perf:rank` | `.reports/bundle-ranking.md` / `.json` |
+| 랭킹 재생성 (빌드 생략) | `pnpm perf:rank:cached` | 동일 |
+| 페이지별 Core Web Vitals | `pnpm perf:lighthouse` | `.reports/lighthouse/*.json,html` |
+| 전체 리포트 병합 | `pnpm perf:report` | `.reports/performance-report.md` |
+| AI 심층 최적화 리포트 | `/perf-report` (Claude Code) | `.reports/perf-ai-report.md` |
+
+## 2. 번들 크기 분석 & 랭킹
+
+### 실행
+
+```bash
+# webpack 빌드 + 전체 랭킹 생성 (수 분 소요)
+pnpm perf:rank
+
+# .next/analyze 통계가 이미 있으면 빌드 없이 랭킹만 재생성 (초 단위)
+pnpm perf:rank:cached
+```
+
+> ⚠️ 번들 분석은 Turbopack이 아니라 **webpack 빌드**(`next build --webpack`)가 필요합니다. `perf:rank`가 알아서 실행하며, 힙 8GB 옵션이 스크립트에 내장돼 있어 별도 설정 없이 됩니다.
+
+### 결과 읽는 법 — `.reports/bundle-ranking.md`
+
+리포트는 세 섹션으로 구성되고, 각 표의 **Advice 열**에 무엇을 어떻게 줄이는지 한글로 적혀 있습니다.
+
+- **First-party Modules (내 코드)** — 내가 작성한 파일을 **단일 사본 크기(Size)** 순으로 정렬. 실제로 큰 컴포넌트가 위에 옵니다. `Shipped`가 `Size`보다 훨씬 크고 `Chunks`가 많으면 여러 라우트에 중복 포함된 것 (바로 아래 "여러 청크에 중복 포함된 내 코드" 표 참고).
+- **Packages (서드파티 라이브러리)** — 외부 라이브러리를 크기순 정렬. Advice에 dynamic import / per-path import / 서버 이동 / dedupe 방법 제시. 중복 버전 패키지도 별도 표기.
+- **Chunks (번들 파일)** — 청크 파일명은 콘텐츠 해시라 그 자체로는 의미 없음. **What's inside** 열에서 어떤 패키지/앱 코드가 그 청크를 차지하는지 보고 가장 큰 기여자부터 손댑니다.
+
+> 🔁 권장 흐름: 상위 항목의 Advice 적용 → `pnpm perf:rank` 재실행 → 해당 청크가 줄었는지 확인.
+
+## 3. 페이지별 Core Web Vitals (Lighthouse)
+
+페이지별 FCP / LCP / CLS / INP / TBT / Speed Index를 측정합니다.
+
+### 실행
+
+```bash
+# 측정할 라우트를 콤마로 지정
+LH_ROUTES="/workspace-info,/user-management" pnpm perf:lighthouse
+
+# 결과를 performance-report.md 의 Core Metrics 표로 병합
+pnpm perf:report
+```
+
+- 각 라우트를 **3회(기본) 측정 → median run** 을 저장합니다. Core Web Vitals는 노이즈가 커서 1회 측정은 오해를 부릅니다. 횟수는 `LH_RUNS`로 조정.
+- 사전 `next build`(예: `pnpm perf:rank`가 만든 빌드)가 있어야 하며, 없으면 빌드 후 실행하세요.
+- 결과: `.reports/lighthouse/<route>.json` + `.html`, 병합 표는 `.reports/performance-report.md`.
+
+### 인증(로그인) 페이지 측정
+
+`(eval)` 라우트는 로그인 월이 있어, 계정 없이 측정하면 `/sign-in`으로 리다이렉트됩니다. `.env.local`에 로그인 계정이 있으면 **자동으로 NextAuth API 로그인 후 세션 쿠키를 재생**해 실제 인증 페이지를 측정합니다.
+
+| 환경변수 | 설명 |
+| --- | --- |
+| `LH_ROUTES` | 측정 라우트(콤마 구분). 동적 라우트는 실제 경로로 (예: `/application/123/criteria`) |
+| `LH_RUNS` | 라우트당 측정 횟수. 기본 3 (median run 저장) |
+| `E2E_LOGIN_EMAIL` / `E2E_LOGIN_PASSWORD` | 로그인 계정. `.env.local`에 있으면 자동 사용 (`LH_LOGIN_EMAIL`/`LH_LOGIN_PASSWORD`도 인식) |
+| `LH_AUTH=false` | 로그인 없이 비인증 상태로 강제 측정 |
+| `LH_BASE_URL` | 로컬 서버 대신 외부 배포 환경을 측정할 때 |
+
+> 🔑 로그인은 실제 백엔드(`BACKEND_API_URL`, `.env.local`)를 타므로 유효한 계정이 필요합니다. 데모 바이패스는 없습니다.
+
+## 4. AI 심층 리포트 — `/perf-report` (Claude Code)
+
+랭킹 JSON + Lighthouse 결과를 읽어 우선순위·구체 수정안(실제 import 위치 [file:line](file:line) 포함)을 `.reports/perf-ai-report.md`에 생성합니다.
+
+- 루트 `.mcp.json`에 Lighthouse MCP가 커밋돼 있어 Claude Code가 자동 인식합니다. 최초 1회 프로젝트 MCP 승인 필요. `/mcp`로 `lighthouse` 인식 확인.
+- Claude Code에서 `/perf-report` 실행 (또는 "번들 크기", "무거운 패키지" 등으로 자연어 호출).
+- 스킬 정의: `.claude/skills/perf-report/SKILL.md`.
+
+## 5. CI 자동 실행
+
+`Performance Report` 워크플로(`.github/workflows/performance-report.yml`):
+
+- **PR** 생성/업데이트 시 자동 실행 → 번들 랭킹(Top 15 패키지 + 권고 + 중복 버전) + Lighthouse 결과를 **PR 스티키 코멘트**로 게시.
+- 전체 랭킹/리포트는 **아티팩트**(`performance-report`)로 업로드.
+- **수동 실행**: Actions 탭에서 `workflow_dispatch` (라우트 지정 입력 `lh_routes` 제공).
+
+## 참고 / 주의사항
+
+> 🧟 로컬에서 `perf:lighthouse`를 반복 실행하면 포트 4100에 서버 프로세스가 남을 수 있습니다. 옛 빌드를 측정하게 되니, 이상하면 `lsof -ti tcp:4100 | xargs kill -9` 후 재실행하세요.
+
+- 산출물 디렉터리 `.reports/`는 gitignore 대상입니다 (커밋되지 않음).
+- 관련 문서: 저장소 `docs/performance-hybrid-workflow.md`.
+
+---
+
+## 리포트 예시 & 해석
+
+### 6-1. 번들 랭킹 — `.reports/bundle-ranking.md`
+
+**① Chunks (번들 파일)** — 각 청크에 무엇이 들었는지 `What's inside`로 보여줍니다.
+
+```text
+| # | Chunk                              | Type   | Parsed | Gzip   | %    | What's inside (top)                                     |
+| 1 | static/chunks/3463.7a4bde…js       | shared | 623 KB | 209 KB | 8.9% | echarts (345 KB), zrender (171 KB), recharts (74.3 KB) 외 5개 |
+| 2 | static/chunks/9615-775d55…js       | shared | 546 KB | 159 KB | 7.8% | @base-ui/react (202 KB), zod (151 KB), @tanstack/table-core (47.5 KB) 외 16개 |
+```
+
+> 🔎 해석: 1번 청크(623KB)는 사실상 **차트 번들**(echarts+zrender+recharts). 파일명은 무시하고 `What's inside`의 가장 큰 기여자(echarts)부터 손대면 이 청크가 줄어듭니다.
+
+**② Packages (서드파티)** — 라이브러리별 크기 + `Advice`(줄이는 법).
+
+```text
+| # | Package        | Parsed | Gzip   | %    | Versions | Chunks | Advice                                                        |
+| 1 | next           | 628 KB | 256 KB | 9.0% | 16.1.6   | 12     | 프레임워크 기본 — 직접 줄이기 어렵습니다. import하는 라우트에 집중.  |
+| 3 | echarts        | 345 KB | 133 KB | 4.9% | 6.1.0    | 1      | next/dynamic(ssr:false)로 로드, echarts/core 부분 import.        |
+| 4 | recharts       | 282 KB | 117 KB | 4.0% | 3.8.1    | 2      | 차트 라이브러리를 하나로 통일 검토(echarts와 recharts 공존).      |
+```
+
+> 🔎 해석: `next` 같은 프레임워크는 손댈 수 없으니 건너뛰고, **echarts / recharts** 같은 실제 개선 대상의 Advice를 위에서부터 적용합니다. Versions에 값이 2개면 중복 번들 → `pnpm dedupe`.
+
+**③ First-party Modules (내 코드)** — 내 컴포넌트를 단일 사본 크기순으로.
+
+```text
+| # | Module                                             | Size    | Shipped | Gzip   | Chunks | Advice                                          |
+| 1 | …/EvalDashboardChartRenderer.tsx                   | 30.3 KB | 30.3 KB | 11.3 KB | 1     | 모달/오버레이 — 열릴 때만 next/dynamic으로 로드.  |
+| 2 | src/shared/ui/Table/Table.tsx                      | 23.1 KB | 23.1 KB | 8.1 KB  | 1     | 큰 컴포넌트 — 초기 렌더 필요성 확인 후 분할.       |
+```
+
+> 🔎 해석: `Size`(단일 사본)가 크면 진짜 무거운 컴포넌트. `Shipped`가 `Size`보다 훨씬 크고 `Chunks`가 많으면(예: logger.ts) 여러 라우트에 중복 포함된 것 → 아래 "여러 청크에 중복 포함" 섹션 참고.
+
+### 6-2. 페이지별 Core Web Vitals — `.reports/performance-report.md`
+
+`## Lighthouse Summary` 아래 `### Core Metrics` 표에 페이지별로 나옵니다.
+
+```text
+| File                   | LCP     | INP | CLS   | TBT    | FCP    | SI     | Total Bytes |
+| _sign-in.json          | 1507 ms |  -  | 0.000 | 0 ms   | 903 ms | 2652ms | 1417455     |
+| _user-management.json  | 5406 ms |  -  | 0.000 | 276 ms | 905 ms | 905 ms | 1854642     |
+| _workspace-info.json   | 5706 ms |  -  | 0.000 | 268 ms | 904 ms | 904 ms | 1851827     |
+```
+
+> 📏 지표 판정 기준 (good / needs-improvement / poor):
+> **LCP** ≤2.5s / ≤4s / `>4s` · **CLS** ≤0.1 / ≤0.25 / `>0.25` · **TBT** ≤200ms / ≤600ms / `>600ms` · **FCP** ≤1.8s · **SI** ≤3.4s
+
+> 🔎 해석 예: `/workspace-info`의 LCP 5.7초는 **poor** — 가장 큰 콘텐츠가 뜨는 데 오래 걸린다는 뜻. 6-1의 번들 랭킹에서 이 라우트가 부르는 무거운 청크(차트 등)를 dynamic import로 미루면 개선됩니다. CLS 0은 레이아웃 흔들림 없음(양호).
+
+## 7. 자주 나오는 로그 / 트러블슈팅
+
+> ✅ **`[WARN] BFF upstream trace … /api/member/me … status:401`** 은 로그인 실패가 아닙니다. 이 앱은 데이터를 SSR(서버 렌더링) 단계에서 가져오는데, Next의 서버사이드 self-fetch는 쿠키를 전달하지 않아 이 호출만 401이 납니다(원래 동작). 로그인은 성공했고(`Authenticated as …`), 페이지는 인증 상태로 측정됩니다.
+
+- **`util._extend DeprecationWarning`** — 의존성(lighthouse/chrome-launcher)에서 나오는 경고로 무해합니다.
+- **명령어는 한 줄씩 실행하세요.** 여러 줄을 한꺼번에 붙여넣으면 `perf:rankLH_ROUTES=…` 처럼 붙어 `Command not found`가 납니다. 예시의 `# 주석`은 명령에 포함하지 마세요.
+- **인증 페이지 데이터가 SSR 의존적일 때**는 헤드리스 측정에서 데이터가 덜 채워진 껍데기 상태로 잡힐 수 있습니다(알려진 한계). CWV 수치는 인증된 페이지 셸 기준으로는 유효합니다.
+- **포트 4100 좀비 서버**: `perf:lighthouse`를 반복 실행하다 멈추면 `lsof -ti tcp:4100 | xargs kill -9` 후 재실행.

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { compileMDX } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 import { Prose } from "@/components/Prose";
 import { formatDate } from "@/lib/markdown";
 import { getPostBySlug, getPostSlugs } from "@/lib/posts";
@@ -40,7 +41,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const { content } = await compileMDX({
     source: post.content,
-    options: { parseFrontmatter: false },
+    options: {
+      parseFrontmatter: false,
+      mdxOptions: { remarkPlugins: [remarkGfm] },
+    },
   });
 
   return (

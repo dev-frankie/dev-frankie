@@ -1,0 +1,322 @@
+---
+title: "SEO 챙기기 — 프론트엔드가 코드로 만드는 검색 경쟁력"
+date: "2026-07-11"
+description: "화려한 우회 기술 대신 h1·메타데이터·sitemap 같은 SEO 기본기를 '페이지 → 정보 → 길 → AI' 흐름으로 하나씩 챙긴 과정을 정리합니다."
+tags: ["SEO", "Next.js", "SSR", "Web"]
+---
+
+주제 선정 이유 : 예전에 Lambda@Edge로 CSR 환경에서 SEO를 끌어올리는 방향에 대해서는 파고들어 정리한 적이 있었습니다. 그런데 정작 그 인프라 우회 이전의, `h1`을 어떻게 잡을지·sitemap을 어떻게 구성할지 같은 **가장 기본적인 것들을 고민했던 여정**은 한 번도 정리해본 적이 없었습니다. 그래서 이번에는 화려한 우회 기술 대신, 기본기를 하나씩 챙겨온 과정을 되짚어보려 합니다.
+
+## 1. CSR vs SSR — 왜 SSR로 가는가
+
+출발점은 단순합니다. CSR에서는 브라우저가 JavaScript를 실행해야 화면이 그려지기 때문에, 크롤러가 처음 받아가는 HTML은 빈 `<div id="root">` 하나뿐입니다.
+
+```text
+        CSR                              SSR
+크롤러가 받는 HTML                 크롤러가 받는 HTML
+┌────────────────┐            ┌────────────────┐
+│ <div id="root">│            │ <h1>AI 솔루션</h1>│
+│ </div>         │            │ <section>...</section>│
+│ (텅 빔)         │            │ ...완성된 마크업  │
+└────────────────┘            └────────────────┘
+```
+
+반면 SSR/SSG는 서버가 완성된 HTML을 만들어 내려주기 때문에, 크롤러는 JavaScript를 실행하지 않고도 제목과 본문을 그대로 읽습니다. 크롤러 입장에서 이 둘은 완전히 다른 페이지입니다.
+
+> 💡 [banksalad](https://www.banksalad.com/)(React·CSR)와 [a-ha.io](https://www.a-ha.io/)(Next·SSR)에서 각각 우클릭 → '페이지 소스 보기'를 열면, 한쪽은 빈 껍데기, 한쪽은 완성된 마크업이 그대로 보입니다.
+
+그래서 크롤러에게 콘텐츠를 제대로 보여주려면 첫 단추는 SSR입니다. 다만 SSR로 완성된 HTML을 내려주는 것은 **시작일 뿐**입니다. 그 HTML 안을 크롤러가 잘 이해하도록 구조와 정보를 채워 넣는 것 — 그게 이야기의 본론입니다. 그럼 이걸 잘 해낸 사례부터 보겠습니다.
+
+---
+
+## 2. 벤치마크 — "검색하면 자꾸 나오던 그 사이트"
+
+무언가를 검색할 때 유독 자주 상단에 뜨는 사이트가 하나쯤 있습니다. 저에게는 **아하([a-ha.io](https://www.a-ha.io/))** 라는 Q&A 사이트가 그랬습니다. 그래서 "여기는 SEO를 어떻게 한 걸까" 궁금해져서, 질문 페이지 하나를 열어 소스를 직접 뜯어봤습니다.
+
+결론부터 말하면, 특별한 비법이 있던 게 아니었습니다. 기본기를 페이지마다 빠짐없이 적용하고 있었습니다.
+
+**① 완성된 HTML (SSR)**
+
+JavaScript 없이도 질문·답변 본문이 raw HTML에 그대로 담겨 있습니다.
+
+**② 시맨틱 + 제목 계층**
+
+화면상으로는 토픽이 위쪽에 크게 보여서 `h1`처럼 느껴집니다. 하지만 소스를 열어보면 `h1`은 토픽이 아니라 **질문 제목**입니다. 페이지에서 가장 중요한 콘텐츠가 질문이니, 시각적 크기와 상관없이 의미적으로 가장 중요한 것을 `h1`으로 둔 것입니다. 토픽은 그 아래 `h2`로 계층을 이룹니다.
+
+**③ 페이지별 메타데이터**
+
+질문마다 고유한 `title`·`description`·`canonical`·OG가 붙어, 어떤 질문을 공유해도 미리보기가 정확합니다.
+
+> 💡 OG가 잘 걸렸는지는 [카카오 공유 디버거](https://developers.kakao.com/tool/debugger/sharing)로 바로 확인할 수 있습니다.
+
+**④ 내부 링크 그래프**
+
+크롤러는 페이지 안의 링크를 따라가며 다음 페이지를 발견합니다. 아하는 각 질문 아래 "유사한 질문" 링크로 관련 페이지들을 서로 이어두어, 크롤러가 사이트 구석구석까지 타고 들어오게 만듭니다.
+
+> 📌 **한 가지 더 — 이동은 `<button>`이 아니라 `<a>`로**
+
+크롤러가 인정하는 링크는 `href`가 박힌 `<a>` 태그뿐입니다. `<button onClick={() => router.push('/foo')}>`처럼 JS로 이동하면, raw HTML에 목적지 URL이 없어서 크롤러는 그 페이지를 발견하지 못합니다.
+
+```typescript
+// ❌ 크롤러: 어디로 가는지 모름 (href 없음)
+<button onClick={() => router.push('/products/1')}>상품 보기</button>
+
+// ✅ 크롤러: href를 긁어 /products/1 발견 (실제 DOM은 <a href>)
+<Link href="/products/1">상품 보기</Link>
+```
+
+`next/link`의 `<Link>`는 사용자에겐 SPA처럼 부드럽게 전환되면서, 크롤러에겐 진짜 `href` 링크로 보입니다. 그러니 **다른 페이지로 이동하는 것은 가능한 한 `<Link>`(=`<a>`)로** 두는 게 좋습니다. `<button>`은 모달 열기나 제출처럼 페이지 이동이 아닌 동작에만 쓰고, 이동은 되도록 `href`가 남는 링크로 처리하는 것이 크롤러에게도 사용자에게도 유리합니다.
+
+**⑤ 쌓이는 콘텐츠**
+
+사용자들이 올리는 구체적인 질문 하나하나가 검색에 걸리는 페이지가 됩니다. 질문이 매달 쌓일수록, 검색 결과에 노출될 수 있는 페이지도 계속 늘어납니다.
+
+여기에 sitemap과 sitemap index로 방대한 페이지를 빠짐없이 색인시키고, schema.org 구조화 데이터까지 더해집니다. 하나하나는 특별할 게 없지만, **기본기의 총합이 검색 경쟁력을 만든다는 것** — 이것이 아하를 뜯어보며 얻은 결론입니다. 그럼 그 기본기를 하나씩 살펴보겠습니다.
+
+---
+
+## 3. 크롤러에게 필요한 4가지 — 페이지 → 정보 → 길 → AI
+
+지금부터 다룰 것들은 따로 노는 기술이 아닙니다. 결국 **크롤러에게 순서대로 네 가지를 주는 일**로 묶입니다.
+
+먼저 **① 완성된 페이지**를 줍니다. JavaScript 없이도 읽히는 HTML을 내려주고(SSR/SSG), 그 안을 시맨틱 태그와 `h1`·`h2` 계층으로 구조화해서, 크롤러가 "이 페이지에 무엇이 있는지" 파악하게 합니다.
+
+그 다음 **② 정확한 정보**를 줍니다. `title`·`description`·`canonical`·OG로 이 페이지가 어떤 페이지인지 알리고, 여기에 schema.org 구조화 데이터(JSON-LD)까지 더하면 검색 결과에 리치 스니펫(별점·FAQ 등)으로도 노출됩니다.
+
+그리고 **③ 길**을 안내합니다. 어디를 크롤해도 되는지(`robots.txt`), 이 사이트에 어떤 페이지들이 있는지(`sitemap.xml`, 그리고 규모가 커지면 sitemap index)를 알려줘, 크롤러가 사이트를 빠짐없이 돌게 합니다.
+
+마지막으로 **④ AI 검색에 대응**합니다. 검색엔진을 넘어 AI가 우리 사이트를 이해하도록 `llms.txt`로 사이트 정보를 정리해 둡니다.
+
+| 흐름 | 크롤러에게 무엇을 | 기술 |
+| --- | --- | --- |
+| **① 완성된 페이지** | JS 없이 읽히는 HTML | SSR/SSG · 시맨틱 `h1`/`h2` |
+| **② 정확한 정보** | 이 페이지가 무엇인지 | `title`·`description`·`canonical`·OG · schema.org(JSON-LD) |
+| **③ 길 안내** | 어디를 어떻게 크롤할지 | `robots.txt` · `sitemap.xml` · sitemap index |
+| **④ AI 대응** | AI가 우리를 이해하게 | `llms.txt` |
+
+개별 기술을 외우기보다 이 **"페이지 → 정보 → 길 → AI"** 흐름만 기억해두면, 뒤에 나올 내용이 어디에 속하는지 자연스럽게 이어집니다. 그럼 첫 번째, 완성된 페이지부터 보겠습니다.
+
+---
+
+## 4. ① 완성된 페이지 — 시맨틱 마크업 & 제목 계층
+
+첫 단추는 SSR/SSG로 완성된 HTML을 내려주는 것입니다. 하지만 완성됐다고 끝이 아닙니다. 그 안이 전부 `<div>`뿐이면, 크롤러는 어디가 제목이고 본문인지 구분하지 못합니다.
+
+```typescript
+// Before — 크롤러: "여기 뭐가 중요한지 모르겠다"
+<div className="header">…</div>
+<div className="title">AI 솔루션</div>
+<div className="box">…</div>
+
+// After — 크롤러: "이게 제목, 이게 본문 섹션이구나"
+<header>…</header>
+<main>
+  <h1>AI 솔루션</h1>
+  <section>
+    <h2>1P 데이터 기반 타겟팅</h2>
+    …
+  </section>
+</main>
+```
+
+`<header>`·`<main>`·`<section>` 같은 시맨틱 태그로 역할을 나누고, `h1`·`h2`로 제목 계층을 잡아주면, 크롤러는 이 구조를 페이지의 목차처럼 읽습니다.
+
+여기서 중요한 원칙이 하나 있습니다. **`h1`은 디자인이 아니라 페이지의 주제로 정합니다.** 앞서 아하에서 봤듯, 화면상 가장 커 보이는 요소가 아니라 그 페이지에서 의미적으로 가장 중요한 콘텐츠에 `h1`을 둡니다. 크기를 키우고 싶으면 `h1`에 CSS로 스타일을 주면 되는 것이지, 커 보인다고 아무 요소나 `h1`으로 만들면 안 됩니다.
+
+### 짚고 넘어가기 — Next를 써도 CSR처럼 될 수 있습니다
+
+많은 경우 Client Component에서 `useQuery`로 데이터를 부릅니다. 이게 함정입니다. 서버는 **데이터 없는 HTML**을 먼저 내려보내고, 브라우저가 JS를 실행한 뒤에야 `useQuery`가 fetch하기 때문입니다. 사용자는 잠깐 로딩만 보지만, **크롤러가 받는 건 데이터가 빠진 껍데기** — SSR을 쓰고도 결과는 CSR과 똑같아집니다.
+
+**그럼 어떻게?** 서버에서 데이터를 미리 받아 HTML에 실어 보내면 됩니다. React Query가 이걸 3단계로 해줍니다.
+
+```text
+[서버]                                          [브라우저]
+prefetch ─────► dehydrate ───(HTML에 실어)───► HydrationBoundary ──► useQuery
+서버 캐시에      캐시를 JSON으로                  그 JSON을 브라우저      채워진 캐시를
+데이터 채움       직렬화                          캐시에 부어넣음        네트워크 없이 사용
+```
+
+- **prefetch** — 서버 QueryClient 캐시에 데이터를 미리 채웁니다.
+- **dehydrate** — 그 캐시를 JSON으로 빼내 초기 HTML에 싣습니다.
+- **HydrationBoundary** — 브라우저에서 그 JSON을 QueryClient 캐시에 부어넣습니다(hydrate).
+- **useQuery** — 같은 `queryKey`라서 캐시에 이미 있으니, **네트워크 재요청 없이** 그대로 씁니다.
+
+```typescript
+// 서버 컴포넌트 — prefetch로 채우고 dehydrate로 실어보냄
+const qc = new QueryClient()
+await qc.prefetchQuery({ queryKey: ['post', id], queryFn: () => getPost(id) })
+
+return (
+  <HydrationBoundary state={dehydrate(qc)}>
+    <PostView id={id} />          {/* Client Component */}
+  </HydrationBoundary>
+)
+```
+
+```typescript
+'use client'
+function PostView({ id }) {
+  // 같은 queryKey → 이미 채워진 캐시를 재요청 없이 사용
+  const { data } = useQuery({ queryKey: ['post', id], queryFn: () => getPost(id) })
+  return <article><h1>{data.title}</h1>…</article>
+}
+```
+
+이렇게 완성된 HTML에 의미 구조와 데이터까지 갖추면, 크롤러는 "이 페이지가 무엇인지" 읽어낼 준비를 마칩니다. 다음은 그게 정확히 **어떤** 페이지인지 알려줄 차례입니다.
+
+---
+
+## 5. ② 정확한 정보 — 메타데이터 & schema.org
+
+완성된 HTML을 줬으니, 이제 크롤러에게 "이 페이지가 **어떤** 페이지인지" 알려줄 차례입니다. Next.js App Router에서는 `metadata` 객체만 export하면 `<head>`에 알아서 꽂힙니다.
+
+```typescript
+// app/page.tsx
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'AI 솔루션',
+  description: '안녕하세요 설명입니다!',
+  alternates: { canonical: 'https://selectstar.ai' },   // 중복 URL 정리
+  openGraph: {                                       // SNS 미리보기
+    title: 'AI 솔루션',
+    description: '안녕하세요 설명입니다!',
+    images: ['https://selectstar.ai/og.png'],
+  },
+}
+```
+
+- **title · description** — 검색 결과에 그대로 노출되는 제목·설명. 페이지마다 고유하게.
+- **canonical** — "이 페이지의 대표 주소는 여기다"라고 못 박는 것. 쿼리스트링(`?utm=...`)이나 중복 경로로 같은 내용이 여러 URL로 갈릴 때, 검색 점수가 흩어지지 않게 하나로 모읍니다.
+- **openGraph** — 카톡·슬랙 등에서 링크 공유 시 뜨는 미리보기(제목·설명·썸네일).
+
+> 💡 반복되는 메타데이터 생성 로직은 빌더 유틸로 빼두면, 새 페이지를 추가할 때 SEO 설정이 몇 줄로 끝납니다!
+
+### 한 걸음 더 — 구조화 데이터(schema.org)
+
+메타데이터가 "제목·설명"을 알려주는 거라면, 구조화 데이터는 페이지 속 정보 하나하나에 **의미 라벨을 붙이는 일**입니다.
+
+사람은 화면에 "★ 4.5 / 조리시간 30분"이라고 적혀 있으면 무슨 뜻인지 바로 압니다. 하지만 크롤러(구글봇 같은 프로그램)에게 HTML은 그냥 글자 덩어리라, 그 4.5가 별점인지 가격인지 구분하지 못합니다. 그래서 "이 숫자는 별점이고, 이건 조리시간이다"라고 크롤러가 오해 없이 알아먹게 꼬리표를 달아주는 것이 구조화 데이터입니다.
+
+이 라벨이 있어야 구글이 그 의미를 확신하고, 검색 결과에 별점·조리시간·사진 같은 **리치 스니펫**으로 꺼내 보여줍니다.
+
+```typescript
+export default function Page() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'AI 솔루션',
+    url: 'https://selectstar.ai',
+    logo: 'https://selectstar.ai/logo.png',
+  }
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {/* 페이지 콘텐츠 */}
+    </>
+  )
+}
+```
+
+**JSON-LD = JSON for Linking Data** (연결된 데이터를 위한 JSON). 우리가 아는 그 JSON 문법 그대로인데, 거기에 "이 데이터가 무슨 의미인지"를 나타내는 약속 두 개가 얹힌 형태입니다.
+
+> 🎬 **데모** — 구글에 `김치찌개 레시피` 를 검색하면, 별점·조리시간·사진이 붙은 **리치 스니펫**이 바로 보입니다. 이게 레시피 페이지에 심어둔 `application/ld+json` 구조화 데이터의 결과입니다. 그리고 내 페이지가 어떤 리치 결과를 만들 수 있는지는 [리치 결과 테스트](https://search.google.com/test/rich-results)에 URL을 넣어 바로 확인할 수 있습니다.
+
+여기까지 하면 크롤러는 "이 페이지가 무엇인지"까지 정확히 알게 됩니다. 이제 남은 건, 크롤러가 우리 사이트를 **빠짐없이 돌 수 있도록 길을 알려주는 일**입니다.
+
+---
+
+## 6. ③ 길 안내 — robots.txt & sitemap
+
+크롤러가 페이지를 이해하게 만들었으니, 이제 **사이트 전체를 빠짐없이 돌게** 안내할 차례입니다. robots.txt는 "어디를 봐도 되는지", sitemap은 "어떤 페이지들이 있는지"를 알려줍니다.
+
+### robots.txt — "여긴 봐도 되고, 저긴 보지 마"
+
+크롤러가 사이트에 들어오면 보통 가장 먼저 읽는 파일입니다. App Router에서는 `app/robots.ts` 하나만 두면 `/robots.txt`가 자동 생성됩니다.
+
+```typescript
+// app/robots.ts
+import type { MetadataRoute } from 'next'
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: { userAgent: '*', allow: '/', disallow: '/admin/' },
+    sitemap: 'https://selectstar.ai/sitemap.xml',   // 사이트맵 위치 명시
+  }
+}
+```
+
+놓치기 쉬운 게 마지막 `sitemap` 줄입니다. 크롤러가 robots.txt를 먼저 읽으니, 여기에 sitemap 주소를 적어두면 "전체 목록은 여기 있다"고 바로 알려줄 수 있어 발견이 빨라집니다.
+
+> 🎬 아하 robots.txt 열어보기 → [https://www.a-ha.io/robots.txt](https://www.a-ha.io/robots.txt)
+
+### sitemap.xml — "이 사이트엔 이런 페이지들이 있다"
+
+크롤러에게 페이지 목록을 넘겨주는 파일입니다. 마찬가지로 `app/sitemap.ts`만 두면 자동 생성됩니다.
+
+```typescript
+// app/sitemap.ts
+import type { MetadataRoute } from 'next'
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    { url: 'https://selectstar.ai',         lastModified: new Date() },
+    { url: 'https://selectstar.ai/pricing', lastModified: new Date() },
+  ]
+}
+```
+
+페이지가 몇 개 안 되면 이걸로 끝입니다. 문제는 사이트가 커질 때입니다.
+
+### 사이트가 커지면 — 쪼개고(split), 묶는다(index)
+
+아하를 실제로 열어보면 sitemap이 두 갈래로 나뉘어 있습니다.
+
+- **`sitemap.xml`** — 홈과 수백 개의 **토픽 페이지**(`topic/의료상담/내과`, `topic/법률/부동산임대차` …). 개수가 적고 자주 변하지 않는 **정적인 축**입니다.
+- **`sitemapindex.xml`** — 수시로 쌓이는 **질문 페이지**들의 목차. 그런데 그냥 목차가 아니라, `sitemapindex1.xml`부터 **700개가 넘는** 하위 sitemap을 가리킵니다.
+
+왜 이렇게까지 잘게 쪼갰을까요? sitemap 한 파일에는 한계가 있기 때문입니다 — 하나의 sitemap은 URL 5만 개, 압축 전 50MB를 넘을 수 없습니다. 질문이 수천만 개 쌓이면 한 파일로는 절대 담을 수 없으니, 5만 개 단위로 쪼개고 그것들을 index로 묶는 것입니다.
+
+> 🎬 **아하 sitemap 직접 열어보기**
+> - `sitemap.xml` → [https://www.a-ha.io/sitemap.xml](https://www.a-ha.io/sitemap.xml) — 홈 + 토픽 목록(정적인 축)
+> - `sitemapindex.xml` → [https://www.a-ha.io/sitemapindex.xml](https://www.a-ha.io/sitemapindex.xml) — 700개가 넘는 하위 sitemap 목차. 질문을 5만 개씩 쪼갠 규모를 눈으로 확인
+
+정적인 토픽은 `sitemap.xml`로, 끝없이 쌓이는 질문은 `sitemapindex.xml` 아래 수백 개로 쪼개어 — 이렇게 콘텐츠 성격에 따라 sitemap을 나누고, robots.txt가 둘 다 가리키게 하면, 크롤러는 **robots.txt → sitemap(index) → 개별 sitemap → 각 페이지** 순으로 사이트 전체를 빠짐없이 훑습니다.
+
+여기까지가 "길 안내"입니다. 이제 마지막 한 걸음, 검색엔진을 넘어 **AI 검색에 대응하는 일**만 남았습니다.
+
+---
+
+## 7. ④ AI 검색 대응 — llms.txt
+
+지금까지는 전통적인 검색엔진(구글·네이버)의 크롤러를 위한 준비였습니다. 그런데 요즘은 사람들이 검색창 대신 LLM에게 직접 묻는 경우가 늘고 있습니다. 이 AI들에게도 우리 사이트를 이해시킬 방법이 필요합니다.
+
+여기서 나온 것이 `llms.txt`입니다. `robots.txt`가 검색 크롤러를 위한 규칙 파일이라면, `llms.txt`는 **LLM을 위한 사이트 안내서**입니다. 사이트의 핵심 정보와 주요 링크를 마크다운으로 깔끔하게 정리해, `/public/llms.txt`(또는 route handler)로 제공합니다.
+
+```markdown
+# Selectstar
+
+> AI 학습 데이터를 구축하고 검증하는 데이터 플랫폼입니다.
+
+## 주요 서비스
+- [데이터 라벨링](https://selectstar.ai/labeling): 이미지·텍스트·음성 라벨링
+- [데이터 검증](https://selectstar.ai/validation): 라벨 품질 검수
+
+## 문서
+- [개발자 문서](https://docs.selectstar.ai)
+- [블로그](https://selectstar.ai/blog)
+```
+
+왜 HTML이 이미 있는데 이런 걸 또 만들까요? AI 크롤러 상당수는 **JavaScript를 실행하지 않고**, 방대한 HTML에서 네비게이션·광고·스크립트를 걷어내며 핵심만 추려내는 것도 부담스러워합니다. 그래서 "우리 사이트의 요점은 이것이다"를 사람이 직접 정리해 건네주면, AI가 우리를 훨씬 정확하게 이해하고 답변에 인용할 가능성이 높아집니다. AI가 우리 서비스를 어떻게 요약할지, 우리가 먼저 정해두는 셈입니다.
+
+다만 솔직하게 짚어둘 점이 있습니다. `llms.txt`는 **아직 표준으로 완전히 굳은 것은 아니고**, 모든 AI가 이 파일을 읽어 간다는 보장도 없습니다. 그럼에도 만드는 비용이 거의 들지 않고, 이미 Next.js 공식 문서를 비롯한 여러 사이트가 채택하고 있어, AI 검색 시대를 대비하는 낮은 리스크의 한 수로 볼 수 있습니다.
+
+이렇게 네 번째 단계까지 마치면, 크롤러에게 완성된 페이지를 주고, 정확한 정보를 알려주고, 길을 안내하고, AI 검색까지 대비한 셈입니다.
+
+**참고 — 실제 llms.txt 예시**
+
+- [https://stripe.com/llms.txt](https://stripe.com/llms.txt)
+- [https://nextjs.org/llms.txt](https://nextjs.org/llms.txt)
