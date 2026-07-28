@@ -1,0 +1,201 @@
+---
+title: "Sentry 에러 모니터링 고도화"
+date: "2026-07-08"
+description: "마법사가 깔아준 기본값 그대로였던 Sentry를, 이슈 하나로 원인까지 좇을 수 있는 관측 도구로 끌어올린 여정을 정리합니다."
+tags: ["Sentry", "Monitoring", "Next.js", "Observability"]
+---
+
+> 🔭 **에러는 잡히는데, 정작 이슈를 열어보면 아무것도 없었습니다.** 마법사가 깔아준 기본값 그대로였던 Sentry를, 이슈 하나로 원인까지 좇을 수 있는 관측 도구로 끌어올린 여정을 정리합니다. (`@sentry/nextjs` v10 · Next 16 · React 19)
+
+## 들어가며
+
+Sentry는 붙여둔 상태였습니다. `feature/sentry` 브랜치에 DSN을 꽂고, 예제 라우트로 "에러가 올라오네" 확인까지 해둔 상태. 그런데 딱 거기까지였습니다.
+
+천천히 들여다보니 실제로 `captureException` 을 부르는 곳은 `global-error.tsx` **단 한 곳**이었습니다. 에러가 올라와도 이슈 화면엔 압축된 스택 한 줄이 전부였고, **누가 겪었는지, 어떤 API가 터졌는지, 어느 화면에서 무슨 요청을 하다 그랬는지, 어느 릴리즈부터인지** — 정작 궁금한 건 하나도 없었습니다.
+
+아직 이걸로 크게 데인 적은 없습니다. 하지만 반대로 말하면, **지금 장애가 나도 Sentry가 우리에게 알려줄 게 없다**는 뜻이었어요. 그래서 세 가지 목표를 세웠습니다.
+
+1. **에러 수집을 고도화하자** — 이슈 하나로 원인까지 좇을 수 있게
+2. **불필요한 로그를 걸러내고 Alert을 신뢰할 수 있게 만들자**
+3. **팀이 굴릴 수 있는 모니터링 프로세스를 만들자**
+
+## 우리가 쓰던 Sentry 그릇
+
+본격적으로 고치기 전, 지금 그릇이 어떤 상태인지부터 짚어봤습니다.
+
+| 영역 | 처음 상태 |
+| --- | --- |
+| 계측 실사용 | `captureException` 단 1곳(`global-error.tsx`). 나머지는 SDK 자동 캡처에만 의존 |
+| 환경 구분 | `environment` 없음 — dev/qa/prod를 프로젝트(DSN)로만 구분 |
+| 릴리즈 | `release` 없음 — "어느 배포부터인지" 추적 불가 |
+| 샘플링 | `tracesSampleRate: 1`(전량) — prod에서 비용·quota 폭발 위험 |
+| 유저 컨텍스트 | `setUser` 없음 — 누가 겪었는지 모름. 거기에 `sendDefaultPii: true` 로 PII는 통째로 전송 |
+| 노이즈 필터 | `beforeSend`/`ignoreErrors`/`denyUrls` 없음 |
+| 설정 파일 | `sentry.client.config.ts` 와 `instrumentation-client.ts` 가 공존(값까지 불일치) — Next 16은 후자만 로드 |
+
+한 줄로 요약하면, **도구는 켜져 있지만 아무 말도 안 해주는 상태**였습니다.
+
+---
+
+## 첫째, 에러 로그 정보를 고도화(Enrich)하자
+
+`captureException(error)` 로 JS Error 객체 하나만 던지면 Sentry는 그 이상을 알 수 없습니다. 핵심은 **Scope** 였어요. 에러에 맥락(level, tags, context, fingerprint)을 붙여 보내면, 재현 없이도 이슈만 보고 원인을 좁혀갈 수 있습니다.
+
+다행히 이 앱은 에러가 **한 군데로 모입니다.** 모든 서버 요청은 TanStack Query를 타고, 그 실패는 `QueryCache`/`MutationCache` 의 `onError` 를 지나갑니다. 백엔드 에러는 이미 `PlatformApiError` 로 타입되어 `status`·`code` 를 들고 있었고요. 그래서 `captureException` 을 코드 곳곳에 뿌릴 필요 없이, **이 길목 하나에서** 맥락을 입혔습니다.
+
+### 에러 Level을 정하자
+
+Level은 간단하지만 쿼리·Alert의 필터 축이라 효용이 큽니다. 서비스 영향도를 기준으로 이렇게 정의했어요.
+
+| Level | 정의 | 우리 케이스 |
+| --- | --- | --- |
+| **fatal** | 화면 렌더 실패 · 필수 기능 동작 불가 | `global-error.tsx`·route `error.tsx` 크래시 / `captureApiError(e, { fatal: true })` 수동 escalate |
+| **error** (기본) | 예상 못한 unhandled 에러 | 5xx · 파싱 실패 · 미지의 code · 서버런타임 네트워크 실패 |
+| **warning** | 예상 가능 + 영향 낮음 | 503 · 429 · 타임아웃 |
+| (breadcrumb) | 이미 비즈니스 로직이 처리 | 예상된 4xx(VALIDATION·PERMISSION·DUPLICATE·NOT_FOUND) / 401 auth |
+
+이를 통해 **fatal 하나만 떠도 즉시, warning은 모아서** 볼 수 있는 토대가 생겼습니다. 분류 로직은 `shared/lib/monitoring/sentry-level.ts` 에 모았습니다.
+
+### 이름만으로 핵심을 파악하도록 하자
+
+이슈 목록을 열었을 때 제목만 봐도 "아, 이 API구나" 가 되게, 에러 이름에 상태코드와 경로를 넣었습니다. 가변 세그먼트는 `{id}` 로 치환해 같은 API 에러가 하나로 묶이게 했어요.
+
+```text
+[500 Error] GET /api/applications/{id}/eval-runs/{id}/tasks/{id}
+```
+
+원본 아티클은 `[500 Error] - {baseURL}{path}` 형식이었지만, 우리는 브라우저가 항상 자기 도메인의 BFF(`/api/*`)를 통해 백엔드를 부르므로, 의미 없는 baseURL 대신 **method + BFF 경로**를 넣었습니다(화면·기능과 1:1).
+
+그리고 Sentry의 기본 그룹화는 StackTrace 기반이라 같은 API 에러가 메시지별로 쪼개집니다. 그래서 **커스텀 Fingerprint** 로 그룹 축을 API로 고정했어요.
+
+### 상세한 정보도 담자
+
+재현 없이 원인을 보도록, 요청 맥락과 공통 맥락을 Context·Tags로 적재했습니다. 이 전부가 `shared/lib/monitoring/capture-api-error.ts` 의 한 함수 안에서 조립됩니다.
+
+```typescript
+Sentry.withScope((scope) => {
+  // 그룹화: StackTrace 대신 API 축으로 고정 (+ backend code까지)
+  scope.setFingerprint([method, endpoint, String(status), code]);
+  scope.setLevel(level);
+
+  // Tags = 검색/필터 축 (release·environment는 init에서 자동)
+  scope.setTags({
+    "api.endpoint": endpoint,
+    "api.method": method,
+    "http.status": String(status),
+    "backend.code": code,
+    "error.page": screen, // 지면(어느 화면)
+  });
+
+  // Context = 재현 없이 원인분석용 상세
+  scope.setContext("api_request", { endpoint, method, query: scrubbedQuery });
+  scope.setContext("api_response", { status, code, message });
+
+  error.name = `[${status} Error] ${method} ${endpoint}`; // 이슈 제목
+  Sentry.captureException(error);
+});
+```
+
+OS·브라우저·기종은 Sentry가 user-agent로 자동 수집하고, 앱버전(release)·환경(environment)은 init에서 박아두었습니다. 즉 처음에 원했던 **발생 장소·세부·환경·시점**이 이슈 하나에 다 담기게 됐어요.
+
+---
+
+## 둘째, 수집이 불필요한 로그를 필터링하자
+
+에러가 많다고 서비스가 치명적인 건 아닙니다. 이미 비즈니스 로직에서 핸들링된 에러, 단말 네트워크 문제로 인한 에러처럼 서비스에 영향 없는 로그가 사용량과 주의를 태우면, **스팸 메일로 가득 차 진짜 중요한 메일을 놓치는 메일함**과 다를 게 없습니다. 노이즈를 3계층으로 걸렀어요.
+
+| 계층 | 어디서 | 거르는 것 |
+| --- | --- | --- |
+| ① Inbound Filters | Sentry 대시보드 (코드 X, 사용량 소모 안 함) | `ChunkLoadError*` · `Failed to fetch`/`Load failed` · 브라우저 확장 · 크롤러 |
+| ② beforeSend | init 3종 (scope 없음) | PII 스크럽 + `ResizeObserver`·`AbortError` • 클라 네트워크 throw |
+| ③ SKIP_RULES | `sentry-level.ts` (scope 있음) | **code/endpoint 기반** 정밀 skip |
+
+> 💡 **원본 아티클과의 차이.** 원본은 `error.response.data === "최대 구매 가능 수량을 초과했어요"` 처럼 **메시지 문자열**로 skip했습니다(코드가 없어서). 우리는 `PlatformApiError.code` 가 있으니 skip 조건을 **코드 기반**으로 둔 덕에, 다국어·문구가 바뀌어도 안 깨집니다.
+
+네트워크 에러(`Failed to fetch`/`Load failed`/타임아웃)는 조금 다르게 접근했습니다. 원본은 이걸 전부 필터했지만(서버는 서버팀이 따로 모니터링), **우리의 "서버"는 BFF**라 구분이 필요했어요. 클라 런타임 네트워크 throw(오프라인·탭 이탈)는 노이즈라 drop하고, BFF→백엔드 실패는 진짜 신호라 server config에선 살렸습니다. `beforeSend` 가 런타임별로 따로 돌기 때문에 가능했죠.
+
+그리고 캡처 정책은 **"신호만"** 으로 정했습니다. 5xx·네트워크(서버)·파싱실패·미지의 code만 issue로 보내고, 예상된 4xx는 breadcrumb만 남깁니다.
+
+---
+
+## 셋째, Alert이 선제적 장애 탐지로 이어지도록
+
+정보가 풍부해지고 노이즈가 걸러졌다면, 이젠 "몇 건 이상, 어떤 Level"일 때만 울리는 Alert을 걸 차례입니다. 앞서 심은 태그(`level`·`api.endpoint`·`error.page`·`release`)를 필터로 써 정확도를 올립니다.
+
+| 이름 | 조건 | 액션 |
+| --- | --- | --- |
+| **Critical** | `level:fatal` 1건이라도 | Slack `#sentry-critical` |
+| **Warning** | `level:warning` 20건 초과 / 1시간 | Slack `#sentry-warning` |
+| **스파이크** | 동일 이슈 50건 초과 / 1시간 | Slack `#sentry-warning` |
+| **신규 회귀** | 최신 `release` 에서 신규 이슈 생성 | Slack — "최신 배포가 새 에러 유발" |
+
+다급하게 봐야 할 "장애"와 여유를 갖고 고쳐나갈 문제를 나누는 완벽한 규칙은 처음부터 나오기 어렵습니다. 운영하며 지속적으로 기준을 다듬을 예정입니다.
+
+---
+
+## 넷째, 팀 모니터링 프로세스를 마련하자
+
+중요도 높은 에러가 모이고, 정확한 정보를 주며, 필요할 때만 알람이 울린다면 — 남은 건 그걸 처리하는 사람입니다.
+
+- 담당자를 **주간 2~3명 묶음**으로 돌립니다. 한 명 전담은 부재중·바쁠 때 검토가 밀리므로, 서로 다 맡는 팀 문화를 살립니다.
+- Level 임계를 넘으면 Slack 봇이 그 메시지에 스레드를 달아 담당자를 호출하고, "검토중/원인/조치" 상태를 남겨 중복 검토를 막습니다.
+- 검토 끝난 이슈는 resolve + 스레드에 결론을 남깁니다.
+
+소통은 Email보다 즉각적인 Slack을 쓰고, 간단하지만 확실히 돌아가는 것에 초점을 둡니다.
+
+---
+
+## 우리만 있었던 복병 둘
+
+아티클엔 없는, 이 레포만의 사정도 있었습니다.
+
+### 커밋되어 있던 인증 토큰
+
+설정을 들여다보다, `env.sentry-build-plugin`(점 없는 파일명)에 실제 `SENTRY_AUTH_TOKEN` 이 **git에 커밋된 상태**임을 발견했습니다. `.gitignore` 는 `.env.sentry-build-plugin`(점 있음)만 막고 있었고요. 이미 여러 원격 브랜치에 올라간 상태였습니다. 토큰을 재발급해 무력화하고, `.gitignore` 를 고치고 추적을 끊었습니다(CI는 이미 secret을 쓰고 있어 무중단).
+
+### 난독화와 심볼리케이션 사이
+
+우리 배포 파이프라인엔 기술심사를 위한 난독화 스텝(`obfuscate.mjs`)이 있습니다. 그런데 이게 `next build`(= Sentry 소스맵 업로드) **이후**에 `src/*` 청크를 mangle하면서 소스맵을 재생성하지 않기 때문에, 업로드된 소스맵과 배포 코드가 어긋나 **앱코드 스택트레이스 복원이 흔들립니다**(vendor 청크는 정상).
+
+난독화는 기술심사용으로 **반드시 유지**해야 하므로, 이 한계는 수용하되 **첫째에서 Scope에 공들인 게 여기서 빛을 봅니다.** 이슈 이름·tags·fingerprint·context·breadcrumbs는 스택트레이스 심볼리케이션에 의존하지 않으니까요. API 에러는 이걸로 충분히 좇고, `fatal` 렌더 크래시 스택만 살짝 손해입니다. 나중에 아프면 난독화 후 소스맵 재합성을 검토합니다.
+
+---
+
+## 개선 후 달라진 모습들
+
+- **에러가 말을 하기 시작했어요.** 제목만 봐도 `[500 Error] GET /api/...` — 어떤 API인지 바로 보입니다.
+- **누가 겪었는지 보입니다.** 세션을 `setUser`(id+email)로 연결해, 이슈에 사용자가 찍힙니다.
+- **노이즈가 걷혀 신호만 남습니다.** 예상된 4xx는 breadcrumb으로, 네트워크 노이즈는 3계층으로 걸러졌습니다.
+- **어느 릴리즈부터인지 알 수 있습니다.** release=git SHA가 박혀 regression을 자동으로 계산합니다.
+- **onprem은 자동으로 꺼집니다.** 빈 DSN + 프로덕션 가드로 텔레메트리가 나가지 않습니다.
+
+## 마치며
+
+"에러가 잡히는가"에서 "에러 하나로 원인까지 좇을 수 있는가"로 옮긴 게 이번 작업의 핵심입니다. 설정(Phase 1)만으로도 환경·릴리즈·샘플링·노이즈가 정리됐고, 진짜 가치는 Scope 계측(Phase 2)에서 나왔습니다. 남은 건 대시보드·Slack 설정(Phase 3)을 런북대로 채우고, 운영하며 규칙을 다듬는 일입니다.
+
+---
+
+## 부록 A. 진행 현황
+
+| Phase | 내용 | 상태 |
+| --- | --- | --- |
+| 0 보안 | 토큰 추적해제 + gitignore, 예제 라우트 삭제 | ✅ |
+| 1 설정 | environment·release·tracesSampler·beforeSend, 중복 config 제거, sourcemap 정책 | ✅ |
+| 2 Scope 계측 | monitoring 모듈, PlatformApiError 확장, query-provider 연결, error boundary fatal (테스트 green) | ✅ |
+| 3 운영 | Inbound Filters·Alert Rules·Slack·release 마킹 — 런북 제공 | 대시보드 작업 필요 |
+
+## 부록 B. 코드 위치
+
+- `src/shared/lib/monitoring/` — `capture-api-error.ts`(withScope 조립) · `sentry-level.ts`(Level 분류 + `SKIP_RULES`) · `sentry-error-name.ts`(path 정규화 + 이슈 이름) · `scrub.ts`(PII 스크럽) · `sentry-user.tsx`(setUser) · `sentry-monitoring.test.ts`
+- `src/instrumentation-client.ts` · `sentry.server.config.ts` · `sentry.edge.config.ts` — init 3종
+- `src/shared/api/error/platform-api-error.ts` · `throw-from-response.ts` — endpoint/method/query 주입
+- `src/app/_providers/query-provider.tsx` — onError → captureApiError
+
+## 부록 C. 환경별 DSN
+
+| 환경 | `NEXT_PUBLIC_REACT_APP_ENV` | Sentry 프로젝트 | 수집 |
+| --- | --- | --- | --- |
+| dev | `dev` | `datumo-platform-front-dev` | ✅ |
+| qa | `qa` | `datumo-platform-front-qa` | ✅ |
+| prod | `prod` | `datumo-platform-front-prod` | ✅ |
+| onprem | `onprem` | (빈 DSN) | ❌ off |
