@@ -3,7 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { compileMDX } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
 import { Prose } from "@/components/Prose";
+import { CodeBlock } from "@/components/CodeBlock";
 import { formatDate } from "@/lib/markdown";
 import { getPostBySlug, getPostSlugs } from "@/lib/posts";
 import styles from "../../page.module.css";
@@ -41,9 +43,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const { content } = await compileMDX({
     source: post.content,
+    components: { pre: CodeBlock },
     options: {
       parseFrontmatter: false,
-      mdxOptions: { remarkPlugins: [remarkGfm] },
+      mdxOptions: { remarkPlugins: [remarkGfm], rehypePlugins: [rehypeHighlight] },
     },
   });
 

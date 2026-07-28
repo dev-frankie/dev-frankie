@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -18,7 +18,7 @@ const wrapPage = ({ title, body, current }) => `<!DOCTYPE html>
     <a class="site-header__brand" href="./README.md">dev-frankie</a>
     <nav class="site-nav" aria-label="문서">
       <a href="./RESUME.html"${current === "resume" ? ' aria-current="page"' : ""}>이력서</a>
-      <a href="./WORKEXPERIENCE.html"${current === "work" ? ' aria-current="page"' : ""}>경력기술서</a>
+      <a href="./WORKEXPERIENCE.html"${current === "career" ? ' aria-current="page"' : ""}>경력기술서</a>
       <a href="https://github.com/dev-frankie" target="_blank" rel="noopener noreferrer">GitHub</a>
     </nav>
   </header>
@@ -47,12 +47,14 @@ const mdToHtml = (inputPath) => {
   return result.stdout.trim();
 };
 
-const workBody = mdToHtml("WORKEXPERIENCE.md");
-const workHtml = wrapPage({
-  title: "경력기술서",
-  body: workBody,
-  current: "work",
-});
+const DOCS = [
+  { input: "RESUME.md", output: "RESUME.html", title: "이력서", current: "resume" },
+  { input: "WORKEXPERIENCE.md", output: "WORKEXPERIENCE.html", title: "경력기술서", current: "career" },
+];
 
-writeFileSync(join(root, "WORKEXPERIENCE.html"), workHtml, "utf8");
-console.log("Built WORKEXPERIENCE.html");
+for (const doc of DOCS) {
+  const body = mdToHtml(doc.input);
+  const html = wrapPage({ title: doc.title, body, current: doc.current });
+  writeFileSync(join(root, doc.output), html, "utf8");
+  console.log(`Built ${doc.output}`);
+}

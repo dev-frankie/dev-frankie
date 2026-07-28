@@ -1,0 +1,17 @@
+.socials {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted);
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.link:hover {
+  color: var(--accent);
+  transform: translateY(-1px);
+}

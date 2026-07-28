@@ -1,11 +1,12 @@
 import Link from "next/link";
+import { ThemeToggle } from "./ThemeToggle";
 import styles from "./Header.module.css";
 
 const NAV_ITEMS = [
   { href: "/", label: "Home" },
   { href: "/blog", label: "Blog" },
   { href: "/resume", label: "Resume" },
-  { href: "/work", label: "Work" },
+  { href: "/career", label: "Career" },
 ] as const;
 
 export const Header = () => (
@@ -27,6 +28,7 @@ export const Header = () => (
       >
         GitHub
       </a>
+      <ThemeToggle />
     </nav>
   </header>
 );

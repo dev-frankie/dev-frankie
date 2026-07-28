@@ -11,14 +11,5 @@ export const readMarkdownFile = (filename: string): string => {
   return fs.readFileSync(filePath, "utf8");
 };
 
-export const formatDate = (date: string): string => {
-  if (!date) {
-    return "";
-  }
-
-  return new Intl.DateTimeFormat("ko-KR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(new Date(date));
-};
+// Re-export for existing imports; new client-safe usages should import from "@/lib/format".
+export { formatDate } from "./format";

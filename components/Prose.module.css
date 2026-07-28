@@ -1,6 +1,8 @@
 .prose {
-  line-height: 1.75;
+  line-height: 1.7;
   color: var(--text);
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .prose :global(h1),
@@ -67,15 +69,8 @@
   border-radius: 4px;
 }
 
-.prose :global(pre) {
-  overflow-x: auto;
-  margin: 1rem 0;
-  padding: 1rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-}
-
+/* Block code is wrapped by <CodeBlock> (.code-window in globals.css); keep the
+   inline-code reset here so `pre code` doesn't inherit the inline chip styling. */
 .prose :global(pre code) {
   padding: 0;
   background: none;
@@ -93,6 +88,7 @@
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--border);
   text-align: left;
+  word-break: break-word;
 }
 
 .prose :global(th) {
@@ -111,9 +107,70 @@
   border-radius: 6px;
 }
 
+/* ── Career variant — compact document (tighter than default prose) ── */
+.career {
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.career :global(h1) {
+  font-size: 1.5rem;
+}
+
+.career :global(h2) {
+  margin: 1.75rem 0 0.75rem;
+  padding-top: 1rem;
+  font-size: 1.2rem;
+  letter-spacing: -0.01em;
+  border-top: 1px solid var(--border);
+}
+
+.career :global(h2:first-child) {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.career :global(h3) {
+  margin: 1.5rem 0 0.5rem;
+  font-size: 1.05rem;
+  color: var(--accent);
+}
+
+.career :global(h4) {
+  margin: 1.25rem 0 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.career :global(p),
+.career :global(li) {
+  margin: 0.28rem 0;
+}
+
+.career :global(ul),
+.career :global(ol) {
+  padding-left: 1.15rem;
+}
+
+.career :global(blockquote) {
+  margin: 0.6rem 0;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.95em;
+}
+
+.career :global(hr) {
+  margin: 1.5rem 0;
+}
+
+.career :global(table) {
+  font-size: 0.9em;
+}
+
 /* ── Resume variant — document layout (이수빈-style) ──────────────── */
 .resume {
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   line-height: 1.6;
 }
 
