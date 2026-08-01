@@ -34,7 +34,7 @@ const CategoryBranch = ({
 
   return (
     <li className={styles.item}>
-      <div className={styles.row} style={{ paddingLeft: `${depth * 0.75}rem` }}>
+      <div className={styles.row}>
         {hasChildren ? (
           <button
             type="button"

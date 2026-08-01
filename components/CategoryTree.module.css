@@ -3,7 +3,7 @@
 }
 
 .heading {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.75rem 0.5rem;
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -15,6 +15,13 @@
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+/* 하위 목록은 들여쓰기 + 세로 가이드선으로 계층을 표시 */
+.list .list {
+  margin: 0.1rem 0 0.2rem 0.85rem;
+  padding-left: 0.35rem;
+  border-left: 1px solid var(--border);
 }
 
 .item {
@@ -39,11 +46,11 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .toggle:hover {
   color: var(--accent);
-  background: var(--surface);
 }
 
 .togglePlaceholder {
@@ -56,7 +63,7 @@
   display: inline-block;
   font-size: 0.6875rem;
   line-height: 1;
-  transition: transform 0.15s ease;
+  transition: transform 0.18s ease;
 }
 
 .caretOpen {
@@ -64,31 +71,66 @@
 }
 
 .link {
+  position: relative;
   display: flex;
   flex: 1;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
   min-width: 0;
-  padding: 0.3rem 0.5rem;
+  padding: 0.34rem 0.55rem;
   color: var(--muted);
-  border-radius: 6px;
-  transition: color 0.15s ease, background 0.15s ease;
+  border-radius: 7px;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.18s ease, background-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+/* 활성 표시용 좌측 바 — 기본은 접혀 있다가 hover/active에서 펴진다 */
+.link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  background: var(--accent);
+  border-radius: 2px;
+  transform: translateY(-50%);
+  transition: height 0.18s ease;
 }
 
 .link:hover {
   color: var(--text);
-  background: var(--surface);
+  background: var(--accent-soft);
+  transform: translateX(1px);
 }
 
+.link:hover::before {
+  height: 45%;
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* 현재 글이 속한 상위 카테고리 */
 .linkOnPath {
   color: var(--text);
 }
 
-.linkActive {
+/* 현재 보고 있는 카테고리 */
+.linkActive,
+.linkActive:hover {
   color: var(--accent);
   font-weight: 600;
-  background: var(--surface);
+  background: var(--accent-soft);
+  transform: none;
+}
+
+.linkActive::before {
+  height: 65%;
 }
 
 .label {
@@ -99,7 +141,31 @@
 
 .count {
   flex-shrink: 0;
-  font-size: 0.75rem;
+  min-width: 1.25rem;
+  padding: 0.05rem 0.35rem;
+  font-size: 0.6875rem;
   color: var(--muted);
+  text-align: center;
+  background: var(--surface);
+  border-radius: 999px;
   font-variant-numeric: tabular-nums;
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+
+.linkActive .count {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link,
+  .link::before,
+  .caret,
+  .count {
+    transition: none;
+  }
+
+  .link:hover {
+    transform: none;
+  }
 }
