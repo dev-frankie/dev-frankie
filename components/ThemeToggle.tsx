@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import styles from "./ThemeToggle.module.css";
 
 const MoonIcon = () => (
@@ -16,18 +16,35 @@ const SunIcon = () => (
   </svg>
 );
 
-export const ThemeToggle = () => {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+// 테마의 소유자는 <html data-theme> 자체(FOUC 방지 인라인 스크립트가 먼저 설정한다).
+// 상태를 따로 두면 DOM과 두 벌이 되므로, 속성 변경을 구독해서 그대로 읽는다.
+const subscribe = (onChange: () => void) => {
+  const observer = new MutationObserver(onChange);
 
-  useEffect(() => {
-    const current = document.documentElement.getAttribute("data-theme");
-    setTheme(current === "dark" ? "dark" : "light");
-  }, []);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
+  });
+
+  return () => observer.disconnect();
+};
+
+const getSnapshot = (): "light" | "dark" =>
+  document.documentElement.getAttribute("data-theme") === "dark"
+    ? "dark"
+    : "light";
+
+const getServerSnapshot = (): "light" | "dark" => "light";
+
+export const ThemeToggle = () => {
+  const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   const toggle = () => {
     const next = theme === "dark" ? "light" : "dark";
-    setTheme(next);
+
+    // 속성만 바꾸면 MutationObserver가 리렌더를 일으킨다
     document.documentElement.setAttribute("data-theme", next);
+
     try {
       localStorage.setItem("theme", next);
     } catch {
