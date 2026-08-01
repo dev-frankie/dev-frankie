@@ -1,0 +1,40 @@
+.chart {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  padding: 1.25rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.chart svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 렌더 전(로드 중) — 원본을 옅게 보여줘 레이아웃이 튀지 않게 */
+.pending,
+.failed {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  padding: 1rem 1.15rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  border-radius: 10px;
+}
+
+.pending {
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+/* 문법 오류 — 원본을 그대로 남기고 테두리로 표시 */
+.failed {
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid #d1242f;
+}

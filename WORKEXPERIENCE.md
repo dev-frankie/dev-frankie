@@ -199,7 +199,7 @@
 **성과**
 
 - recharts **116.5KB**(gzip)를 초기·공유 번들에서 제거 — 총 번들은 스플릿 오버헤드로 +2KB지만 **라우트 First Load JS는 −117KB** (총합이 아닌 초기 로드로 판단)
-- **Task 진입 472ms → 323ms(약 32%↓, 4케이스 평균)**, 최악 케이스(llm-as-judge)는 **623ms → 148ms(약 4배)**, Lighthouse 60 → 90+, CLS 0.2 → 0.05
+- **Task 진입 472ms → 323ms(약 32%↓, 4케이스 평균)**, 최악 케이스(llm-as-judge)는 **623ms → 148ms(약 4배)**, 최적화 대상 라우트(Task Results) Lighthouse 성능 **99점** · LCP 0.9s · CLS **0** (2026-07 실측 · 로그인/가입 98~100점). 다만 아직 root 57점 · workspace-info 47점이 남아 있어 라우트별 예산 게이트로 관리하고 있습니다
 - 80샘플 자동 측정 + 번들 diff CI로 성능 회귀를 PR 단계에서 자동 감지, "번들 최적화는 총합이 아니라 라우트별 초기 로드로 판단"을 팀 규칙(`fsd-architecture.mdc` · `CLAUDE.md`)으로 문서화
 
 ---

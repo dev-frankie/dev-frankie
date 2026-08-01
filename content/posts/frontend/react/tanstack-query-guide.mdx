@@ -1,19 +1,20 @@
 ---
-title: "TanStack Query 상편 — 서버 상태를 라이브러리에 맡긴다는 것"
-date: "2026-07-11"
-description: "useQuery를 쓰는 법이 아니라, 왜 이 옵션들이 이렇게 생겼는지. staleTime과 gcTime이 계속 헷갈리는 진짜 이유와, 이 라이브러리가 안 맞는 경우까지."
+title: "TanStack Query 상편: 서버 상태를 관리한다는 것"
+date: "2026-06-11"
+description: "Tanstack Query의 개념부터 내부원리까지 파헤쳐보자"
 tags: ["TanStack Query", "React", "Server State"]
 series: "TanStack Query 딥다이브 1/2"
 version_note: "@tanstack/react-query v5 기준"
 ---
 
 > **TanStack Query 딥다이브 시리즈**
-> - **1편 (이 글)** — 서버 상태를 라이브러리에 맡긴다는 것: 사용법과 옵션, 그리고 그 설계 판단
+>
+> - **1편 (이 글)** — 서버 상태를 관리한다는 것: 사용법과 옵션, 그리고 그 설계 판단
 > - [2편 — 소스로 읽는 내부 동작](./tanstack-query-deep-dive): `useBaseQuery`부터 `notifyManager`까지 v5.95.0 소스 순회
 
-`useState`와 `useEffect`로 API를 부르다 보면 어느 순간 같은 코드를 반복해서 쓰고 있습니다. 로딩 플래그, 에러 상태, 언마운트 가드, 중복 요청 방지, 포커스 복귀 시 갱신. 이걸 훅 하나로 묶어내면 그게 사실상 캐시 라이브러리의 축소판입니다.
+이전에는 `useState`와 `useEffect`로 API를 호출하여 데이터를 불러왔습니다. 로딩 플래그, 에러 상태, 언마운트 가드, 중복 요청 방지 등등 여러가지 부가적인 장치들이 필요하였습니다.
 
-TanStack Query는 그 반복을 대신 해주는 도구입니다. 그런데 막상 쓰기 시작하면 옵션 이름에서 막힙니다. `staleTime`과 `gcTime`이 뭐가 다른지, `status`와 `fetchStatus`는 왜 둘인지, `invalidate`는 왜 refetch가 아닌지.
+TanStack Query는 그 반복을 대신 해주는 도구입니다. useQuery 등을 사용하여 간단히 구현할 수 있습니다. 그런데 막상 제대로 사용하려고 하면 너무 다양한 옵션들이 있습니다. `staleTime`과 `gcTime`이 뭐가 다른지, `status`와 `fetchStatus`는 왜 둘인지, `invalidate`는 왜 refetch가 아닌지.
 
 이 글은 그 옵션들이 **왜 그렇게 생겼는지**를 따라가는 1편입니다. 사용법을 나열하기보다 설계 의도를 보고, 마지막에 이 라이브러리가 안 맞는 경우까지 짚습니다. 내부 구현을 소스 레벨로 따라가는 건 [2편](./tanstack-query-deep-dive)에서 다룹니다.
 
@@ -21,13 +22,13 @@ TanStack Query는 그 반복을 대신 해주는 도구입니다. 그런데 막�
 
 ### TanStack Query가 해결하는 문제
 
-| 문제 | TanStack Query의 답 |
-| --- | --- |
-| 같은 API를 여러 컴포넌트에서 중복 호출 | **queryKey** 기반 캐시 + 요청 dedupe |
-| 로딩/에러/성공 UI 분기 반복 | `isPending`, `isError`, `data` 등 **표준화된 result** |
-| stale 데이터 vs fresh 데이터 | `staleTime`, `gcTime`, background refetch |
-| mutation 후 목록 갱신 | `invalidateQueries`, `setQueryData` |
-| 탭 포커스·네트워크 복구 시 재요청 | `focusManager`, `onlineManager` |
+| 문제                                   | TanStack Query의 답                                   |
+| -------------------------------------- | ----------------------------------------------------- |
+| 같은 API를 여러 컴포넌트에서 중복 호출 | **queryKey** 기반 캐시 + 요청 dedupe                  |
+| 로딩/에러/성공 UI 분기 반복            | `isPending`, `isError`, `data` 등 **표준화된 result** |
+| stale 데이터 vs fresh 데이터           | `staleTime`, `gcTime`, background refetch             |
+| mutation 후 목록 갱신                  | `invalidateQueries`, `setQueryData`                   |
+| 탭 포커스, 네트워크 복구 시 재요청     | `focusManager`, `onlineManager`                       |
 
 ### fetch, axios vs TanStack Query
 
@@ -47,7 +48,7 @@ TanStack Query에서는 셋이 모두 `useQuery({ queryKey: ['user', 1] })`로 �
 
 #### 2. stale-while-revalidate 모델
 
-axios만 쓰면 데이터 신선도를 직접 관리해야 합니다. "포커스가 돌아왔을 때 다시 가져오기", "5분이 지나면 stale로 표시하고 백그라운드 refetch", "네트워크 재연결 시 자동 재시도" — 이 모든 것을 직접 짜야 합니다. TanStack Query는 `staleTime`, `gcTime`, `refetchOnWindowFocus`, `refetchOnReconnect` 같은 옵션으로 간단히 설정할 수 있습니다.
+axios만 쓰면 데이터 신선도를 직접 관리해야 합니다. "포커스가 돌아왔을 때 다시 가져오기", "5분이 지나면 stale로 표시하고 백그라운드 refetch", "네트워크 재연결 시 자동 재시도" 이 모든 것을 직접 짜야 합니다. TanStack Query는 `staleTime`, `gcTime`, `refetchOnWindowFocus`, `refetchOnReconnect` 같은 옵션으로 간단히 설정할 수 있습니다.
 
 #### 3. 상태 표현의 일관성
 
@@ -61,10 +62,11 @@ const [isRefetching, setIsRefetching] = useState(false);
 useEffect(() => {
   const controller = new AbortController();
   setIsLoading(true);
-  axios.get('/api', { signal: controller.signal })
-    .then(res => setData(res.data))
-    .catch(err => {
-      if (err.name === 'CanceledError') return;
+  axios
+    .get("/api", { signal: controller.signal })
+    .then((res) => setData(res.data))
+    .catch((err) => {
+      if (err.name === "CanceledError") return;
       setError(err);
     })
     .finally(() => setIsLoading(false));
@@ -75,10 +77,13 @@ useEffect(() => {
 ```javascript
 // TanStack Query
 const { data, isLoading, error, isFetching } = useQuery({
-  queryKey: ['data'],
-  queryFn: ({ signal }) => axios.get('/api', { signal }).then(r => r.data)
+  queryKey: ["data"],
+  queryFn: ({ signal }) => axios.get("/api", { signal }).then((r) => r.data),
 });
 ```
+
+이처럼 반복적인 코드를 줄여주고 정형화된 방식으로 내장된 기능을 사용할 수 있습니다.
+세부적인 옵션들을 살펴보기전에 먼저 기본적인 아키텍처 구조부터 설명하겠습니다.
 
 ### 아키텍처 (2-layer)
 
@@ -104,12 +109,12 @@ flowchart TB
 
 **플로우차트 노드 한 줄 설명 — react-query (React 어댑터)**
 
-| 노드 | 한 줄 역할 |
-| --- | --- |
-| `useQuery` | 공개 훅. 타입 오버로드 + `useBaseQuery`에 `QueryObserver`를 넘겨 위임 |
-| `useBaseQuery` | React ↔ core 연결 본체. observer 생성·구독·suspense/error 처리 |
-| `useSyncExternalStore` | React 18 내장 훅. 외부 스토어(observer) 스냅샷을 tearing 없이 구독 |
-| `QueryObserver` | 컴포넌트당 1개. fetch/stale 판단, `result` 조립, 읽은 prop만 리렌더(Proxy). 옵션이 바뀌면 다시 fetch할지 판단, staleTime·refetch 타이밍 계산, QueryCache에서 데이터 꺼내오기, 데이터가 바뀌면 **구독자에게 알림**(`notify`) |
+| 노드                   | 한 줄 역할                                                                                                                                                                                                                  |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `useQuery`             | 공개 훅. 타입 오버로드 + `useBaseQuery`에 `QueryObserver`를 넘겨 위임                                                                                                                                                       |
+| `useBaseQuery`         | React ↔ core 연결 본체. observer 생성·구독·suspense/error 처리                                                                                                                                                              |
+| `useSyncExternalStore` | React 18 내장 훅. 외부 스토어(observer) 스냅샷을 tearing 없이 구독                                                                                                                                                          |
+| `QueryObserver`        | 컴포넌트당 1개. fetch/stale 판단, `result` 조립, 읽은 prop만 리렌더(Proxy). 옵션이 바뀌면 다시 fetch할지 판단, staleTime·refetch 타이밍 계산, QueryCache에서 데이터 꺼내오기, 데이터가 바뀌면 **구독자에게 알림**(`notify`) |
 
 ```javascript
 function useBaseQuery(options, ObserverClass) {
@@ -119,8 +124,8 @@ function useBaseQuery(options, ObserverClass) {
   observerRef.current.setOptions(options);
 
   useSyncExternalStore(
-    (cb) => observerRef.current.subscribe(cb),   // 구독
-    () => observerRef.current.getCurrentResult() // 현재값
+    (cb) => observerRef.current.subscribe(cb), // 구독
+    () => observerRef.current.getCurrentResult(), // 현재값
   );
 
   return observerRef.current.getCurrentResult();
@@ -131,14 +136,14 @@ function useBaseQuery(options, ObserverClass) {
 
 **query-core (엔진)**
 
-| 노드 | 한 줄 역할 |
-| --- | --- |
-| `QueryClient` | 최상위 오케스트레이터. 캐시 보유 + invalidate/refetch/prefetch API, focus·online 구독 |
-| `QueryCache` | queryHash→Query Map 저장소. `build()`로 get-or-create (같은 키 = 같은 인스턴스 공유) |
-| `Query` | queryKey 1개 = 캐시 엔트리 1개. `state` · `fetch()` 파이프라인 보유 |
-| `createRetryer` | fetch 실행 루프. 재시도(지수 백오프)·일시정지(offline)·취소 담당 |
-| `dispatch` | `Query.#dispatch` reducer. action으로 `state` 갱신 후 모든 observer에 알림 |
-| `notifyManager` | 알림 배치 스케줄러. 여러 `state` 변경을 1 tick 리렌더로 묶음 |
+| 노드            | 한 줄 역할                                                                            |
+| --------------- | ------------------------------------------------------------------------------------- |
+| `QueryClient`   | 최상위 오케스트레이터. 캐시 보유 + invalidate/refetch/prefetch API, focus·online 구독 |
+| `QueryCache`    | queryHash→Query Map 저장소. `build()`로 get-or-create (같은 키 = 같은 인스턴스 공유)  |
+| `Query`         | queryKey 1개 = 캐시 엔트리 1개. `state` · `fetch()` 파이프라인 보유                   |
+| `createRetryer` | fetch 실행 루프. 재시도(지수 백오프)·일시정지(offline)·취소 담당                      |
+| `dispatch`      | `Query.#dispatch` reducer. action으로 `state` 갱신 후 모든 observer에 알림            |
+| `notifyManager` | 알림 배치 스케줄러. 여러 `state` 변경을 1 tick 리렌더로 묶음                          |
 
 ---
 
@@ -215,41 +220,41 @@ export function useUserQuery(userId: number, enabled = true) {
 
 ### useQuery 핵심 옵션
 
-| 옵션 | 역할 | 일반적인 예시 |
-| --- | --- | --- |
-| `queryKey` | 캐시 식별자. 인자가 바뀌면 다른 캐시 엔트리 | `userQueryKeys.detail(userId)` |
-| `queryFn` | 실제 fetch 함수. `signal`(AbortSignal) 제공 | `() => fetchUser(userId)` |
-| `enabled` | `false`면 fetch 안 함 | `userId > 0` |
-| `staleTime` | 이 시간 동안 "fresh" → 자동 refetch 억제 | 목록 30s, 상세 60s |
-| `gcTime` | observer 0개일 때 캐시 유지 시간 (구 cacheTime) | 기본 5분 |
-| `retry` | 실패 시 재시도 횟수/함수 | 401이면 `false`, 그 외 3회 |
-| `refetchOnWindowFocus` | 탭 포커스 시 refetch | 대시보드: `true`, 설정: `false` |
-| `refetchInterval` | 주기적 polling (숫자 또는 함수) | 온라인 상태: 10초 |
-| `placeholderData` | 이전 데이터 유지 (`keepPreviousData`) | 페이지네이션 user 목록 |
-| `select` | 캐시 데이터 → 컴포넌트용 변환 | `select: (user) => user.name` |
+| 옵션                   | 역할                                            | 일반적인 예시                   |
+| ---------------------- | ----------------------------------------------- | ------------------------------- |
+| `queryKey`             | 캐시 식별자. 인자가 바뀌면 다른 캐시 엔트리     | `userQueryKeys.detail(userId)`  |
+| `queryFn`              | 실제 fetch 함수. `signal`(AbortSignal) 제공     | `() => fetchUser(userId)`       |
+| `enabled`              | `false`면 fetch 안 함                           | `userId > 0`                    |
+| `staleTime`            | 이 시간 동안 "fresh" → 자동 refetch 억제        | 목록 30s, 상세 60s              |
+| `gcTime`               | observer 0개일 때 캐시 유지 시간 (구 cacheTime) | 기본 5분                        |
+| `retry`                | 실패 시 재시도 횟수/함수                        | 401이면 `false`, 그 외 3회      |
+| `refetchOnWindowFocus` | 탭 포커스 시 refetch                            | 대시보드: `true`, 설정: `false` |
+| `refetchInterval`      | 주기적 polling (숫자 또는 함수)                 | 온라인 상태: 10초               |
+| `placeholderData`      | 이전 데이터 유지 (`keepPreviousData`)           | 페이지네이션 user 목록          |
+| `select`               | 캐시 데이터 → 컴포넌트용 변환                   | `select: (user) => user.name`   |
 
 ### status, fetchStatus
 
-| 축 | 값 | 의미 |
-| --- | --- | --- |
-| `status` | `pending` / `success` / `error` | 데이터 존재 여부 (결과 상태) |
-| `fetchStatus` | `idle` / `fetching` / `paused` | 현재 네트워크 요청 진행 여부 |
+| 축            | 값                              | 의미                         |
+| ------------- | ------------------------------- | ---------------------------- |
+| `status`      | `pending` / `success` / `error` | 데이터 존재 여부 (결과 상태) |
+| `fetchStatus` | `idle` / `fetching` / `paused`  | 현재 네트워크 요청 진행 여부 |
 
 - `isLoading` = `isPending && isFetching` (첫 로딩)
 - `isRefetching` = `isFetching && !isPending` (백그라운드 재요청)
 
-> **쉽게:** `status`는 "**데이터 있어?**"(결과), `fetchStatus`는 "**지금 네트워크 돌아?**"(과정)를 뜻합니다. 둘은 독립 축이라 — *데이터는 있는데(success) 동시에 백그라운드로 새로 받는 중(fetching)* 같은 조합이 자연스럽습니다.
+> **쉽게:** `status`는 "**데이터 있어?**"(결과), `fetchStatus`는 "**지금 네트워크 돌아?**"(과정)를 뜻합니다. 둘은 독립 축이라 — _데이터는 있는데(success) 동시에 백그라운드로 새로 받는 중(fetching)_ 같은 조합이 자연스럽습니다.
 
 #### 두 축의 질문
 
 - **status**: "나, **데이터** 있어?" (결과의 축)
 - **fetchStatus**: "나, **지금 일하고 있어**?" (활동의 축)
 
-| | `fetchStatus: idle` | `fetchStatus: fetching` | `fetchStatus: paused` |
-| --- | --- | --- | --- |
-| **`status: pending`** | 아직 한 번도 못 받음, 쉬는 중 (드묾) | **첫 로딩 중** ⏳ | 첫 로딩하려는데 오프라인 |
-| **`status: success`** | 데이터 있고 가만히 있음 | 데이터 있지만 **백그라운드 refetch** | 데이터 있고, refetch 대기 중 |
-| **`status: error`** | 실패한 채로 가만히 있음 | 실패했지만 **재시도 중** | 재시도하려는데 오프라인 |
+|                       | `fetchStatus: idle`                  | `fetchStatus: fetching`              | `fetchStatus: paused`        |
+| --------------------- | ------------------------------------ | ------------------------------------ | ---------------------------- |
+| **`status: pending`** | 아직 한 번도 못 받음, 쉬는 중 (드묾) | **첫 로딩 중** ⏳                    | 첫 로딩하려는데 오프라인     |
+| **`status: success`** | 데이터 있고 가만히 있음              | 데이터 있지만 **백그라운드 refetch** | 데이터 있고, refetch 대기 중 |
+| **`status: error`**   | 실패한 채로 가만히 있음              | 실패했지만 **재시도 중**             | 재시도하려는데 오프라인      |
 
 ### QueryClient 메서드
 
@@ -257,88 +262,88 @@ QueryClient는 캐시(QueryCache)를 제어합니다.
 
 #### 1. 캐시 직접 읽기/쓰기 (네트워크 안 탐)
 
-| 메서드 | 하는 일 |
-| --- | --- |
-| `getQueryData(key)` | 캐시에 있는 **데이터** 꺼내기 (없으면 undefined) |
-| `setQueryData(key, updater)` | 캐시에 데이터 **직접 주입/갱신** |
-| `getQueryState(key)` | 데이터뿐 아니라 status, error, updatedAt 등 **상태 전체** |
-| `setQueriesData(filters, updater)` | 필터에 걸리는 **여러 쿼리를 한 번에** 갱신 |
+| 메서드                             | 하는 일                                                   |
+| ---------------------------------- | --------------------------------------------------------- |
+| `getQueryData(key)`                | 캐시에 있는 **데이터** 꺼내기 (없으면 undefined)          |
+| `setQueryData(key, updater)`       | 캐시에 데이터 **직접 주입/갱신**                          |
+| `getQueryState(key)`               | 데이터뿐 아니라 status, error, updatedAt 등 **상태 전체** |
+| `setQueriesData(filters, updater)` | 필터에 걸리는 **여러 쿼리를 한 번에** 갱신                |
 
 ```typescript
 // optimistic update의 단골 패턴
-queryClient.setQueryData(['todos'], (old) => [...old, newTodo]);
+queryClient.setQueryData(["todos"], (old) => [...old, newTodo]);
 ```
 
 #### 2. 페치 트리거 (네트워크 탐)
 
-| 메서드 | 하는 일 | 반환 |
-| --- | --- | --- |
-| `fetchQuery(options)` | 데이터 가져오기. 캐시 있고 fresh면 그것 반환 | `Promise<data>` |
-| `prefetchQuery(options)` | 백그라운드로 **미리 채워두기**. 에러 던지지 않음 | `Promise<void>` |
-| `ensureQueryData(options)` | 캐시 있으면 그것, 없으면 fetch | `Promise<data>` |
-| `refetchQueries(filters)` | 필터 걸리는 쿼리 **강제 재요청** | `Promise<void>` |
+| 메서드                     | 하는 일                                          | 반환            |
+| -------------------------- | ------------------------------------------------ | --------------- |
+| `fetchQuery(options)`      | 데이터 가져오기. 캐시 있고 fresh면 그것 반환     | `Promise<data>` |
+| `prefetchQuery(options)`   | 백그라운드로 **미리 채워두기**. 에러 던지지 않음 | `Promise<void>` |
+| `ensureQueryData(options)` | 캐시 있으면 그것, 없으면 fetch                   | `Promise<data>` |
+| `refetchQueries(filters)`  | 필터 걸리는 쿼리 **강제 재요청**                 | `Promise<void>` |
 
 ```typescript
 // Next.js 서버 컴포넌트에서 미리 채우기
-await queryClient.prefetchQuery({ queryKey: ['user', id], queryFn });
+await queryClient.prefetchQuery({ queryKey: ["user", id], queryFn });
 ```
 
-셋의 차이가 헷갈릴 때는 이렇게 구분하면 됩니다. `fetchQuery`는 *데이터가 필요해서 직접 받아 쓸 때*, `prefetchQuery`는 *나중에 useQuery가 쓸 것을 미리 준비할 때*, `ensureQueryData`는 *있으면 쓰고 없으면 받을 때* 씁니다.
+셋의 차이가 헷갈릴 때는 이렇게 구분하면 됩니다. `fetchQuery`는 _데이터가 필요해서 직접 받아 쓸 때_, `prefetchQuery`는 _나중에 useQuery가 쓸 것을 미리 준비할 때_, `ensureQueryData`는 _있으면 쓰고 없으면 받을 때_ 씁니다.
 
 #### 3. 무효화 · 취소 · 제거 (생명주기 조작)
 
-| 메서드 | 하는 일 |
-| --- | --- |
+| 메서드                       | 하는 일                                                    |
+| ---------------------------- | ---------------------------------------------------------- |
 | `invalidateQueries(filters)` | **stale로 표시 + 활성 쿼리는 즉시 refetch** (가장 자주 씀) |
-| `cancelQueries(filters)` | 진행 중인 요청 abort. optimistic update 직전에 호출 |
-| `removeQueries(filters)` | 캐시에서 **완전 삭제** (구독자도 다 떨어져 나감) |
-| `resetQueries(filters)` | 초기 상태로 **리셋** + 활성이면 refetch |
+| `cancelQueries(filters)`     | 진행 중인 요청 abort. optimistic update 직전에 호출        |
+| `removeQueries(filters)`     | 캐시에서 **완전 삭제** (구독자도 다 떨어져 나감)           |
+| `resetQueries(filters)`      | 초기 상태로 **리셋** + 활성이면 refetch                    |
 
 ```typescript
 // mutation 성공 후 단골
-onSuccess: () => queryClient.invalidateQueries({ queryKey: ['todos'] });
+onSuccess: () => queryClient.invalidateQueries({ queryKey: ["todos"] });
 ```
 
-`invalidate`와 `reset`의 차이는 이렇습니다. `invalidate`는 *기존 데이터를 유지하면서 stale로 표시*하므로 refetch 동안에도 화면에 데이터가 남아 있고, `reset`은 *데이터까지 초기 상태로* 되돌리므로 스켈레톤이 다시 뜹니다.
+`invalidate`와 `reset`의 차이는 이렇습니다. `invalidate`는 *기존 데이터를 유지하면서 stale로 표시*하므로 refetch 동안에도 화면에 데이터가 남아 있고, `reset`은 _데이터까지 초기 상태로_ 되돌리므로 스켈레톤이 다시 뜹니다.
 
 #### 4. Mutation 관련
 
-| 메서드 | 하는 일 |
-| --- | --- |
-| `isMutating(filters?)` | 진행 중인 mutation **개수** 반환 (전역 로딩 표시용) |
-| `setMutationDefaults(key, options)` | 특정 mutation key에 기본 옵션 설정 |
-| `getMutationDefaults(key)` | 그 기본값 조회 |
-| `resumePausedMutations()` | 오프라인에서 멈췄던 mutation 재개 |
+| 메서드                              | 하는 일                                             |
+| ----------------------------------- | --------------------------------------------------- |
+| `isMutating(filters?)`              | 진행 중인 mutation **개수** 반환 (전역 로딩 표시용) |
+| `setMutationDefaults(key, options)` | 특정 mutation key에 기본 옵션 설정                  |
+| `getMutationDefaults(key)`          | 그 기본값 조회                                      |
+| `resumePausedMutations()`           | 오프라인에서 멈췄던 mutation 재개                   |
 
 #### 5. 무한 스크롤 전용
 
-| 메서드 | 하는 일 |
-| --- | --- |
-| `fetchInfiniteQuery(options)` | `useInfiniteQuery`용 fetch |
-| `prefetchInfiniteQuery(options)` | 무한 쿼리 prefetch |
+| 메서드                           | 하는 일                    |
+| -------------------------------- | -------------------------- |
+| `fetchInfiniteQuery(options)`    | `useInfiniteQuery`용 fetch |
+| `prefetchInfiniteQuery(options)` | 무한 쿼리 prefetch         |
 
 일반 버전과 동일한 패턴이고, 페이지네이션 구조만 다릅니다.
 
 #### 6. 전역 설정 / 캐시 접근
 
-| 메서드 | 하는 일 |
-| --- | --- |
-| `getQueryCache()` | QueryCache **인스턴스 직접** 받기 (고급 용도) |
-| `getMutationCache()` | MutationCache 인스턴스 |
-| `setDefaultOptions(options)` | 전역 기본 옵션 변경 (런타임) |
-| `getDefaultOptions()` | 현재 전역 기본값 |
-| `setQueryDefaults(key, options)` | **특정 key 패턴**에만 기본값 적용 |
-| `clear()` | 모든 쿼리·mutation **완전 삭제** (로그아웃 시) |
+| 메서드                           | 하는 일                                        |
+| -------------------------------- | ---------------------------------------------- |
+| `getQueryCache()`                | QueryCache **인스턴스 직접** 받기 (고급 용도)  |
+| `getMutationCache()`             | MutationCache 인스턴스                         |
+| `setDefaultOptions(options)`     | 전역 기본 옵션 변경 (런타임)                   |
+| `getDefaultOptions()`            | 현재 전역 기본값                               |
+| `setQueryDefaults(key, options)` | **특정 key 패턴**에만 기본값 적용              |
+| `clear()`                        | 모든 쿼리·mutation **완전 삭제** (로그아웃 시) |
 
 가장 자주 쓰는 다섯 가지만 다시 추리면 이렇습니다.
 
-| 메서드 | 역할 |
-| --- | --- |
-| `fetchQuery` | 즉시 fetch + Promise 반환 |
-| `prefetchQuery` | 백그라운드 캐시 워밍 (hover, RSC) |
-| `setQueryData` | 캐시 직접 수정 (optimistic) |
+| 메서드              | 역할                                       |
+| ------------------- | ------------------------------------------ |
+| `fetchQuery`        | 즉시 fetch + Promise 반환                  |
+| `prefetchQuery`     | 백그라운드 캐시 워밍 (hover, RSC)          |
+| `setQueryData`      | 캐시 직접 수정 (optimistic)                |
 | `invalidateQueries` | `isInvalidated=true` · active 쿼리 refetch |
-| `cancelQueries` | 진행 중 fetch 취소 (AbortSignal) |
+| `cancelQueries`     | 진행 중 fetch 취소 (AbortSignal)           |
 
 ---
 
@@ -376,10 +381,10 @@ onSuccess: () => queryClient.invalidateQueries({ queryKey: ['todos'] });
 
 `staleTime`과 `gcTime`이 계속 헷갈리는 건 개념이 어려워서가 아닙니다. **두 값이 서로 다른 질문에 답하는데, 이름이 둘 다 시간처럼 보이기 때문**입니다.
 
-| | 답하는 질문 | 만료되면 | 화면에 미치는 영향 |
-| --- | --- | --- | --- |
-| `staleTime` | 이 데이터를 **다시 받아야 하나** | 다음 트리거에서 background refetch | 없음. 화면은 그대로 |
-| `gcTime` | 이 데이터를 **메모리에서 버려도 되나** | 캐시에서 제거 | 다음 진입 시 로딩부터 |
+|             | 답하는 질문                            | 만료되면                           | 화면에 미치는 영향    |
+| ----------- | -------------------------------------- | ---------------------------------- | --------------------- |
+| `staleTime` | 이 데이터를 **다시 받아야 하나**       | 다음 트리거에서 background refetch | 없음. 화면은 그대로   |
+| `gcTime`    | 이 데이터를 **메모리에서 버려도 되나** | 캐시에서 제거                      | 다음 진입 시 로딩부터 |
 
 축이 다릅니다. 앞은 **신선도**, 뒤는 **수명**입니다. `staleTime`이 지나도 데이터는 남아 있고, `gcTime`이 지나야 사라집니다. 그래서 `staleTime > gcTime`은 사실상 무의미한 설정이 됩니다. 버려진 뒤에 갱신할 게 없으니까요.
 
@@ -405,7 +410,7 @@ TanStack Query가 푸는 건 **서버 상태**입니다. 내가 소유하지 않
 
 반대로 **여러 컴포넌트가 같은 서버 데이터를 보고, 그 데이터가 사용자 행동에 따라 갱신되어야 하는** 구조라면 직접 만들 이유가 없습니다. 직접 만들면 결국 queryKey 정규화, 진행 중 Promise 공유, 포커스 리스너, 재시도 백오프를 하나씩 다시 짜게 됩니다.
 
-## 8. 마치며 — 그럼 내부까지 알아야 하나
+## 8. 그럼 내부까지 알아야 하나
 
 솔직히 말하면, 처음부터는 아닙니다. 1~5장만으로 실무는 돌아갑니다.
 
@@ -424,9 +429,9 @@ TanStack Query가 푸는 건 **서버 상태**입니다. 내가 소유하지 않
 - [TkDodo — Practical React Query 시리즈](https://tkdodo.eu/blog/practical-react-query)
 - [TkDodo — Effective React Query Keys](https://tkdodo.eu/blog/effective-react-query-keys)
 
-{/* 이미지 체크리스트
+<!-- 이미지 체크리스트
 IMG-01 [내가 캡처] React Query Devtools — staleTime 경과 전/후 쿼리 상태 — 미완료
          의도: 6장의 "신선도와 수명은 다른 축"을 눈으로
 IMG-02 [내가 캡처] background refetch 중 화면 (기존 데이터 유지 + 인디케이터) — 미완료
          의도: status/fetchStatus 분리의 실익
-*/}
+-->

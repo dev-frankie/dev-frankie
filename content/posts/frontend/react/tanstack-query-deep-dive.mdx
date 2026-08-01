@@ -1,5 +1,5 @@
 ---
-title: "TanStack Query 하편 — 소스로 읽는 내부 동작"
+title: "TanStack Query 하편: 소스로 읽는 내부 동작"
 date: "2026-07-11"
 description: "useQuery 한 줄이 useBaseQuery·QueryObserver·createRetryer·notifyManager를 거쳐 화면에 닿기까지. v5.95.0 소스를 순서대로 따라가고, 그 설계가 무엇을 맞바꿨는지까지 본다."
 tags: ["TanStack Query", "React", "Deep Dive"]
@@ -17,7 +17,7 @@ version_note: "@tanstack/react-query v5.95.0 기준. 버전이 다르면 파일 
 
 이 글은 `useQuery` 한 줄이 화면에 닿기까지의 경로를 v5.95.0 소스로 따라갑니다. react-query 어댑터에서 시작해 query-core 엔진까지 내려가고, 마지막에 이 구조가 무엇을 대가로 치렀는지 짚습니다. **모든 설명은 `@tanstack/react-query` v5.95.0 기준입니다.**
 
-## 1. 전체 흐름 — 호출 하나가 지나가는 길
+## 1. 호출 하나가 지나가는 길
 
 ```text
 node_modules/.pnpm/@tanstack+react-query@5.95.0_.../node_modules/@tanstack/
@@ -64,7 +64,7 @@ useQuery → useBaseQuery → QueryObserver 구독 → QueryCache(Query 확보) 
 
 > STEP 1~4 = **react-query 어댑터 층**, STEP 5~10 = **query-core 엔진 층**입니다(위→아래 = 바깥 React → 안쪽 엔진). STEP 번호는 *읽기 순서*일 뿐, 정확한 호출 순서는 아닙니다. 예컨대 `createRetryer`(9)는 `Query.fetch`(7) 도중에 돌고, 그 결과가 `#dispatch`(8)로 들어갑니다.
 
-### 통째로 비유하면 — 식당으로 이해하기
+### 통째로 비유하면 식당입니다
 
 > 코드가 막막할 때는 *비유*가 빠릅니다. TanStack Query를 **식당**에 빗대 보면 각 모듈의 역할이 한 번에 잡힙니다.
 
@@ -84,7 +84,7 @@ useQuery → useBaseQuery → QueryObserver 구독 → QueryCache(Query 확보) 
 
 ### react-query 어댑터 (STEP 1~4)
 
-#### STEP 1 · `useQuery` — 진입점 (얇은 위임, 가볍게 훑기)
+#### STEP 1 · `useQuery`: 진입점 (얇은 위임, 가볍게 훑기)
 
 ```typescript
 // react-query/src/useQuery.ts
@@ -107,7 +107,7 @@ export function useQuery(options: UseQueryOptions, queryClient?: QueryClient) {
 - **한 줄 요약:** `useQuery`는 로직이 거의 없는 *얇은 위임자*입니다. 타입 오버로드(`initialData` 유무로 `data` 타입 분기)와 `QueryObserver` 주입만 하고 끝나며, **실제 동작은 STEP 2부터**입니다.
 - (참고) `useInfiniteQuery`·`useSuspenseQuery`도 같은 `useBaseQuery`에 *다른 Observer*만 넣어 그대로 재사용합니다.
 
-#### STEP 2 · `useBaseQuery` — React ↔ core 연결의 심장
+#### STEP 2 · `useBaseQuery`: React ↔ core 연결의 심장
 
 ```typescript
 // react-query/src/useBaseQuery.ts
@@ -195,7 +195,7 @@ export function useBaseQuery(options, Observer, queryClient?) {
 - **그 Observer를 useSyncExternalStore로 구독합니다** (직원이 보고하면 화면 갱신)
 - **나머지는 SSR·Suspense·옵션 변경 같은 예외 처리입니다**
 
-#### STEP 3 · `useSyncExternalStore` — 동시성 안전 구독 (React 내장)
+#### STEP 3 · `useSyncExternalStore`: 동시성 안전 구독 (React 내장)
 
 > **한 줄로:** "React *바깥*의 값(쿼리 캐시)이 바뀌면 이 컴포넌트를 다시 그려라"를 **안전하게** 연결하는 React 공식 훅입니다. 예전엔 직접 이벤트 구독 + `setState`로 했지만 동시성 렌더링에서 깨지기 쉬워, React가 표준 훅으로 만들었습니다.
 
@@ -215,7 +215,7 @@ React.useSyncExternalStore(
 - **`subscribe` identity**가 바뀌면 React가 재구독하므로, `useCallback` 의존성을 `[observer, shouldSubscribe]`로 최소화합니다.
 - 같은 훅을 `useMutation` / `useIsFetching` / `useMutationState` / `useQueries`도 사용합니다. (v4는 React 17 호환용 `use-sync-external-store/shim`을 쓰고, v5.95는 `React.useSyncExternalStore`를 직접 호출합니다.)
 
-#### STEP 4 · `QueryObserver` — 구독·result 조립·리렌더 (useSyncExternalStore가 구독하는 것)
+#### STEP 4 · `QueryObserver`: 구독·result 조립·리렌더 (useSyncExternalStore가 구독하는 것)
 
 **구독/해제 — `query.fetch` 트리거 지점**
 
@@ -353,7 +353,7 @@ function isStale(query, options) {
 
 ### query-core 엔진 (STEP 5~10)
 
-#### STEP 5 · `QueryClient` — 최상위 오케스트레이터
+#### STEP 5 · `QueryClient`: 최상위 오케스트레이터
 
 앱 전체의 **캐시·기본옵션·전역 이벤트를 총괄하는 단일 컨트롤 타워**입니다. 직접 데이터를 들고 있지는 않고, 내부의 `QueryCache`/`MutationCache`에 위임하면서 바깥으로는 `invalidate`·`prefetch`·`setQueryData` 같은 공개 API만 노출합니다.
 
@@ -429,7 +429,7 @@ refetchQueries(filters, options = {}) {
 
 > **invalidate ≠ 즉시 fetch.** 1단계는 `isInvalidated` 플래그만 켜고, 2단계 `refetchQueries`가 기본값 `type: 'active'`(=구독 중인 observer가 있는) 쿼리만 실제로 `fetch`합니다. 화면에 없는 쿼리는 다음 마운트 때 stale 판정으로 자연스럽게 refetch됩니다.
 
-#### STEP 6 · `QueryCache` — Query get-or-create
+#### STEP 6 · `QueryCache`: Query get-or-create
 
 즉, **queryKey로 캐시를 뒤져 보고 — 있으면 그 Query 그대로, 없으면 새로 만들어 등록**합니다.
 
@@ -457,7 +457,7 @@ export class QueryCache extends Subscribable {
 
 > `build`의 get-or-create가 **요청 dedupe와 캐시 공유의 근원**입니다. 서로 다른 컴포넌트의 두 observer가 같은 `queryKey`를 쓰면 동일 `queryHash` → **같은 `Query` 인스턴스 1개**를 공유합니다.
 
-#### STEP 7 · `Query` — state + fetch 파이프라인
+#### STEP 7 · `Query`: state + fetch 파이프라인
 
 하나의 `queryKey`에 1:1로 대응하는 **상태 보관소 + fetch 실행 단위**입니다. 모든 상태 변화는 `dispatch(action)` → reducer를 거치고, `fetch()`는 진행 중 promise 공유 → `createRetryer`로 실행 → 결과를 다시 `dispatch`로 반영 → observer들에게 통보까지 한 묶음으로 처리합니다.
 
@@ -527,7 +527,7 @@ async fetch(options?, fetchOptions?): Promise<TData> {
 
 > **이 코드에서 꼭 볼 곳 4개:** ① *dedupe* — 이미 fetching이면 새 요청 대신 기존 promise 재사용 · ② `#dispatch({ type: 'fetch' })` — 시작하자마자 `fetching` 상태로 · ③ `createRetryer(...).start()` — 실제 `queryFn` 실행은 retryer가 담당 (STEP 9) · ④ `setData(data)` → `#dispatch('success')` — 성공이 곧 상태 변경(STEP 8로 연결).
 
-#### STEP 8 · `#dispatch` — reducer + 알림 (반응성의 심장)
+#### STEP 8 · `#dispatch`: reducer + 알림 (반응성의 심장)
 
 > **한 줄로:** 쿼리에 무슨 일이 생기든(`fetch`/`success`/`error`…) **여기 한 곳을 거쳐** `state`가 바뀌고, 바뀌면 **모든 구독자에게 알림**이 갑니다. 화면이 갱신되는 모든 길은 결국 `#dispatch`로 통합니다.
 
@@ -580,7 +580,7 @@ export function fetchState(data, options) {
 | `pause` / `continue` | `fetchStatus: 'paused'` ↔ `'fetching'` (offline/blur) |
 | `invalidate` | `isInvalidated: true` (fetch는 아직 안 함) |
 
-#### STEP 9 · `createRetryer` — 재시도 / 일시정지 / 취소
+#### STEP 9 · `createRetryer`: 재시도 / 일시정지 / 취소
 
 > **한 줄로:** `queryFn`을 실제로 돌리는 작은 실행기입니다. 실패하면 *점점 더 긴 간격으로* 다시 시도하고, 탭이 백그라운드거나 오프라인이면 *멈췄다가* 복귀할 때 이어서 합니다.
 
@@ -634,7 +634,7 @@ export function createRetryer(config) {
 - **`pause()`**: `continueFn`을 등록해 둔 Promise를 반환합니다 → 포커스/온라인 복구(`onFocus`/`onOnline`) 시 `continue()`가 이를 resolve해 `run()`을 재개합니다. `networkMode: 'online'`의 오프라인 대응이 여기서 일어납니다.
 - **`CancelledError { revert, silent }`**: unmount·queryKey 변경·`cancelQueries` 시 throw됩니다. `silent`면 새 fetch에 piggyback하고, `revert`면 `#revertState`로 복구합니다.
 
-#### STEP 10 · `notifyManager` — 리렌더 배치 (싱글톤)
+#### STEP 10 · `notifyManager`: 리렌더 배치 (싱글톤)
 
 > **한 줄로:** 알림을 즉시 보내지 않고 *잠깐 모았다가 한 번에* 보내는 우체통입니다. 덕분에 쿼리 상태가 연달아 여러 번 바뀌어도 화면은 **1번만** 다시 그려집니다.
 
@@ -819,7 +819,7 @@ React 자동 배칭은 "이벤트 핸들러/마이크로태스크 안의 setStat
 
 [확인필요: 실제로 이 지식으로 진단한 성능 문제 사례가 있으면 여기에 넣으면 이 절이 훨씬 설득력 있어집니다]
 
-## 6. 마치며 — 이걸 알면 뭐가 달라지나
+## 6. 이걸 알면 뭐가 달라지나
 
 1편 끝에서 "처음부터 내부를 알 필요는 없다"고 썼는데, 그 말은 지금도 유효합니다. 이 글의 내용을 몰라도 TanStack Query는 잘 돌아갑니다.
 

@@ -73,7 +73,7 @@ LLM 평가 · 데이터 라벨링 SaaS **DATUMO** 개발 — selectstar.ai · �
   - **barrel 재수출로 무력화된 코드 스플리팅을 청크 해시(build-manifest · loadable-manifest)로 실측 규명**하고, 위젯 내부 dynamic wrapper로 recharts 116KB(gzip)를 초기 공유 번들에서 분리(FSD 규칙 준수)
   - Task 상세의 7-테이블 조인 지연을 카드 지연 로드 + 호버 prefetch로 제거, 이미지·폰트 사이즈 예약과 스켈레톤으로 Layout Shift 방지, 정적 파일을 빌드 시 S3 업로드 + CDN 캐싱으로 분리
   - @next/bundle-analyzer + Lighthouse CI(3회 실행 중앙값 감사 + 무거운 dep 자동 감지)로 PR 단계 LCP·번들 크기 Budget Gate 적용, main 번들 baseline 대비 **PR별 gzip 증감 diff + Top 15 패키지 랭킹**을 스티키 코멘트로 자동 게시(perf:bundle-diff)
-- **성과** — Task 진입 **472 → 323ms(32%↓)**(최악 케이스 llm-as-judge는 **623 → 148ms, 약 4배**), Lighthouse 성능 점수 60 → 90+, CLS 0.2 → 0.05, PR 단계에서 성능 회귀 자동 차단
+- **성과** — Task 진입 **472 → 323ms(32%↓)**(최악 케이스 llm-as-judge는 **623 → 148ms, 약 4배**), 최적화 대상 라우트(Task Results) Lighthouse 성능 **99점** · CLS **0** (2026-07 실측), PR 단계에서 성능 회귀 자동 차단
 
 ##### [4] 프론트엔드 표준화 · 품질 자동화 및 파트 리딩
 

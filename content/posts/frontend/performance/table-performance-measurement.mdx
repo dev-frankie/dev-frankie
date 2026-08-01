@@ -89,7 +89,7 @@ sequenceDiagram
 
 ## 4. 앱 쪽 계측 코드
 
-### Step 1 — Run hover prefetch (`EvalRunsList` / `EvalRunListItem`)
+### Step 1 · Run hover prefetch (`EvalRunsList` / `EvalRunListItem`)
 
 ```typescript
 void queryClient.prefetchQuery({
@@ -101,18 +101,18 @@ onPointerEnter={() => { if (!isOpen) onPrefetchIntent(); }}
 
 `benchPrefetch=0`이면 prefetch guard로 baseline 측정.
 
-### Step 2 — Task link prefetch (측정 당시 `EvalRunDetailTable`)
+### Step 2 · Task link prefetch (측정 당시 `EvalRunDetailTable`)
 
 Task hover 시 task results·filter options `prefetchQuery`. Playwright: `a[href*="/tasks/{taskId}"]`.
 
-### Step 3 — SSR prefetch + hydration (`tasks/[taskId]/page.tsx`)
+### Step 3 · SSR prefetch + hydration (`tasks/[taskId]/page.tsx`)
 
 ```typescript
 await Promise.all([detail, filterOptions, taskResults].map(q => queryClient.prefetchQuery(q)));
 return <HydrationBoundary state={dehydrate(queryClient)}>...</HydrationBoundary>;
 ```
 
-### Step 4a — 호출부 (`TaskResultsTable.tsx`)
+### Step 4a · 호출부 (`TaskResultsTable.tsx`)
 
 ```typescript
 <Table<EvalTaskResultRow>
@@ -130,7 +130,7 @@ return <HydrationBoundary state={dehydrate(queryClient)}>...</HydrationBoundary>
 
 `virtualize`는 `maxHeight` 또는 `scroll="vertical"|"both"`와 함께 켜야 body 가상화 분기가 동작합니다. 측정 당시 TEMP 플래그 `benchVirtualize=0`으로 OFF 비교 후 domRows 집계.
 
-### Step 4b — Table 분기 (`src/shared/ui/Table/Table.tsx`)
+### Step 4b · Table 분기 (`src/shared/ui/Table/Table.tsx`)
 
 ```typescript
 // Props (발췌)
@@ -151,7 +151,7 @@ if (virtualize && hasVerticalScroll) {
 // OFF: StickyHeaderScrollTable 또는 일반 tbody — rowModelRows 전체 map
 ```
 
-### Step 4c — VirtualizedTable 내부 (`Table.tsx` · `@tanstack/react-virtual`)
+### Step 4c · VirtualizedTable 내부 (`Table.tsx` · `@tanstack/react-virtual`)
 
 ```typescript
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -204,7 +204,7 @@ const totalSize = virtualizer.getTotalSize();
 
 **동작 요약:** 전체 행 높이(`totalSize`) spacer 안에서 viewport 근처 `virtualRows`만 DOM에 유지 → `domRows`는 OFF(전체) vs ON(viewport+overscan)로 차이 발생. `measureElement`로 실측 높이 보정.
 
-### Step 5 — navMs 측정 (`eval-runs-prefetch-bench-temp.ts` · TEMP)
+### Step 5 · navMs 측정 (`eval-runs-prefetch-bench-temp.ts` · TEMP)
 
 **1) 클릭 시 mark** (`EvalRunDetailTable` → task row/link click)
 
@@ -250,7 +250,7 @@ export function measureEvalRunTaskPageReady(taskId: number): void {
 
 **측정 구간:** task link/row click (`navigate-click`) → task results 테이블 data ready (`page-ready`).
 
-### Step 5b — `getLastTaskNavMeasure()` 내부 (Playwright가 읽는 API)
+### Step 5b · `getLastTaskNavMeasure()` 내부 (Playwright가 읽는 API)
 
 ```typescript
 export function getLastTaskNavMeasureMs(): number | null {
@@ -285,7 +285,7 @@ Playwright:
 const navMs = await page.evaluate(() => window.__EVAL_RUNS_BENCH__!.getLastTaskNavMeasure()!);
 ```
 
-### Step 6 — `runScrollBench()` 내부 (scrollMs + domRows)
+### Step 6 · `runScrollBench()` 내부 (scrollMs + domRows)
 
 ```typescript
 export type EvalRunsScrollBenchResult = {
@@ -345,7 +345,7 @@ const scroll = await page.evaluate(async () => {
 
 **domRows 해석:** virtualize ON이면 viewport+overscan만 DOM에 남아 `visibleRowCount`가 작음. OFF면 전체 행이 렌더되어 `케이스 A`에서 46행 등으로 측정됨.
 
-### Step 7 — 4-way 플래그 (`?benchPrefetch=&benchVirtualize=`)
+### Step 7 · 4-way 플래그 (`?benchPrefetch=&benchVirtualize=`)
 
 ```typescript
 export function getEvalRunsBenchFlags(): EvalRunsBenchFlags {
@@ -495,7 +495,7 @@ export async function loginWithE2eCredentials(page: Page) {
 }
 ```
 
-### runSingleSample() — Playwright 핵심 측정 함수 (TEMP · `eval-runs-perf-bench.spec.ts`)
+### runSingleSample(), Playwright 핵심 측정 함수 (TEMP)
 
 ```typescript
 async function runSingleSample(
@@ -605,7 +605,7 @@ async function runSingleSample(
 
 **둘은 대체재가 아니라 순서입니다.** 합성 데이터로 손익분기점을 먼저 찾고, 실서비스 측정으로 우리가 그 선의 어느 쪽에 있는지 확인하는 게 맞는 순서였습니다. 저는 반대로 했고, 그래서 1편에서 틀렸습니다.
 
-## 7. 마치며 — 측정 코드도 코드다
+## 7. 측정 코드도 코드다
 
 이 하네스를 만들면서 계속 든 생각이 있습니다. **측정 코드는 검증받지 않습니다.**
 
