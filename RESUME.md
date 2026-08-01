@@ -3,7 +3,7 @@
 
 # 안동주 (An Dongju)
 
-**Frontend Engineer · Frontend Part Leader**
+**Frontend Engineer**
 
 ---
 
@@ -17,13 +17,13 @@
 
 ## 핵심 역량
 
-| 영역 | 대표 성과 (측정값) |
-|---|---|
-| **AI 개발 방법론** | 작성자(Claude) ≠ 검증자(Codex) 교차검증 하네스를 사내 NPM `@datumo/agent-harness`로 배포, drift-aware sync로 front · admin 2개 레포 규칙 · 스킬 통일 |
-| **성능 최적화** | Task 진입 472 → 323ms(32%↓), 대용량 테이블 DOM 46 → 18행(61%↓), recharts 116KB(gzip) 초기 번들 분리, Core Web Vitals 측정 · Budget Gate |
-| **아키텍처** | SSG → 동적 전환 + Company/Workspace/Application 3계층 권한, FSD 67개 슬라이스, Recoil → Zustand 전역 상태 429개 이관, Polling → SSE 실시간 협업 |
-| **타입 안전성** | type-aware ESLint(projectService) 도입, `noUncheckedIndexedAccess` 타입 오류 221건 전수 해소, `as unknown as never` 이중 단언 53곳 근본 규명, OpenAPI → 타입·Zod 자동 생성으로 계약 drift 차단 |
-| **품질 · DX** | Vitest 630+ 케이스 + 커버리지 게이트(Functions 91% · Branches 79% CI 강제) + Playwright E2E, Sentry 중앙 계측(커스텀 fingerprint · 3계층 노이즈 필터), i18n(next-intl) 자동화(약 1,300키 · 번역 충돌 0) |
+| 영역               | 대표 성과 (측정값)                                                                                                                                                                                      |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **AI 개발 방법론** | 작성자(Claude) ≠ 검증자(Codex) 교차검증 하네스를 사내 NPM `@datumo/agent-harness`로 배포, drift-aware sync로 front · admin 2개 레포 규칙 · 스킬 통일                                                    |
+| **성능 최적화**    | Task 진입 472 → 323ms(32%↓), 테이블 가상화 손익분기점 실측(초기 렌더는 1,000행부터·스크롤은 5,000행부터 유효 · 5,000행 2,904 → 100ms · 15.6 → 63fps · 합성 데이터), recharts 116KB(gzip) 초기 번들 분리, Core Web Vitals 측정 · Budget Gate  |
+| **아키텍처**       | SSG → 동적 전환 + Company/Workspace/Application 3계층 권한, FSD 67개 슬라이스, Recoil → Zustand 전역 상태 429개 이관, Polling → SSE 실시간 협업                                                         |
+| **타입 안전성**    | type-aware ESLint(projectService) 도입, `noUncheckedIndexedAccess` 타입 오류 221건 전수 해소, `as unknown as never` 이중 단언 53곳 근본 규명, OpenAPI → 타입·Zod 자동 생성으로 계약 drift 차단          |
+| **품질 · DX**      | Vitest 630+ 케이스 + 커버리지 게이트(Functions 91% · Branches 79% CI 강제) + Playwright E2E, Sentry 중앙 계측(커스텀 fingerprint · 3계층 노이즈 필터), i18n(next-intl) 자동화(약 1,300키 · 번역 충돌 0) |
 
 **Tech Stack** — TypeScript · React 18 · Next.js · Zustand · TanStack Query · RTK Query · openapi-typescript · Vitest · Playwright
 
@@ -54,13 +54,13 @@ LLM 평가 · 데이터 라벨링 SaaS **DATUMO** 개발 — selectstar.ai · �
 **기술 스택** SSE · TanStack Query · TanStack Table · shadcn/ui · ECharts/Recharts &nbsp;&nbsp; **역할** 핵심 기능 설계 · 구현
 
 - **문제** — LLM 평가는 수 분–수십 분이 걸리는 비동기 작업이라 진행 상태를 실시간으로 파악하기 어려웠고, 여러 사용자가 같은 평가를 동시에 다룰 때의 편집 충돌과 수천–수만 행 결과의 렌더링 성능이 과제였습니다.
-- **가정** — 폴링의 낭비는 *클라이언트가 서버에 계속 되묻는* 구조에서 나오므로 서버 푸시(SSE)로 제거할 수 있고, 대용량 테이블은 무거운 그리드 라이브러리 대신 *화면에 필요한 만큼만 DOM에 유지*(headless + 가상화)하면 성능과 커스터마이징 자유도를 함께 얻을 것으로 봤습니다.
+- **가정** — 폴링의 낭비는 _클라이언트가 서버에 계속 되묻는_ 구조에서 나오므로 서버 푸시(SSE)로 제거할 수 있고, 대용량 테이블은 무거운 그리드 라이브러리 대신 _화면에 필요한 만큼만 DOM에 유지_(headless + 가상화)하면 성능과 커스터마이징 자유도를 함께 얻을 것으로 봤습니다.
 - **해결**
   - **실시간 협업** — 폴링 → SSE로 전환해 평가 진행을 실시간 스트리밍(불필요한 반복 요청 제거), viewerSessionId 기반 echo suppression + presence로 active users 표시와 편집 버전 충돌 감지·최신 반영을 갖춘 공동 편집 구현
   - **Red Teaming** — 공격셋 기반 자동 Red Teaming 플로우 + human-in-the-loop 채팅으로 평가 → 취약점 탐지 → 재현을 한 흐름으로 연결
   - **대용량 테이블** — 무거운 그리드 라이브러리 의존을 제거하고 Headless(TanStack Table) + shadcn/ui로 가상화 · 2중 헤더 · rowspan/colspan 테이블을 직접 구현, 상세는 가상화 + 동적 컬럼 적용
   - **대시보드** — D3 → ECharts/Recharts 전환 + 드래그앤드랍 그리드로 사용자가 위젯을 배치하는 커스텀 대시보드 제공
-- **성과** — 실시간 반영 + 폴링 대비 요청 수 급감, 다중 사용자가 충돌 없이 협업, 대용량 테이블 DOM을 **46 → 18행(61%↓)** 수준으로 줄여 수만 행 결과도 끊김 없이 탐색
+- **성과** — 실시간 반영 + 폴링 대비 요청 수 급감, 다중 사용자가 충돌 없이 협업. 가상화는 도입 후 합성 데이터로 손익분기점을 실측해 **초기 렌더는 1,000행부터, 스크롤은 5,000행부터** 유효함을 분리 확인(1,000행 초기 렌더 **677 → 90ms(7.5배)** / 5,000행 스크롤 **15.6 → 63fps** · long task **30 → 0건**), 현재 페이지 크기(100행)에서는 이득이 없고 스크롤 프레임만 내주는 트레이드오프임을 문서화
 
 ##### [3] 페이지 성능 최적화 (Core Web Vitals)
 
@@ -80,7 +80,7 @@ LLM 평가 · 데이터 라벨링 SaaS **DATUMO** 개발 — selectstar.ai · �
 **기술 스택** Vitest · Playwright · MCP · shadcn/ui · Storybook · GitHub Actions · Sentry &nbsp;&nbsp; **역할** 파트 리딩, 품질 체계 구축
 
 - **문제** — 파트 리더로 합류했을 때 레거시(`llm-eval-front`)는 실행 가능한 테스트가 **0개**, 소스 lint만 해도 **56 errors / 710 warnings**, `eslint.ignoreDuringBuilds`로 오류가 있어도 배포되는 구조라 품질이 개인 숙련도·수동 QA에 전적으로 의존했습니다. AI 코드리뷰를 도입해도 작성자=검증자라 같은 맹점을 두 번 통과시키는 한계가 있었습니다.
-- **가정** — 품질은 개인의 주의가 아니라 *merge를 막는 차단 게이트*로 시스템화해야 변경이 누적돼도 무너지지 않고, AI 리뷰의 맹점은 코드리뷰의 Reviewer≠Assignee 원리를 이식해 *작성자(모델) ≠ 검증자(다른 모델)* 로 분리하면 교차검증이 성립한다고 봤습니다.
+- **가정** — 품질은 개인의 주의가 아니라 *merge를 막는 차단 게이트*로 시스템화해야 변경이 누적돼도 무너지지 않고, AI 리뷰의 맹점은 코드리뷰의 Reviewer≠Assignee 원리를 이식해 _작성자(모델) ≠ 검증자(다른 모델)_ 로 분리하면 교차검증이 성립한다고 봤습니다.
 - **해결**
   - 파트원(3명) 업무 분배 · 코드 리뷰 · 기술 전파를 담당하고, PO 요구사항을 정의 · 조율
   - AI 코드리뷰 하네스를 사내 NPM 패키지 **`@datumo/agent-harness`** 로 배포 — **작성자(Claude) ≠ 검증자(Codex)** 교차검증 + 버전관리된 고정 프롬프트로 저자 편향 차단, 머신 게이트(typecheck · eslint · test · i18n) + drift-aware sync로 front · admin 두 레포 규칙 · 스킬 통일. **도입 첫날 하네스가 자기 코드의 결함 12건**(typecheck 크래시를 통과시키던 false GREEN 등)을 교차검증으로 규명
@@ -88,9 +88,9 @@ LLM 평가 · 데이터 라벨링 SaaS **DATUMO** 개발 — selectstar.ai · �
   - Vitest + Playwright 도입, 순수 로직 TDD로 테스트를 **0 → 630+ 케이스(파일 68 → 95)** 백필하고 **커버리지 게이트로 CI 강제**(Functions 91% · Branches 79% · Statements 85%), ESLint + Husky + GitHub Actions로 lint · format · typecheck · test · build를 **merge 차단 게이트**로 실행
   - 공통 컴포넌트 라이브러리(shadcn/ui + Storybook), i18n(next-intl) 단방향 자동화(코드=원본 → `en` 자동 생성, `ja`·`ko`만 번역, 약 1,300키) — 컬럼 단위 소유권 설계로 **번역 머지 충돌 0건**, Sentry 관측성 고도화(QueryCache onError **중앙 계측** + 커스텀 fingerprint로 **API 단위 그룹핑** + 3계층 노이즈 필터 + 환경/릴리즈 마킹)
   - 5개 환경 배포 매트릭스와 고객사 대응 온프레미스 standalone Docker 이미지 구성으로 SaaS · 온프레미스 배포를 동시 지원
-- **성과** — 실행 테스트 **0 → 630+ 케이스**, 소스 lint **56 errors → 0**, 오류가 있어도 배포되던 구조에서 *merge 전 자동 검증* 체계로 전환. 사내 레포 성숙도 평가 **4.0 → 6.5/10**(테스트·CI·아키텍처 축 개선), 팀 공통 컨벤션·온보딩 기준 정립
+- **성과** — 실행 테스트 **0 → 630+ 케이스**, 소스 lint **56 errors → 0**, 오류가 있어도 배포되던 구조에서 _merge 전 자동 검증_ 체계로 전환. 사내 레포 성숙도 평가 **4.0 → 6.5/10**(테스트·CI·아키텍처 축 개선), 팀 공통 컨벤션·온보딩 기준 정립
 
-2022.03 – 2025.03
+  2022.03 – 2025.03
 
 ### 주식회사 딥브레인AI · 웹 개발
 
@@ -169,39 +169,39 @@ v2 → v3 전면 리팩토링(Redux · RTK Query)으로 SSR · 디바운싱 · �
 
 #### B2B · 대형 SI 프로젝트
 
-| 프로젝트 | 핵심 내용 |
-|---|---|
-| **KB증권 드림아바타 PoC** | 사진 · 음성 업로드 → 얼굴 바운딩 박스 지정 → 음성 클로닝(ElevenLabs) · Webhook 연동으로 말하는 AI 명함 생성 |
-| **농협은행 AI 실시간 통역** | STT/TTS 10개국어 SDK 연동, ChatGPT 문맥 기반 번역으로 실시간 통역 구현, SDK 지연 로드로 **TTI 7.6s → 4.3s(43%↓)** |
-| **서울시 교육청 AI 디지털 교과서** | E-Book 뷰어 + 텍스트 프롬프터 + AI 질의응답 (2023 디지털 러닝페스티벌 참여) |
-| **농협은행 AI 허브 & Kiosk** | Vision SDK(PoseNet) 정면 판별, 퍼사드 패턴, 폴라로이드 즉시 출력 (약 20억 규모) |
+| 프로젝트                                | 핵심 내용                                                                                                                                                          |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **KB증권 드림아바타 PoC**               | 사진 · 음성 업로드 → 얼굴 바운딩 박스 지정 → 음성 클로닝(ElevenLabs) · Webhook 연동으로 말하는 AI 명함 생성                                                        |
+| **농협은행 AI 실시간 통역**             | STT/TTS 10개국어 SDK 연동, ChatGPT 문맥 기반 번역으로 실시간 통역 구현, SDK 지연 로드로 **TTI 7.6s → 4.3s(43%↓)**                                                  |
+| **서울시 교육청 AI 디지털 교과서**      | E-Book 뷰어 + 텍스트 프롬프터 + AI 질의응답 (2023 디지털 러닝페스티벌 참여)                                                                                        |
+| **농협은행 AI 허브 & Kiosk**            | Vision SDK(PoseNet) 정면 판별, 퍼사드 패턴, 폴라로이드 즉시 출력 (약 20억 규모)                                                                                    |
 | **AI 학습 데이터 라벨링 · 검수 플랫폼** | NAS 이미지 자동 라벨링(눈·코·입 좌표 · 성별 추출 API) + 검수/보정 툴 + 교차검증 · 관리자 승인 파이프라인으로 학습 이미지 **10만 장+** 제작 (약 20억 규모 정부과제) |
 
 ## SKILL
 
-| 구분 | 기술 |
-|---|---|
-| **Language** | TypeScript, JavaScript, Python |
-| **Frontend** | React, Next.js, Zustand, Recoil, Redux, TanStack Query, RTK Query |
-| **UI / 시각화** | shadcn/ui, Storybook, CSS Modules, Canvas · Fabric.js, D3.js · ECharts · Chart.js |
-| **Test / Quality** | Vitest, Playwright, ESLint, Husky, Lighthouse CI, Sentry, Datadog RUM, OpenTelemetry |
-| **Backend / Infra** | Node.js, Docker, Kubernetes, Redis, AWS(S3 · SES · ElastiCache), Jenkins, ArgoCD, GitHub Actions |
-| **기타** | OpenAPI 타입 · Zod 자동화, NextAuth, SSE, FSD 아키텍처, MCP, TensorFlow.js(PoseNet), GA4/GTM · Amplitude, AI 개발 방법론(Claude × Codex 하네스 · @datumo/agent-harness) |
+| 구분                | 기술                                                                                                                                                                    |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Language**        | TypeScript, JavaScript, Python                                                                                                                                          |
+| **Frontend**        | React, Next.js, Zustand, Recoil, Redux, TanStack Query, RTK Query                                                                                                       |
+| **UI / 시각화**     | shadcn/ui, Storybook, CSS Modules, Canvas · Fabric.js, D3.js · ECharts · Chart.js                                                                                       |
+| **Test / Quality**  | Vitest, Playwright, ESLint, Husky, Lighthouse CI, Sentry, Datadog RUM, OpenTelemetry                                                                                    |
+| **Backend / Infra** | Node.js, Docker, Kubernetes, Redis, AWS(S3 · SES · ElastiCache), Jenkins, ArgoCD, GitHub Actions                                                                        |
+| **기타**            | OpenAPI 타입 · Zod 자동화, NextAuth, SSE, FSD 아키텍처, MCP, TensorFlow.js(PoseNet), GA4/GTM · Amplitude, AI 개발 방법론(Claude × Codex 하네스 · @datumo/agent-harness) |
 
 ## EDUCATION
 
-| 기간 | 학교 | 전공 | 상태 |
-|---|---|---|---|
+| 기간                    | 학교                             | 전공                          | 상태    |
+| ----------------------- | -------------------------------- | ----------------------------- | ------- |
 | 2026.03 – 2027.08(예정) | 고려대학교 융합데이터과학 대학원 | 융합데이터과학 (GPA 4.42/4.5) | 재학 중 |
-| 2016.03 – 2020.02 | 상명대학교 | 컴퓨터과학 | 졸업 |
+| 2016.03 – 2020.02       | 상명대학교                       | 컴퓨터과학                    | 졸업    |
 
 ## AWARDS & CERTIFICATES
 
-| 기간 | 구분 | 내용 |
-|---|---|---|
-| 2021.12 | 수상 | 제3회 인공지능 스타트업 경진대회 — 가스 수요 예측 모델 부문 **특별상** |
-| 2021.01 – 2021.06 | 교육 | 네이버 부스트캠프 AI Tech — PyTorch(EfficientNet 이미지 분류, Swin Transformer · U-Net · DeepLab v3+ 세그멘테이션, LGBM/CatBoost 예측) |
-| 2020.07 – 2020.11 | 교육 | 삼성 청년 SW 아카데미(SSAFY) — Spring Boot · Vue.js 부동산 정보 서비스 개발 |
-| 2020.09 | 자격증 | ADsP (데이터분석 준전문가) |
-| 2020.06 | 자격증 | SQLD (SQL 개발자) |
-| 2019.09 | 자격증 | 정보처리기사 |
+| 기간              | 구분   | 내용                                                                                                                                   |
+| ----------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| 2021.12           | 수상   | 제3회 인공지능 스타트업 경진대회 — 가스 수요 예측 모델 부문 **특별상**                                                                 |
+| 2021.01 – 2021.06 | 교육   | 네이버 부스트캠프 AI Tech — PyTorch(EfficientNet 이미지 분류, Swin Transformer · U-Net · DeepLab v3+ 세그멘테이션, LGBM/CatBoost 예측) |
+| 2020.07 – 2020.11 | 교육   | 삼성 청년 SW 아카데미(SSAFY) — Spring Boot · Vue.js 부동산 정보 서비스 개발                                                            |
+| 2020.09           | 자격증 | ADsP (데이터분석 준전문가)                                                                                                             |
+| 2020.06           | 자격증 | SQLD (SQL 개발자)                                                                                                                      |
+| 2019.09           | 자격증 | 정보처리기사                                                                                                                           |

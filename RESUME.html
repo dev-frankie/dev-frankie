@@ -144,7 +144,8 @@
             </thead>
             <tbody>
               <tr><td>진입 체감(nav, median 평균)</td><td>472ms</td><td>323ms</td><td class="metric-up">32%↓</td></tr>
-              <tr><td>DOM 렌더 행 수(대용량 케이스)</td><td>46행</td><td>18행</td><td class="metric-up">61%↓</td></tr>
+              <tr><td>테이블 초기 렌더(5,000행 · 합성)</td><td>2,904ms</td><td>100ms</td><td class="metric-up">29배</td></tr>
+              <tr><td>테이블 스크롤(5,000행 · 합성)</td><td>15.6fps</td><td>63fps</td><td class="metric-up">long task 30 → 0</td></tr>
             </tbody>
           </table>
           <p class="mnote">최대 개선 케이스(llm-as-judge) 진입 체감 623ms → 148ms</p>

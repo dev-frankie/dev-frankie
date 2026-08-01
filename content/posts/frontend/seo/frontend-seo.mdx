@@ -1,11 +1,16 @@
 ---
-title: "SEO 챙기기 — 프론트엔드가 코드로 만드는 검색 경쟁력"
+title: "SEO에 인프라부터 손댔던 나에게 — 기본기가 먼저인 이유"
 date: "2026-07-11"
-description: "화려한 우회 기술 대신 h1·메타데이터·sitemap 같은 SEO 기본기를 '페이지 → 정보 → 길 → AI' 흐름으로 하나씩 챙긴 과정을 정리합니다."
+description: "Lambda@Edge로 CSR 환경의 SEO를 우회하는 방법을 먼저 배웠다. 정작 h1을 어디에 두는지는 나중에 알았다. 순서가 틀렸던 이야기."
 tags: ["SEO", "Next.js", "SSR", "Web"]
+version_note: "Next.js App Router 기준"
 ---
 
-주제 선정 이유 : 예전에 Lambda@Edge로 CSR 환경에서 SEO를 끌어올리는 방향에 대해서는 파고들어 정리한 적이 있었습니다. 그런데 정작 그 인프라 우회 이전의, `h1`을 어떻게 잡을지·sitemap을 어떻게 구성할지 같은 **가장 기본적인 것들을 고민했던 여정**은 한 번도 정리해본 적이 없었습니다. 그래서 이번에는 화려한 우회 기술 대신, 기본기를 하나씩 챙겨온 과정을 되짚어보려 합니다.
+몇 년 전에 CSR 환경의 SEO 문제를 Lambda@Edge로 푼 적이 있습니다. 크롤러 user-agent를 감지해서 프리렌더링된 HTML을 대신 내려주는 방식이었습니다. 꽤 파고들었고, 정리도 해뒀습니다.
+
+그런데 정작 그 아래 있는 것들 — `h1`을 어디에 둘지, sitemap을 어떻게 쪼갤지, `canonical`이 왜 필요한지 — 은 한참 뒤에야 제대로 봤습니다. 순서가 거꾸로였던 셈입니다. 인프라로 우회하는 법을 먼저 배우고, 우회할 필요가 없게 만드는 법을 나중에 배웠습니다.
+
+이 글은 그 기본기를 `크롤러에게 무엇을 주는가`라는 하나의 흐름으로 다시 꿴 기록입니다. 잘 하고 있는 사이트 하나를 뜯어보고, 거기서 나온 원칙을 코드로 옮기고, 마지막에 이 기본기가 **안 통하는 경우**까지 짚습니다.
 
 ## 1. CSR vs SSR — 왜 SSR로 가는가
 
@@ -23,7 +28,7 @@ tags: ["SEO", "Next.js", "SSR", "Web"]
 
 반면 SSR/SSG는 서버가 완성된 HTML을 만들어 내려주기 때문에, 크롤러는 JavaScript를 실행하지 않고도 제목과 본문을 그대로 읽습니다. 크롤러 입장에서 이 둘은 완전히 다른 페이지입니다.
 
-> 💡 [banksalad](https://www.banksalad.com/)(React·CSR)와 [a-ha.io](https://www.a-ha.io/)(Next·SSR)에서 각각 우클릭 → '페이지 소스 보기'를 열면, 한쪽은 빈 껍데기, 한쪽은 완성된 마크업이 그대로 보입니다.
+> [banksalad](https://www.banksalad.com/)(React·CSR)와 [a-ha.io](https://www.a-ha.io/)(Next·SSR)에서 각각 우클릭 → '페이지 소스 보기'를 열면, 한쪽은 빈 껍데기, 한쪽은 완성된 마크업이 그대로 보입니다.
 
 그래서 크롤러에게 콘텐츠를 제대로 보여주려면 첫 단추는 SSR입니다. 다만 SSR로 완성된 HTML을 내려주는 것은 **시작일 뿐**입니다. 그 HTML 안을 크롤러가 잘 이해하도록 구조와 정보를 채워 넣는 것 — 그게 이야기의 본론입니다. 그럼 이걸 잘 해낸 사례부터 보겠습니다.
 
@@ -47,13 +52,13 @@ JavaScript 없이도 질문·답변 본문이 raw HTML에 그대로 담겨 있�
 
 질문마다 고유한 `title`·`description`·`canonical`·OG가 붙어, 어떤 질문을 공유해도 미리보기가 정확합니다.
 
-> 💡 OG가 잘 걸렸는지는 [카카오 공유 디버거](https://developers.kakao.com/tool/debugger/sharing)로 바로 확인할 수 있습니다.
+OG가 잘 걸렸는지는 [카카오 공유 디버거](https://developers.kakao.com/tool/debugger/sharing)로 바로 확인할 수 있습니다.
 
 **④ 내부 링크 그래프**
 
 크롤러는 페이지 안의 링크를 따라가며 다음 페이지를 발견합니다. 아하는 각 질문 아래 "유사한 질문" 링크로 관련 페이지들을 서로 이어두어, 크롤러가 사이트 구석구석까지 타고 들어오게 만듭니다.
 
-> 📌 **한 가지 더 — 이동은 `<button>`이 아니라 `<a>`로**
+### 이동은 `<button>`이 아니라 `<a>`로
 
 크롤러가 인정하는 링크는 `href`가 박힌 `<a>` 태그뿐입니다. `<button onClick={() => router.push('/foo')}>`처럼 JS로 이동하면, raw HTML에 목적지 URL이 없어서 크롤러는 그 페이지를 발견하지 못합니다.
 
@@ -190,7 +195,7 @@ export const metadata: Metadata = {
 - **canonical** — "이 페이지의 대표 주소는 여기다"라고 못 박는 것. 쿼리스트링(`?utm=...`)이나 중복 경로로 같은 내용이 여러 URL로 갈릴 때, 검색 점수가 흩어지지 않게 하나로 모읍니다.
 - **openGraph** — 카톡·슬랙 등에서 링크 공유 시 뜨는 미리보기(제목·설명·썸네일).
 
-> 💡 반복되는 메타데이터 생성 로직은 빌더 유틸로 빼두면, 새 페이지를 추가할 때 SEO 설정이 몇 줄로 끝납니다!
+반복되는 메타데이터 생성 로직은 빌더 유틸로 빼두면, 새 페이지를 추가할 때 SEO 설정이 몇 줄로 끝납니다.
 
 ### 한 걸음 더 — 구조화 데이터(schema.org)
 
@@ -223,7 +228,7 @@ export default function Page() {
 
 **JSON-LD = JSON for Linking Data** (연결된 데이터를 위한 JSON). 우리가 아는 그 JSON 문법 그대로인데, 거기에 "이 데이터가 무슨 의미인지"를 나타내는 약속 두 개가 얹힌 형태입니다.
 
-> 🎬 **데모** — 구글에 `김치찌개 레시피` 를 검색하면, 별점·조리시간·사진이 붙은 **리치 스니펫**이 바로 보입니다. 이게 레시피 페이지에 심어둔 `application/ld+json` 구조화 데이터의 결과입니다. 그리고 내 페이지가 어떤 리치 결과를 만들 수 있는지는 [리치 결과 테스트](https://search.google.com/test/rich-results)에 URL을 넣어 바로 확인할 수 있습니다.
+구글에 `김치찌개 레시피` 를 검색하면, 별점·조리시간·사진이 붙은 **리치 스니펫**이 바로 보입니다. 이게 레시피 페이지에 심어둔 `application/ld+json` 구조화 데이터의 결과입니다. 그리고 내 페이지가 어떤 리치 결과를 만들 수 있는지는 [리치 결과 테스트](https://search.google.com/test/rich-results)에 URL을 넣어 바로 확인할 수 있습니다.
 
 여기까지 하면 크롤러는 "이 페이지가 무엇인지"까지 정확히 알게 됩니다. 이제 남은 건, 크롤러가 우리 사이트를 **빠짐없이 돌 수 있도록 길을 알려주는 일**입니다.
 
@@ -251,7 +256,7 @@ export default function robots(): MetadataRoute.Robots {
 
 놓치기 쉬운 게 마지막 `sitemap` 줄입니다. 크롤러가 robots.txt를 먼저 읽으니, 여기에 sitemap 주소를 적어두면 "전체 목록은 여기 있다"고 바로 알려줄 수 있어 발견이 빨라집니다.
 
-> 🎬 아하 robots.txt 열어보기 → [https://www.a-ha.io/robots.txt](https://www.a-ha.io/robots.txt)
+실제로 열어보면 구조가 바로 보입니다 → [a-ha.io/robots.txt](https://www.a-ha.io/robots.txt)
 
 ### sitemap.xml — "이 사이트엔 이런 페이지들이 있다"
 
@@ -280,9 +285,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
 왜 이렇게까지 잘게 쪼갰을까요? sitemap 한 파일에는 한계가 있기 때문입니다 — 하나의 sitemap은 URL 5만 개, 압축 전 50MB를 넘을 수 없습니다. 질문이 수천만 개 쌓이면 한 파일로는 절대 담을 수 없으니, 5만 개 단위로 쪼개고 그것들을 index로 묶는 것입니다.
 
-> 🎬 **아하 sitemap 직접 열어보기**
-> - `sitemap.xml` → [https://www.a-ha.io/sitemap.xml](https://www.a-ha.io/sitemap.xml) — 홈 + 토픽 목록(정적인 축)
-> - `sitemapindex.xml` → [https://www.a-ha.io/sitemapindex.xml](https://www.a-ha.io/sitemapindex.xml) — 700개가 넘는 하위 sitemap 목차. 질문을 5만 개씩 쪼갠 규모를 눈으로 확인
+**직접 열어보기**
+
+- `sitemap.xml` → [https://www.a-ha.io/sitemap.xml](https://www.a-ha.io/sitemap.xml) — 홈 + 토픽 목록(정적인 축)
+- `sitemapindex.xml` → [https://www.a-ha.io/sitemapindex.xml](https://www.a-ha.io/sitemapindex.xml) — 700개가 넘는 하위 sitemap 목차. 질문을 5만 개씩 쪼갠 규모를 눈으로 확인
 
 정적인 토픽은 `sitemap.xml`로, 끝없이 쌓이는 질문은 `sitemapindex.xml` 아래 수백 개로 쪼개어 — 이렇게 콘텐츠 성격에 따라 sitemap을 나누고, robots.txt가 둘 다 가리키게 하면, 크롤러는 **robots.txt → sitemap(index) → 개별 sitemap → 각 페이지** 순으로 사이트 전체를 빠짐없이 훑습니다.
 
@@ -314,9 +320,81 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
 다만 솔직하게 짚어둘 점이 있습니다. `llms.txt`는 **아직 표준으로 완전히 굳은 것은 아니고**, 모든 AI가 이 파일을 읽어 간다는 보장도 없습니다. 그럼에도 만드는 비용이 거의 들지 않고, 이미 Next.js 공식 문서를 비롯한 여러 사이트가 채택하고 있어, AI 검색 시대를 대비하는 낮은 리스크의 한 수로 볼 수 있습니다.
 
-이렇게 네 번째 단계까지 마치면, 크롤러에게 완성된 페이지를 주고, 정확한 정보를 알려주고, 길을 안내하고, AI 검색까지 대비한 셈입니다.
+실제 예시는 [stripe.com/llms.txt](https://stripe.com/llms.txt), [nextjs.org/llms.txt](https://nextjs.org/llms.txt)에서 볼 수 있습니다.
 
-**참고 — 실제 llms.txt 예시**
+여기까지가 크롤러에게 줄 네 가지입니다. 완성된 페이지, 정확한 정보, 길, 그리고 AI 대응.
 
-- [https://stripe.com/llms.txt](https://stripe.com/llms.txt)
-- [https://nextjs.org/llms.txt](https://nextjs.org/llms.txt)
+---
+
+## 8. 이 기본기가 안 통하는 경우
+
+여기까지 읽고 "그럼 우리도 다 하면 되겠네"라고 생각했다면, 잠깐 멈출 필요가 있습니다. 2장에서 아하를 뜯어보며 다섯 가지를 정리했는데, 그중 **⑤ 쌓이는 콘텐츠**가 사실상 나머지 넷을 떠받치고 있습니다.
+
+아하는 사용자가 매일 질문을 올립니다. 질문 하나가 곧 검색에 걸리는 페이지 하나입니다. sitemap을 700개로 쪼갠 건 SEO를 잘해서가 아니라, **쪼갤 만큼 페이지가 있어서**입니다. 순서가 반대입니다.
+
+랜딩 페이지가 다섯 장인 B2B 서비스에 같은 걸 적용하면 어떻게 될까요. `h1`을 제대로 잡고, JSON-LD를 심고, sitemap을 만들어도 색인될 페이지는 여전히 다섯 장입니다. 잘못된 건 아닙니다. 다만 **여기서 얻을 수 있는 상한이 낮습니다.**
+
+기본기가 잘 듣지 않는 조건을 정리하면 이렇습니다.
+
+| 조건 | 왜 안 통하나 | 그럼 뭘 하나 |
+| --- | --- | --- |
+| 페이지 수가 적고 늘지 않음 | 색인 대상 자체가 작음 | 기술 SEO는 하루면 끝. 나머지 시간은 콘텐츠에 |
+| 핵심 기능이 로그인 뒤에 있음 | 크롤러가 접근 불가 | 공개 영역(문서·블로그·변경로그)을 검색 자산으로 |
+| 검색 수요가 없는 도메인 | 아무도 안 찾음 | SEO 대신 다른 유입 경로 |
+| 브랜드 검색만 들어옴 | 이미 아는 사람만 옴 | 롱테일 키워드를 만들 콘텐츠가 먼저 |
+
+리치 스니펫에도 오해가 있습니다. JSON-LD를 심는다고 별점이 자동으로 뜨지 않습니다. 구조화 데이터는 **후보 자격**을 주는 것이고, 실제 노출 여부는 구글이 정합니다. 구글 문서에도 "구조화 데이터가 있다고 리치 결과가 보장되지는 않는다"고 명시되어 있습니다. "심었으니 나오겠지"로 기대치를 잡으면 실망합니다.
+
+## 9. 그럼 Lambda@Edge 우회는 틀린 선택이었나
+
+서두에서 순서가 거꾸로였다고 했는데, 그 우회 자체가 틀렸다는 뜻은 아닙니다.
+
+그때는 이미 대규모 CSR 앱이 돌아가고 있었고, SSR로 옮기는 건 몇 달짜리 프로젝트였습니다. 당장 검색 유입은 필요했고요. 크롤러 user-agent를 감지해 프리렌더링된 HTML을 내려주는 방식은 **앱을 한 줄도 안 고치고** 그 문제를 풀어줬습니다. 그 제약 아래서는 그게 맞는 답이었습니다.
+
+다만 비용이 없지는 않았습니다.
+
+|  | Lambda@Edge 프리렌더 | SSR/SSG 전환 |
+| --- | --- | --- |
+| 도입 비용 | 낮음. 앱 코드 변경 없음 | 높음. 데이터 페칭 구조를 다시 |
+| 유지 비용 | 높음. UA 목록·프리렌더 캐시·무효화를 계속 관리 | 낮음. 프레임워크가 처리 |
+| 크롤러 커버리지 | 감지한 UA만. 새 크롤러는 놓침 | 전부. 구분 자체가 없음 |
+| 클로킹 위험 | 있음. 사람과 봇에게 다른 HTML | 없음 |
+| 사용자 성능 | 개선 없음. 사람은 여전히 CSR | 같이 개선됨 |
+| 팀 의존성 | 인프라 팀 없이는 못 고침 | 프론트엔드가 다 함 |
+
+두 방식이 푸는 문제가 다릅니다. 프리렌더는 **"크롤러에게만 완성된 HTML을 주는 문제"**를 풀고, SSR은 **"애초에 완성된 HTML을 내려주는 문제"**를 풉니다. 결과적으로 크롤러가 받는 건 비슷하지만, 유지 비용과 사용자 성능에서 갈립니다.
+
+개인적인 의견이지만, 그때 놓친 건 기술이 아니라 순서였습니다. 우회로 푸는 법을 먼저 배우면 **구조로 풀 필요가 없다고 착각하기 쉽습니다.** 프리렌더를 붙이면 "크롤러가 완성된 HTML을 받는다"까지는 해결됩니다. 그런데 그 HTML 안의 마크업과 메타데이터가 부실하면, 크롤러는 완성된 빈 껍데기를 받는 셈입니다. 우회는 전달 경로를 고칠 뿐 내용물을 고쳐주지 않습니다.
+
+[확인필요: 당시 프리렌더를 붙인 뒤 실제로 마크업·메타데이터가 어떤 상태였는지 기억나면 여기에 넣으면 이 문단이 회고가 됩니다]
+
+지금 같은 상황을 다시 만난다면 순서를 바꿀 것 같습니다. 우회를 붙이더라도 **먼저 하루를 들여 마크업과 메타데이터부터 고치겠습니다.** 어느 쪽 인프라를 쓰든 그건 버려지지 않는 작업이니까요.
+
+## 10. 마치며 — "우리 서비스도 SEO 해야 하나요"
+
+이 질문을 받으면 저는 두 가지를 되묻습니다. **검색해서 들어올 사람이 있는가**, 그리고 **그 사람에게 보여줄 공개 페이지가 늘어나는가**. 둘 다 아니면 기술 SEO에 시간을 쓸 이유가 별로 없습니다. `title`과 `description`, OG 이미지 정도만 채우고 넘어가도 됩니다. 그건 반나절이면 끝납니다.
+
+둘 다 맞다면, 순서는 이 글의 흐름 그대로입니다. 완성된 페이지 → 정확한 정보 → 길 → AI. 앞의 것이 안 돼 있는데 뒤의 것을 하면 효과가 없습니다. sitemap을 아무리 잘 짜도 크롤러가 받는 HTML이 비어 있으면 소용없으니까요.
+
+아하를 뜯어보고 남은 생각은, 결국 프론트엔드가 SEO에서 할 수 있는 일이 생각보다 좁다는 것이었습니다. 검색 경쟁력을 만드는 건 매일 쌓이는 질문 수만 개지, `h1` 태그가 아닙니다. 프론트엔드가 하는 일은 **이미 있는 가치가 크롤러에게 도달하지 못하게 막는 장애물을 치우는 것**에 가깝습니다. 없는 가치를 만들어주지는 않습니다.
+
+그래서 SEO 작업을 시작하기 전에 한 번은 물어보는 게 좋습니다. 지금 우리에게 필요한 게 장애물을 치우는 일인지, 아니면 치울 만한 가치를 먼저 만드는 일인지.
+
+## 참고
+
+- [Google 검색 센터 — JavaScript SEO 기본사항](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics)
+- [Next.js — Metadata API](https://nextjs.org/docs/app/api-reference/functions/generate-metadata)
+- [Next.js — `robots.ts` / `sitemap.ts`](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap)
+- [sitemap.org 프로토콜 — 5만 URL · 50MB 제한](https://www.sitemaps.org/protocol.html)
+- [schema.org 구조화 데이터 갤러리](https://developers.google.com/search/docs/appearance/structured-data/search-gallery)
+- [llms.txt 제안 문서](https://llmstxt.org/)
+- [TanStack Query — SSR & Hydration](https://tanstack.com/query/latest/docs/framework/react/guides/ssr)
+
+{/* 이미지 체크리스트
+IMG-01 [내가 캡처] banksalad와 a-ha.io 페이지 소스 나란히 비교 — 미완료
+         의도: CSR/SSR이 크롤러에게 다른 페이지라는 걸 눈으로
+IMG-02 [내가 캡처] a-ha sitemapindex.xml 실제 화면 (700개 하위 sitemap) — 미완료
+         의도: "쪼갤 만큼 페이지가 있다"는 8장 논지의 증거
+IMG-03 [내가 캡처] 리치 결과 테스트 실행 결과 — 미완료
+*/}
+
