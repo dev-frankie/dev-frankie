@@ -78,6 +78,54 @@ const readDirEntries = (segments: string[]) => {
     .filter((entry) => !isHidden(entry.name));
 };
 
+/**
+ * MDX 파서는 HTML 주석(`<!-- -->`)을 만나면 `<!`에서 멈춰 빌드를 깬다.
+ * 글쓴이 메모(이미지 체크리스트 등)로 자주 쓰이므로, 렌더 전에 걷어낸다.
+ * 코드펜스 안의 `<!--`는 예제 코드일 수 있으니 건드리지 않는다.
+ */
+const stripHtmlComments = (markdown: string): string => {
+  const kept: string[] = [];
+  let inFence = false;
+  let inComment = false;
+
+  for (const line of markdown.split("\n")) {
+    if (/^\s*(```|~~~)/.test(line)) {
+      inFence = !inFence;
+      kept.push(line);
+      continue;
+    }
+
+    if (inFence) {
+      kept.push(line);
+      continue;
+    }
+
+    if (inComment) {
+      inComment = !line.includes("-->");
+      continue;
+    }
+
+    if (line.includes("<!--")) {
+      if (!line.includes("-->")) {
+        inComment = true;
+        continue;
+      }
+
+      const cleaned = line.replace(/<!--[\s\S]*?-->/g, "").trim();
+
+      if (cleaned) {
+        kept.push(cleaned);
+      }
+
+      continue;
+    }
+
+    kept.push(line);
+  }
+
+  return kept.join("\n");
+};
+
 const parsePost = (segments: string[], raw: string): Post => {
   const { data, content } = matter(raw);
   const category = segments.slice(0, -1);
@@ -94,7 +142,7 @@ const parsePost = (segments: string[], raw: string): Post => {
     date: String(data.date ?? ""),
     description: String(data.description ?? ""),
     tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
-    content,
+    content: stripHtmlComments(content),
   };
 };
 
