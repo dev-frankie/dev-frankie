@@ -5,6 +5,7 @@
 
 .meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.55rem;
   margin-bottom: 0.5rem;
@@ -22,6 +23,11 @@
 .category {
   color: var(--accent);
   font-weight: 600;
+}
+
+.category:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .title {

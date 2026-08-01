@@ -1,0 +1,228 @@
+/* ── 블로그 셸: 좌측 카테고리 · 본문 ─────────────────────────────── */
+.shell {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  gap: 4rem;
+  max-width: 94rem;
+  margin: 0 auto;
+  padding: 2.5rem 2.5rem 4rem;
+  min-height: calc(100vh - 4rem);
+}
+
+/* 스크롤을 따라오는 좌측 카테고리 — 목록이 길면 내부에서만 스크롤 */
+.sidebar {
+  position: sticky;
+  top: 4rem;
+  align-self: start;
+  max-height: calc(100vh - 5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.content {
+  min-width: 0;
+}
+
+/* 목록·카테고리 페이지 — 좌측 사이드바에서 떨어뜨려 가운데로 */
+.list {
+  max-width: 46rem;
+  margin: 0 auto;
+}
+
+/* ── 글 상세: 본문 · 우측 목차 ───────────────────────────────────── */
+.postLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 14rem;
+  gap: 4rem;
+  align-items: start;
+}
+
+/* 본문은 남는 폭 안에서 가운데 — 양쪽 사이드바와 균등하게 떨어진다 */
+.article {
+  min-width: 0;
+  max-width: 46rem;
+  margin: 0 auto;
+}
+
+/* 스크롤을 따라오는 우측 목차 */
+.tocColumn {
+  position: sticky;
+  top: 4rem;
+  align-self: start;
+  max-height: calc(100vh - 5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+/* ── 공통 헤더 ──────────────────────────────────────────────────── */
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  list-style: none;
+}
+
+.breadcrumb a:hover {
+  color: var(--accent);
+}
+
+.breadcrumbSeparator {
+  color: var(--border);
+}
+
+.pageTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.pageDescription {
+  margin: 0 0 2rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.subCategories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.subCategory {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.subCategory:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.subCategoryCount {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.empty {
+  color: var(--muted);
+}
+
+/* ── 글 상세 헤더 ───────────────────────────────────────────────── */
+.postHeader {
+  margin-bottom: 2rem;
+}
+
+.postMeta {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.postTitle {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  line-height: 1.3;
+}
+
+.postDescription {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.postTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.postTags li {
+  padding: 0.15rem 0.5rem;
+  font-size: 0.75rem;
+  color: var(--accent);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+/* 모바일에서 본문 위에 접어두는 목차 */
+.tocMobile {
+  display: none;
+  margin: 0 0 2rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.tocMobile summary {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.tocMobile > nav {
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 1080px) {
+  /* 목차가 빠지면 본문이 넓어지므로 좌측 여백을 줄인다 */
+  .shell {
+    gap: 2.5rem;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  .postLayout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tocColumn {
+    display: none;
+  }
+
+  .tocMobile {
+    display: block;
+  }
+}
+
+@media (max-width: 860px) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    padding: 1.5rem 1.25rem 3rem;
+  }
+
+  .sidebar {
+    position: static;
+    max-height: none;
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+}

@@ -13,10 +13,15 @@ export const PostCard = ({ post }: PostCardProps) => (
       <time className={styles.date} dateTime={post.date}>
         {formatDate(post.date)}
       </time>
-      {post.tags[0] ? (
+      {post.categoryLabels.length > 0 ? (
         <>
           <span className={styles.sep}>/</span>
-          <span className={styles.category}>{post.tags[0]}</span>
+          <Link
+            href={`/blog/${post.category.join("/")}`}
+            className={styles.category}
+          >
+            {post.categoryLabels.join(" · ")}
+          </Link>
         </>
       ) : null}
     </div>

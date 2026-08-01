@@ -1,0 +1,39 @@
+.toc {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.heading {
+  margin: 0 0 0.75rem 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-left: 1px solid var(--border);
+}
+
+.link {
+  display: block;
+  padding: 0.3rem 0.5rem 0.3rem 0.75rem;
+  margin-left: -1px;
+  color: var(--muted);
+  border-left: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.link:hover {
+  color: var(--text);
+}
+
+.active {
+  color: var(--accent);
+  font-weight: 600;
+  border-left-color: var(--accent);
+}

@@ -40,15 +40,23 @@
       </dl>
     </section>
 
-    <section class="section" aria-labelledby="intro-heading">
-      <h2 id="intro-heading">소개</h2>
-      <ul class="intro-list">
-        <li>TypeScript, React, Next.js, Redux/Recoil/Zustand, RTK-Query/TanStack Query, Vitest, Node.js, Docker 실무</li>
-        <li>AI 분야 스타트업에서 프론트엔드를 주력으로 백엔드, CI/CD까지 폭넓은 분야를 경험하며, 10여 종의 제품을 개발·런칭</li>
-        <li>프론트엔드 성능 최적화에 강점</li>
-        <li>문제를 정의하고 수치로 가능한 개선을 일상으로 만드는 개발자</li>
-        <li>AI 도메인에 대한 지식이 깊고 AI Assistant 활용에 강점</li>
-      </ul>
+    <section class="section" aria-labelledby="about-heading">
+      <h2 id="about-heading">About Me</h2>
+      <p class="intro">
+        AI 도메인 스타트업에서 프론트엔드를 주력으로 백엔드·CI/CD까지 폭넓게 경험하며,
+        10여 종의 제품을 개발·런칭해 온 프론트엔드 엔지니어입니다.
+      </p>
+      <p class="intro">
+        현재 <b>셀렉트스타</b>에서 LLM 평가 SaaS <b>Datumo Eval</b>의 프론트엔드 리드로,
+        아키텍처 리팩토링부터 인증·성능·품질 체계까지 프론트엔드 전반을 이끌고 있습니다.
+        이전 <b>딥브레인AI</b>에서는 생성형 AI 영상 플랫폼 <b>AI Studios V3</b>와
+        다수의 B2B·공공 AI 프로젝트를 설계·개발했습니다.
+      </p>
+      <p class="intro">
+        단순 구현을 넘어 <b>문제를 정의하고 개선을 수치로 증명하는 것</b>을 원칙으로 삼습니다.
+        성능 최적화와 개발자 경험(DX) 개선에 강점이 있고, AI 도메인 지식과
+        AI 코딩 어시스턴트 활용에 능숙합니다.
+      </p>
     </section>
 
     <section class="section" aria-labelledby="skills-heading">
@@ -56,71 +64,238 @@
       <table class="skills-table">
         <tbody>
           <tr>
-            <th scope="row">Language</th>
-            <td>TypeScript, JavaScript, Python</td>
-          </tr>
-          <tr>
             <th scope="row">Frontend</th>
-            <td>React, Next.js, Redux, Recoil, Zustand, RTK-Query, TanStack Query</td>
+            <td>React, Next.js, TypeScript, JavaScript</td>
           </tr>
           <tr>
-            <th scope="row">Backend / Infra</th>
-            <td>Node.js, Docker, Redis, Jenkins, ArgoCD, GitHub Actions</td>
+            <th scope="row">State</th>
+            <td>Zustand, Recoil, Redux, RTK-Query, TanStack Query</td>
+          </tr>
+          <tr>
+            <th scope="row">UI / Viz</th>
+            <td>shadcn/ui, Styled Components, Canvas, Fabric.js, D3.js</td>
           </tr>
           <tr>
             <th scope="row">Testing / Quality</th>
-            <td>Vitest, Playwright, ESLint, Husky, Lighthouse CI, Sentry</td>
+            <td>Vitest, Playwright, Storybook, ESLint, Husky, Lighthouse CI, Sentry</td>
           </tr>
           <tr>
-            <th scope="row">기타</th>
-            <td>Canvas/Fabric.js, D3.js, NextAuth, OpenAPI, SSE, FSD</td>
+            <th scope="row">Backend / Infra</th>
+            <td>Node.js, Python, Docker, Redis, Jenkins, ArgoCD, GitHub Actions</td>
+          </tr>
+          <tr>
+            <th scope="row">Etc.</th>
+            <td>NextAuth, OpenAPI (openapi-typescript), SSE, FSD, next-intl</td>
           </tr>
         </tbody>
       </table>
     </section>
 
     <section class="section" aria-labelledby="experience-heading">
-      <h2 id="experience-heading">경력</h2>
+      <h2 id="experience-heading">Experience</h2>
 
+      <!-- 셀렉트스타 -->
       <article class="experience-item">
         <h3>셀렉트스타 · 프론트엔드 리드</h3>
         <p class="experience-meta">2025.07 – 현재 · 서울</p>
+        <p class="experience-desc">Datumo Eval — LLM 정량·정성 평가, Red Teaming, 실시간 모니터링 SaaS 플랫폼의 프론트엔드 아키텍처·핵심 기능 개발</p>
 
-        <h4 class="experience-sub">Dtumo Eval — LLM 평가 플랫폼 프론트엔드 리드 (2025.07 – 2026.02)</h4>
-        <p class="experience-stack">Tech Stack: TypeScript, Next.js, Zustand, TanStack Query</p>
-        <p class="experience-desc">LLM의 정량/정성 평가, Red Teaming, 실시간 모니터링 SaaS 플랫폼의 프론트엔드 아키텍처 리팩토링 및 핵심 기능 개발</p>
-        <ul>
-          <li>SSG → 동적 아키텍처 전환, Next.js 14→16, NextAuth + Middleware 인증·권한 라우팅</li>
-          <li>FSD 패턴 도입, Polling → SSE 전환, Recoil → Zustand 마이그레이션</li>
-          <li>openapi-typescript 기반 API 타입 자동 생성, D3.js 시각화, shadcn UI + Storybook</li>
-          <li>Vitest + Playwright, Lighthouse CI Budget Gate, Sentry, AI 코딩 컨벤션 가이드</li>
-        </ul>
+        <div class="project">
+          <h4 class="experience-sub">[1] 플랫폼 아키텍처 리팩토링 &amp; 인증·권한 라우팅</h4>
+          <p class="project-tags">
+            <span class="tag-key">기술 스택</span> Next.js 16, React 19, TypeScript, Zustand, TanStack Query, NextAuth
+            <span class="tag-key">역할</span> 프론트엔드 리드
+          </p>
+          <p class="rlabel">배경</p>
+          <p>SSG 기반 구조로는 인증·권한·실시간 요구에 대응하기 어려웠고, Next 14 · Recoil · Polling 조합이 확장성과 유지보수의 병목이었습니다.</p>
+          <p class="rlabel">수행 내용</p>
+          <ul>
+            <li>SSG → 동적 렌더링 아키텍처 전환, Next.js 14 → 16 업그레이드</li>
+            <li>NextAuth + Middleware 기반 인증·권한 라우팅 체계 구축</li>
+            <li>Recoil → Zustand 상태관리 마이그레이션, Polling → SSE 전환으로 실시간성 확보</li>
+            <li>FSD(Feature-Sliced Design) 패턴 도입으로 기능 단위 구조 표준화</li>
+            <li>openapi-typescript 기반 API 타입 자동 생성으로 백엔드-프론트 타입 정합성 확보</li>
+          </ul>
+          <p class="rlabel">결과</p>
+          <ul>
+            <li>기능 단위로 영향 범위를 관리하는 확장 가능한 구조 확보</li>
+            <li>SSE 전환으로 실시간 모니터링 반영 지연 제거, 상태관리 보일러플레이트 감소</li>
+          </ul>
+        </div>
+
+        <div class="project">
+          <h4 class="experience-sub">[2] 대규모 평가 테이블 성능 최적화 (Prefetch · Virtualization)</h4>
+          <p class="project-tags">
+            <span class="tag-key">기술 스택</span> TanStack Query, TanStack Table, Playwright, User Timing API
+            <span class="tag-key">역할</span> 성능 측정·최적화
+          </p>
+          <p class="rlabel">배경</p>
+          <p>수백 컬럼·깊게 중첩된 평가 결과 테이블은 진입 지연과 스크롤 병목이 있었고, 평가 Run 1건 조회에 7-way 조인이 필요해 응답이 느렸습니다.</p>
+          <p class="rlabel">수행 내용</p>
+          <ul>
+            <li>React Query hover/SSR prefetch + HydrationBoundary로 진입 체감 개선</li>
+            <li>TanStack Table 가상화(Virtualization)로 DOM 렌더 행 수 절감</li>
+            <li>Playwright + User Timing API로 4-way(ON/OFF) A/B 성능 측정 자동화</li>
+          </ul>
+          <p class="rlabel">결과</p>
+          <table class="metric-table">
+            <thead>
+              <tr><th scope="col">지표</th><th scope="col">Before</th><th scope="col">After</th><th scope="col">개선폭</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>진입 체감(nav, median 평균)</td><td>472ms</td><td>323ms</td><td class="metric-up">32%↓</td></tr>
+              <tr><td>DOM 렌더 행 수(대용량 케이스)</td><td>46행</td><td>18행</td><td class="metric-up">61%↓</td></tr>
+            </tbody>
+          </table>
+          <p class="mnote">최대 개선 케이스(llm-as-judge) 진입 체감 623ms → 148ms</p>
+        </div>
+
+        <div class="project">
+          <h4 class="experience-sub">[3] 글로벌 다국어(i18n) 번역 플로우 구축</h4>
+          <p class="project-tags">
+            <span class="tag-key">기술 스택</span> next-intl, Google Sheets API, GitHub Actions
+            <span class="tag-key">역할</span> 설계·구축
+          </p>
+          <p class="rlabel">배경</p>
+          <p>문구 하나 반영에 en/ko/ja JSON·TSV·시트를 오가야 했고, <code>en</code>의 소유권이 코드와 시트로 이원화되어 번역 충돌과 영어 역류가 반복됐습니다.</p>
+          <p class="rlabel">수행 내용</p>
+          <ul>
+            <li>"컬럼 단위 소유권" 원칙으로 재설계 — key+en은 코드, ko/ja는 번역자(시트)가 단일 소유</li>
+            <li>코드의 <code>t()</code> 호출에서 키를 자동 추출해 en.json 생성(dev watcher · pre-commit)</li>
+            <li>시트 동기화 · "번역 완료" 버튼 · sync PR 생성을 GitHub Actions로 자동화</li>
+          </ul>
+          <p class="rlabel">결과</p>
+          <ul>
+            <li>개발자는 <code>t()</code>만, 번역자는 ko/ja만 — 역할 분리로 번역 충돌을 구조적으로 제거</li>
+            <li>영어 역류 사고 원천 차단, 미번역 키는 런타임 영어 폴백으로 화면 안정성 확보</li>
+          </ul>
+        </div>
+
+        <div class="project">
+          <h4 class="experience-sub">[4] 에러 모니터링 &amp; 프론트엔드 품질 체계</h4>
+          <p class="project-tags">
+            <span class="tag-key">기술 스택</span> Sentry, Vitest, Playwright, Lighthouse CI, Storybook, D3.js
+            <span class="tag-key">역할</span> 품질 체계 구축
+          </p>
+          <p class="rlabel">배경</p>
+          <p>에러는 수집되지만 이슈만으로 원인을 추적하기 어려웠고, 회귀·성능 저하를 사전에 막을 게이트가 없었습니다.</p>
+          <p class="rlabel">수행 내용</p>
+          <ul>
+            <li>TanStack Query onError 길목에서 Scope(level·tags·fingerprint·context)를 입혀 Sentry 계측 고도화, 노이즈 3계층 필터링</li>
+            <li>Vitest 단위 테스트 + Playwright E2E, Lighthouse CI Budget Gate로 성능 회귀 차단</li>
+            <li>Storybook + shadcn/ui 기반 UI 문서화, D3.js 평가 지표 시각화</li>
+            <li>Claude Code(작성자) × Codex(검증자) 교차검증 하네스 구축 — 도입 첫날 자체 버그 12건 검출</li>
+          </ul>
+          <p class="rlabel">결과</p>
+          <ul>
+            <li>이슈 제목만으로 원인 API·릴리즈·사용자 파악, 알림 신뢰도 향상</li>
+            <li>성능·회귀를 CI 게이트로 차단하는 품질 자동화 체계 확립</li>
+          </ul>
+        </div>
       </article>
 
+      <!-- 딥브레인AI -->
       <article class="experience-item">
-        <h3>주식회사 딥브레인AI · 웹 개발</h3>
-        <p class="experience-meta">2022.03 – 2025.03 (3년) · 정규직 · 서울</p>
+        <h3>딥브레인AI · 웹 개발</h3>
+        <p class="experience-meta">2022.03 – 2025.03 · 서울</p>
+        <p class="experience-desc">생성형 AI 영상 합성 SaaS(AI Studios)와 다수의 B2B·공공 AI 프로젝트 프론트엔드 개발</p>
 
-        <h4 class="experience-sub">AI Studios V3 (2023.08 – 2025.02)</h4>
-        <p class="experience-stack">Tech Stack: TypeScript, Next.js, Redux/RTK Query, Canvas, Fabric.js</p>
-        <ul>
-          <li>v2→v3 리팩토링, FCP/LCP/TTI 평균 30% 이상 단축</li>
-          <li>캔버스 에디터, 1,000만 건 통계 대시보드 (FCP 1.2s→0.4s, LCP 4.5s→2.2s)</li>
-          <li>요금제 확장·구독 해지 방어 → 1개월 구독 200명 증가</li>
-          <li>10개국어 지역화, 마케팅 자동화 A/B 테스트</li>
-        </ul>
+        <div class="project">
+          <h4 class="experience-sub">[1] AI Studios V3 프론트엔드 (리팩토링 · 대시보드 · 요금제 · 캔버스 에디터)</h4>
+          <p class="project-tags">
+            <span class="tag-key">기술 스택</span> Next.js, TypeScript, Redux, RTK-Query, Canvas, Fabric.js, FFmpeg, Kubernetes
+            <span class="tag-key">역할</span> 프론트엔드 주력 개발
+          </p>
+          <p class="rlabel">배경</p>
+          <p>v2는 성능·유지보수 한계가 있었고, 1,000만 건 이상의 데이터를 실시간으로 파악할 수단이 없었으며, 레거시·신규 요금제가 혼재해 있었습니다.</p>
+          <p class="rlabel">수행 내용</p>
+          <ul>
+            <li>v2 → v3 리팩토링으로 FCP/LCP/TTI 평균 30% 이상 단축</li>
+            <li>1,000만 건+ 프로젝트 데이터 실시간 통계 대시보드 + 쿠버네티스 Cron 기반 데일리 리포트 자동화</li>
+            <li>캔버스 에디터: 텍스트→이미지/비디오 생성 연동, 정렬 스냅 가이드, FFmpeg 기반 비디오 트림, 동적 에셋 툴바(useResizeObserver + React Portal Floating)</li>
+            <li>요금제별 권한 매트릭스·커스텀 훅 설계, 구독 해지 방어(설문·크레딧·히스토리), Stripe 결제 연동</li>
+          </ul>
+          <p class="rlabel">결과</p>
+          <table class="metric-table">
+            <thead>
+              <tr><th scope="col">지표</th><th scope="col">Before</th><th scope="col">After</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>통계 대시보드 FCP</td><td>1.2s</td><td>0.4s</td></tr>
+              <tr><td>통계 대시보드 LCP</td><td>4.5s</td><td>2.2s</td></tr>
+            </tbody>
+          </table>
+          <p class="mnote">신규 요금제 확장·구독 해지 방어로 구독자 약 200명 증가</p>
+        </div>
 
-        <h4 class="experience-sub">백오피스 및 로그인 통합 (2022.11 – 2023.06)</h4>
-        <ul>
-          <li>NextAuth.js 기반 통합 인증 NPM 패키지, SSO, 소셜 로그인</li>
-          <li>기업/부서/멤버/AI 리소스 통합 관리 대시보드</li>
-        </ul>
+        <div class="project">
+          <h4 class="experience-sub">[2] 통합 인증(SSO) &amp; 백오피스 Account 서버</h4>
+          <p class="project-tags">
+            <span class="tag-key">기술 스택</span> Next.js, NextAuth, Node.js, Redis, Fabric.js
+            <span class="tag-key">역할</span> 설계·개발
+          </p>
+          <p class="rlabel">배경</p>
+          <p>자사 서비스마다 로그인 방식이 달라 사용자 경험이 단절되고 개발 효율이 떨어졌습니다.</p>
+          <p class="rlabel">수행 내용</p>
+          <ul>
+            <li>next-auth 기반 OAuth 통합 로그인 모듈을 npm 패키지로 배포(Google/MS/Apple/Facebook), SSO 구축</li>
+            <li>기업/부서/멤버 통합 어드민, AI Voice·Avatar 리소스 관리(Fabric.js 좌표 에디터), 사용자 단어사전 개발</li>
+            <li>Redis 기반 중복 로그인 방지, 탈퇴 후 30일 경과 계정 자동 삭제 CRON 배치</li>
+          </ul>
+          <p class="rlabel">결과</p>
+          <ul>
+            <li>SSO로 서비스 간 재로그인 제거, 소셜 로그인 도입으로 신규 유입·로그인 편의성 개선</li>
+            <li>통합 어드민 구축으로 리소스·회원 관리 효율화</li>
+          </ul>
+        </div>
 
-        <h4 class="experience-sub">B2B Project (2022.03 – 2023.11)</h4>
-        <ul>
-          <li>KB증권 드림아바타, 농협 AI 통역·허브·Kiosk, 서울시교육청 AI 교과서</li>
-          <li>AI 학습용 데이터 플랫폼 — 학습용 이미지 13만 장 제작</li>
-        </ul>
+        <div class="project">
+          <h4 class="experience-sub">[3] B2B · 공공 AI 프로젝트 (10여 종 제품 개발·런칭)</h4>
+          <p class="project-tags">
+            <span class="tag-key">기술 스택</span> React, Next.js, Canvas, TensorFlow.js, STT/TTS, ChatGPT API
+            <span class="tag-key">역할</span> 설계·개발
+          </p>
+          <p class="rlabel">수행 내용</p>
+          <ul>
+            <li><b>KB증권 드림아바타</b> — 사진·음성 기반 말하는 AI 명함 PoC (얼굴 인식·좌표 지정, AI 합성 서버 연동)</li>
+            <li><b>농협은행 AI 허브·홍보 Kiosk</b> (약 20억) — PoseNet 포즈 인식, 폴라로이드 즉시 출력, KT STT 연동, On-Premise 관리자</li>
+            <li><b>서울시교육청 AI 디지털 교과서</b> — 웹 E-book + AI 질의응답(2023 디지털러닝페스티벌 참여)</li>
+            <li><b>국민은행 금융비서</b> (약 13억) — 자사 관리자 기능 On-Premise 탑재</li>
+            <li><b>태블릿 AI 실시간 통역</b> — Google/Azure STT·자사 TTS로 10개국+ 지원, ChatGPT 문맥 기반 번역</li>
+            <li><b>월드비전 꿈엽서 대회 AI 시상영상</b> — 엑셀 기반 대량 합성·Job 스케줄링 자동화</li>
+            <li><b>AI 학습용 데이터 라벨링·검수 플랫폼</b> (정부과제 약 20억) — 자동 라벨링 Inference + 검수/보정 툴, 학습용 이미지 10만 장+ 데이터셋 제작</li>
+          </ul>
+          <p class="rlabel">결과</p>
+          <ul>
+            <li>금융·공공·교육 등 다양한 도메인의 AI 제품을 기획·설계·개발·런칭</li>
+            <li>프론트엔드 주력 역량 위에 백엔드·인프라 경험을 폭넓게 확장</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- Deepbuild -->
+      <article class="experience-item">
+        <h3>Deepbuild Inc · ML Engineering</h3>
+        <p class="experience-meta">2021.07 – 2022.02 · 서울</p>
+        <p class="experience-desc">인테리어 추천 플랫폼 Pinterior — 상권 데이터 분석 및 추천 모델 서빙</p>
+
+        <div class="project">
+          <h4 class="experience-sub">[1] 상권 분석 &amp; 인테리어 추천 시스템</h4>
+          <p class="project-tags">
+            <span class="tag-key">기술 스택</span> Python, Flask, GNN, AutoEncoder
+            <span class="tag-key">역할</span> 데이터 분석·모델 서빙
+          </p>
+          <p class="rlabel">수행 내용</p>
+          <ul>
+            <li>지역·날짜·성별·연령·이동반경 데이터로 시간대별 유동 인구 예측 및 상권 정보 제공</li>
+            <li>GNN 기반 추천 모델 최적화 및 AutoEncoder 기반 유사 인테리어 추천 구현</li>
+            <li>Flask 기반 서버로 실시간 추천 결과 서빙</li>
+          </ul>
+          <p class="rlabel">결과</p>
+          <ul>
+            <li>상권 데이터 기반 맞춤형 추천 시스템을 구축해 상용 서비스에 적용</li>
+          </ul>
+        </div>
       </article>
     </section>
 

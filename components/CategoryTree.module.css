@@ -1,0 +1,105 @@
+.nav {
+  font-size: 0.875rem;
+}
+
+.heading {
+  margin: 0 0 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  padding: 0;
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.toggle:hover {
+  color: var(--accent);
+  background: var(--surface);
+}
+
+.togglePlaceholder {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.caret,
+.caretOpen {
+  display: inline-block;
+  font-size: 0.6875rem;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+.caretOpen {
+  transform: rotate(90deg);
+}
+
+.link {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.3rem 0.5rem;
+  color: var(--muted);
+  border-radius: 6px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.link:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.linkOnPath {
+  color: var(--text);
+}
+
+.linkActive {
+  color: var(--accent);
+  font-weight: 600;
+  background: var(--surface);
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.count {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
