@@ -207,3 +207,11 @@
 .backLink:hover {
   color: var(--accent);
 }
+
+@media print {
+  .containerResume,
+  .containerWide {
+    max-width: none;
+    padding: 0;
+  }
+}

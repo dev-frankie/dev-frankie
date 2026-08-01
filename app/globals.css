@@ -187,3 +187,56 @@ h6 {
 .hljs-strong {
   font-weight: 600;
 }
+
+/* ── 인쇄 / PDF (npm run docs:pdf) ─────────────────────────────────
+   화면과 같은 레이아웃을 그대로 쓰되, 사이트 크롬만 걷어낸다. */
+@page {
+  size: A4;
+  margin: 14mm 13mm;
+}
+
+@media print {
+  :root,
+  :root[data-theme="dark"] {
+    --bg: #fff;
+    --surface: #f6f8fa;
+    --text: #1b2432;
+    --muted: #5b6675;
+    --accent: #1a4fbf;
+    --accent-soft: rgba(26, 79, 191, 0.08);
+    --border: #d7dde7;
+    --shadow: none;
+    color-scheme: light;
+  }
+
+  /* 사이트 헤더(네비)는 문서에 불필요.
+     Header.module.css의 .header{display:flex}가 클래스 선택자라 더 강하므로
+     !important로 눌러야 한다 (미디어쿼리는 우선순위를 올리지 않는다) */
+  body > header {
+    display: none !important;
+  }
+
+  /* 페이지 폭은 @page가 정하므로 컨테이너 여백을 없앤다 */
+  main {
+    min-height: 0;
+  }
+
+  /* 제목이 페이지 끝에 홀로 남지 않게 */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    break-after: avoid;
+  }
+
+  table,
+  blockquote,
+  pre {
+    break-inside: avoid;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
