@@ -9,12 +9,12 @@ version_note: "@tanstack/react-query v5 기준"
 
 > **TanStack Query 딥다이브 시리즈**
 >
-> - **1편 (이 글)** — 서버 상태를 관리한다는 것: 사용법과 옵션, 그리고 그 설계 판단
-> - [2편 — 소스로 읽는 내부 동작](./tanstack-query-deep-dive): `useBaseQuery`부터 `notifyManager`까지 v5.95.0 소스 순회
+> - **1편 (이 글)**: 서버 상태를 관리한다는 것: 사용법과 옵션, 그리고 그 설계 판단
+> - [2편: 소스로 읽는 내부 동작](./tanstack-query-deep-dive): `useBaseQuery`부터 `notifyManager`까지 v5.95.0 소스 순회
 
-이전에는 `useState`와 `useEffect`로 API를 호출하여 데이터를 불러왔습니다. 로딩 플래그, 에러 상태, 언마운트 가드, 중복 요청 방지 등등 여러가지 부가적인 장치들이 필요하였습니다.
+이전에는 `useState`와 `useEffect`로 API를 불러왔습니다. 로딩 플래그, 에러 상태, 언마운트 가드, 중복 요청 방지 같은 장치를 화면마다 다시 붙였습니다.
 
-TanStack Query는 그 반복을 대신 해주는 도구입니다. useQuery 등을 사용하여 간단히 구현할 수 있습니다. 그런데 막상 제대로 사용하려고 하면 너무 다양한 옵션들이 있습니다. `staleTime`과 `gcTime`이 뭐가 다른지, `status`와 `fetchStatus`는 왜 둘인지, `invalidate`는 왜 refetch가 아닌지.
+TanStack Query는 그 반복을 대신 해주는 도구입니다. `useQuery` 하나로 끝나는 것처럼 보이는데, 정작 제대로 쓰려고 하면 옵션이 너무 많습니다. `staleTime`과 `gcTime`이 뭐가 다른지, `status`와 `fetchStatus`는 왜 둘인지, `invalidate`는 왜 refetch가 아닌지.
 
 이 글은 그 옵션들이 **왜 그렇게 생겼는지**를 따라가는 1편입니다. 사용법을 나열하기보다 설계 의도를 보고, 마지막에 이 라이브러리가 안 맞는 경우까지 짚습니다. 내부 구현을 소스 레벨로 따라가는 건 [2편](./tanstack-query-deep-dive)에서 다룹니다.
 
@@ -82,8 +82,7 @@ const { data, isLoading, error, isFetching } = useQuery({
 });
 ```
 
-이처럼 반복적인 코드를 줄여주고 정형화된 방식으로 내장된 기능을 사용할 수 있습니다.
-세부적인 옵션들을 살펴보기전에 먼저 기본적인 아키텍처 구조부터 설명하겠습니다.
+반복 코드가 줄고, 상태를 표현하는 방식이 하나로 통일됩니다. 옵션을 보기 전에 이게 안에서 어떻게 돌아가는지부터 짚습니다.
 
 ### 아키텍처 (2-layer)
 
@@ -104,10 +103,10 @@ flowchart TB
   end
 ```
 
-- **`@tanstack/query-core`**: 프레임워크에 무관한 엔진입니다(캐시·fetch·retry·invalidate).
+- **`@tanstack/query-core`**: 프레임워크에 무관한 엔진입니다(캐시, fetch, retry, invalidate).
 - **`@tanstack/react-query`**: React 훅 어댑터입니다(`useSyncExternalStore`로 구독).
 
-**플로우차트 노드 한 줄 설명 — react-query (React 어댑터)**
+**플로우차트 노드 한 줄 설명: react-query (React 어댑터)**
 
 | 노드                   | 한 줄 역할                                                                                                                                                                                                                  |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -243,7 +242,7 @@ export function useUserQuery(userId: number, enabled = true) {
 - `isLoading` = `isPending && isFetching` (첫 로딩)
 - `isRefetching` = `isFetching && !isPending` (백그라운드 재요청)
 
-> **쉽게:** `status`는 "**데이터 있어?**"(결과), `fetchStatus`는 "**지금 네트워크 돌아?**"(과정)를 뜻합니다. 둘은 독립 축이라 — _데이터는 있는데(success) 동시에 백그라운드로 새로 받는 중(fetching)_ 같은 조합이 자연스럽습니다.
+> **쉽게:** `status`는 "**데이터 있어?**"(결과), `fetchStatus`는 "**지금 네트워크 돌아?**"(과정)를 뜻합니다. 둘은 독립 축입니다. _데이터는 있는데(success) 동시에 백그라운드로 새로 받는 중(fetching)_ 같은 조합이 자연스럽습니다.
 
 #### 두 축의 질문
 
@@ -351,7 +350,7 @@ onSuccess: () => queryClient.invalidateQueries({ queryKey: ["todos"] });
 
 ### Q1. `staleTime`이랑 `gcTime` 차이가 계속 헷갈려요.
 
-`staleTime` = "데이터가 신선한 기간"(이 동안은 refetch 안 함, 기본 0 = 즉시 stale). `gcTime` = "구독자(observer)가 0개가 된 뒤 캐시를 메모리에 유지하는 시간"(기본 5분, 지나면 GC). staleTime은 네트워크 절약, gcTime은 메모리 회수 — 서로 별개 축입니다.
+`staleTime` = "데이터가 신선한 기간"(이 동안은 refetch 안 함, 기본 0 = 즉시 stale). `gcTime` = "구독자(observer)가 0개가 된 뒤 캐시를 메모리에 유지하는 시간"(기본 5분, 지나면 GC). staleTime은 네트워크 절약, gcTime은 메모리 회수. 서로 별개 축입니다.
 
 ### Q2. `queryKey`랑 `queryHash`는 뭐가 달라요?
 
@@ -363,7 +362,7 @@ onSuccess: () => queryClient.invalidateQueries({ queryKey: ["todos"] });
 
 ---
 
-나머지 열 개 — `useSyncExternalStore`, tearing, Observer, `notifyManager` 배칭 등 — 는 내부 구현을 봐야 답이 되는 것들이라 [2편](./tanstack-query-deep-dive)으로 옮겼습니다.
+나머지 열 개는 내부 구현을 봐야 답이 되는 것들이라(`useSyncExternalStore`, tearing, Observer, `notifyManager` 배칭 등) [2편](./tanstack-query-deep-dive)으로 옮겼습니다.
 
 ## 5. v5 체크리스트
 
@@ -377,7 +376,7 @@ onSuccess: () => queryClient.invalidateQueries({ queryKey: ["todos"] });
 
 ## 6. 옵션 이름이 헷갈리는 진짜 이유
 
-여기까지가 무엇을 쓰는지입니다. 여기서부터는 왜 이렇게 생겼는지에 대한 제 판단입니다.
+여기서부터는 이 옵션들이 왜 이렇게 생겼는지에 대한 제 판단입니다.
 
 `staleTime`과 `gcTime`이 계속 헷갈리는 건 개념이 어려워서가 아닙니다. **두 값이 서로 다른 질문에 답하는데, 이름이 둘 다 시간처럼 보이기 때문**입니다.
 
@@ -390,8 +389,8 @@ onSuccess: () => queryClient.invalidateQueries({ queryKey: ["todos"] });
 
 `status`와 `fetchStatus`를 쪼갠 것도 같은 종류의 정리입니다. v4의 `isLoading`은 "데이터가 없다"와 "네트워크가 돌고 있다"를 한 플래그에 뭉쳐놨습니다. 그래서 background refetch 중에도 `isLoading`이 true가 되어 스켈레톤이 다시 뜨는 문제가 흔했습니다. v5는 이걸 갈랐습니다.
 
-- `status` — 데이터가 있느냐 (`pending` / `error` / `success`)
-- `fetchStatus` — 지금 네트워크가 도느냐 (`fetching` / `paused` / `idle`)
+- `status`: 데이터가 있느냐 (`pending` / `error` / `success`)
+- `fetchStatus`: 지금 네트워크가 도느냐 (`fetching` / `paused` / `idle`)
 
 이건 API를 복잡하게 만든 게 아니라, **원래 두 개였던 걸 두 개로 되돌린 것**입니다. 이름이 늘어나는 대신 "첫 로딩엔 스켈레톤, 갱신 중엔 기존 데이터 + 인디케이터"를 분기 없이 표현할 수 있게 됩니다.
 
@@ -412,7 +411,7 @@ TanStack Query가 푸는 건 **서버 상태**입니다. 내가 소유하지 않
 
 ## 8. 그럼 내부까지 알아야 하나
 
-솔직히 말하면, 처음부터는 아닙니다. 1~5장만으로 실무는 돌아갑니다.
+처음부터는 아닙니다. 1~5장만으로 실무는 돌아갑니다.
 
 다만 두 상황에서 내부 지식이 필요해집니다. 하나는 **성능 문제가 생겼을 때**입니다. 리렌더가 왜 이렇게 자주 도는지, 왜 이 컴포넌트만 안 갱신되는지 같은 문제는 Observer가 어떻게 붙고 알림이 어떻게 배칭되는지를 모르면 진단이 안 됩니다. 다른 하나는 **라이브러리가 예상과 다르게 동작할 때**입니다. 문서에 없는 동작을 만나면 결국 소스를 열게 됩니다.
 
@@ -424,14 +423,14 @@ TanStack Query가 푸는 건 **서버 상태**입니다. 내가 소유하지 않
 
 - [TanStack Query 공식 문서](https://tanstack.com/query/latest)
 - [TanStack Query GitHub](https://github.com/TanStack/query)
-- [v5 마이그레이션 가이드 — 객체 API, `isPending`, `gcTime`](https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5)
-- [Important Defaults — `staleTime` / `gcTime`](https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults)
-- [TkDodo — Practical React Query 시리즈](https://tkdodo.eu/blog/practical-react-query)
-- [TkDodo — Effective React Query Keys](https://tkdodo.eu/blog/effective-react-query-keys)
+- [v5 마이그레이션 가이드: 객체 API, `isPending`, `gcTime`](https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5)
+- [Important Defaults: `staleTime` / `gcTime`](https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults)
+- [TkDodo: Practical React Query 시리즈](https://tkdodo.eu/blog/practical-react-query)
+- [TkDodo: Effective React Query Keys](https://tkdodo.eu/blog/effective-react-query-keys)
 
 <!-- 이미지 체크리스트
-IMG-01 [내가 캡처] React Query Devtools — staleTime 경과 전/후 쿼리 상태 — 미완료
+IMG-01 [내가 캡처] React Query Devtools, staleTime 경과 전/후 쿼리 상태: 미완료
          의도: 6장의 "신선도와 수명은 다른 축"을 눈으로
-IMG-02 [내가 캡처] background refetch 중 화면 (기존 데이터 유지 + 인디케이터) — 미완료
+IMG-02 [내가 캡처] background refetch 중 화면 (기존 데이터 유지 + 인디케이터): 미완료
          의도: status/fetchStatus 분리의 실익
 -->

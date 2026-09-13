@@ -312,6 +312,14 @@
   padding: 0.4rem 0.6rem;
 }
 
+/* 1열(영역)은 한 줄로 고정 — 폭은 내용에 맞춰 늘고 나머지는 다른 열이 가져간다 */
+.resume :global(th:first-child),
+.resume :global(td:first-child) {
+  width: 1%;
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
 .resume :global(th) {
   font-weight: 600;
   color: var(--muted);

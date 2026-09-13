@@ -1,15 +1,15 @@
 ---
 title: "TanStack Query 하편: 소스로 읽는 내부 동작"
 date: "2026-07-11"
-description: "useQuery 한 줄이 useBaseQuery·QueryObserver·createRetryer·notifyManager를 거쳐 화면에 닿기까지. v5.95.0 소스를 순서대로 따라가고, 그 설계가 무엇을 맞바꿨는지까지 본다."
+description: "useQuery 한 줄이 `useBaseQuery`부터 `QueryObserver`, `createRetryer`, `notifyManager`까지를 거쳐 화면에 닿기까지. v5.95.0 소스를 순서대로 따라가고, 그 설계가 무엇을 맞바꿨는지까지 본다."
 tags: ["TanStack Query", "React", "Deep Dive"]
 series: "TanStack Query 딥다이브 2/2"
 version_note: "@tanstack/react-query v5.95.0 기준. 버전이 다르면 파일 구조와 함수명이 다를 수 있습니다."
 ---
 
 > **TanStack Query 딥다이브 시리즈**
-> - [1편 — 서버 상태를 라이브러리에 맡긴다는 것](./tanstack-query-guide): 사용법과 옵션, 그리고 그 설계 판단
-> - **2편 (이 글)** — 소스로 읽는 내부 동작
+> - [1편: 서버 상태를 관리한다는 것](./tanstack-query-guide): 사용법과 옵션, 그리고 그 설계 판단
+> - **2편 (이 글)**: 소스로 읽는 내부 동작
 
 1편에서는 `staleTime`과 `gcTime`이 왜 다른 축인지, `status`와 `fetchStatus`를 왜 쪼갰는지를 봤습니다. 결론은 v5가 이름의 친절함을 정확함과 맞바꿨다는 것이었습니다.
 
@@ -32,16 +32,16 @@ useQuery → useBaseQuery → QueryObserver 구독 → QueryCache(Query 확보) 
          → createRetryer(queryFn 실행) → #dispatch → notifyManager → React 리렌더
 ```
 
-**마운트(첫 렌더) — 데이터를 처음 가져올 때까지**
+**마운트(첫 렌더): 데이터를 처음 가져올 때까지**
 
-1. **`useQuery(options)` 호출** → 곧바로 내부의 `useBaseQuery`가 실행됩니다. *(STEP 1·2)*
-2. **`new QueryObserver` 생성 후 `useSyncExternalStore`로 구독** → "이 쿼리가 바뀌면 이 컴포넌트를 다시 그려줘"를 React에 등록합니다. *(STEP 2·3)*
-3. **구독되는 순간 `observer.onSubscribe()` 실행** → `QueryCache.build()`가 `queryKey`에 맞는 `Query`를 *있으면 가져오고 없으면 새로 만듭니다*(get-or-create). → **같은 키를 쓰는 다른 컴포넌트와 캐시를 공유**하는 지점입니다. *(STEP 4·6)*
-4. **데이터가 없거나 오래됐으면(stale) `Query.fetch()` 시작** → `createRetryer`가 우리가 넘긴 `queryFn`(실제 API 호출)을 실행합니다. 실패하면 자동으로 재시도합니다. *(STEP 7·9)*
+1. **`useQuery(options)` 호출** → 곧바로 내부의 `useBaseQuery`가 실행됩니다. *(STEP 1, 2)*
+2. **`new QueryObserver` 생성 후 `useSyncExternalStore`로 구독** → "이 쿼리가 바뀌면 이 컴포넌트를 다시 그려줘"를 React에 등록합니다. *(STEP 2, 3)*
+3. **구독되는 순간 `observer.onSubscribe()` 실행** → `QueryCache.build()`가 `queryKey`에 맞는 `Query`를 *있으면 가져오고 없으면 새로 만듭니다*(get-or-create). → **같은 키를 쓰는 다른 컴포넌트와 캐시를 공유**하는 지점입니다. *(STEP 4, 6)*
+4. **데이터가 없거나 오래됐으면(stale) `Query.fetch()` 시작** → `createRetryer`가 우리가 넘긴 `queryFn`(실제 API 호출)을 실행합니다. 실패하면 자동으로 재시도합니다. *(STEP 7, 9)*
 5. **응답 도착 → `Query.#dispatch({ type: 'success' })`** → 쿼리의 `state.data`가 채워지고 `status`가 `'success'`로 바뀝니다. *(STEP 8)*
-6. **`#dispatch`가 구독자 전원에게 알림** → `notifyManager`가 알림을 *모아서 한 번에* 흘려보내고 → 각 `observer.updateResult()`가 새 `result`를 계산하고 → `onStoreChange` → **React가 리렌더**합니다. *(STEP 10·4)*
+6. **`#dispatch`가 구독자 전원에게 알림** → `notifyManager`가 알림을 *모아서 한 번에* 흘려보내고 → 각 `observer.updateResult()`가 새 `result`를 계산하고 → `onStoreChange` → **React가 리렌더**합니다. *(STEP 10, 4)*
 
-**mutation 후 — 바뀐 서버 데이터를 화면에 다시 맞추기**
+**mutation 후: 바뀐 서버 데이터를 화면에 다시 맞추기**
 
 1. **`queryClient.invalidateQueries({ queryKey })`** → 매칭되는 쿼리에 `isInvalidated = true` *표시만* 합니다. **아직 네트워크 요청은 하지 않습니다.** *(STEP 5)*
 2. **`refetchQueries`가 자동 실행** → 그중 *지금 화면에 떠 있는(active = 구독 중인) 쿼리만* 골라 다시 `Query.fetch()`를 돌립니다. *(STEP 5)*
@@ -171,7 +171,7 @@ export function useBaseQuery(options, Observer, queryClient?) {
 
 > **왜 `useState(() => new Observer())`인가?** observer는 컴포넌트 인스턴스의 *수명* 동안 살아 있어야 하는 가변 객체입니다. `useMemo`는 캐시 축출 시 재생성될 수 있어 부적합하므로, 초기화 함수형 `useState`로 **단 1회 생성**을 보장합니다.
 
-> **여기가 §4에서 제일 중요합니다.** `useQuery`가 "왜 이렇게 동작하지?" 싶을 때 답은 거의 이 함수에 있습니다. — ① 옵션 정규화 ② observer 수명 관리 ③ `useSyncExternalStore` 구독 ④ Suspense/에러 throw ⑤ `trackResult` 리렌더 최적화를 **한 함수가 전부** 담당합니다.
+> **이 글에서 제일 중요한 함수입니다.** `useQuery`가 "왜 이렇게 동작하지?" 싶을 때 답은 거의 이 함수에 있습니다. ① 옵션 정규화 ② observer 수명 관리 ③ `useSyncExternalStore` 구독 ④ Suspense/에러 throw ⑤ `trackResult` 리렌더 최적화를 **한 함수가 전부** 담당합니다.
 
 > **코드에서 꼭 볼 두 줄:** `useState(() => new Observer())`(observer를 컴포넌트당 1번만 생성)와 `useSyncExternalStore(subscribe, getCurrentResult, ...)`(구독 + 스냅샷). 이 두 줄이 "React ↔ 캐시" 연결의 전부입니다.
 
@@ -193,7 +193,7 @@ export function useBaseQuery(options, Observer, queryClient?) {
 
 - **컴포넌트마다 Observer를 하나씩 둡니다** (직원 1명)
 - **그 Observer를 useSyncExternalStore로 구독합니다** (직원이 보고하면 화면 갱신)
-- **나머지는 SSR·Suspense·옵션 변경 같은 예외 처리입니다**
+- **나머지는 SSR, Suspense, 옵션 변경 같은 예외 처리입니다**
 
 #### STEP 3 · `useSyncExternalStore`: 동시성 안전 구독 (React 내장)
 
@@ -215,9 +215,9 @@ React.useSyncExternalStore(
 - **`subscribe` identity**가 바뀌면 React가 재구독하므로, `useCallback` 의존성을 `[observer, shouldSubscribe]`로 최소화합니다.
 - 같은 훅을 `useMutation` / `useIsFetching` / `useMutationState` / `useQueries`도 사용합니다. (v4는 React 17 호환용 `use-sync-external-store/shim`을 쓰고, v5.95는 `React.useSyncExternalStore`를 직접 호출합니다.)
 
-#### STEP 4 · `QueryObserver`: 구독·result 조립·리렌더 (useSyncExternalStore가 구독하는 것)
+#### STEP 4 · `QueryObserver`: 구독, result 조립, 리렌더 (useSyncExternalStore가 구독하는 것)
 
-**구독/해제 — `query.fetch` 트리거 지점**
+**구독/해제: `query.fetch` 트리거 지점**
 
 ```typescript
 // queryObserver.ts
@@ -237,7 +237,7 @@ protected onUnsubscribe(): void {
 }
 ```
 
-**`createResult()` — 우리가 보는 `result` 객체를 조립**
+**`createResult()`: 우리가 보는 `result` 객체를 조립**
 
 ```typescript
 // 1) placeholderData: data 없고 pending 일 때만 적용 (이전 placeholder 메모이즈)
@@ -258,7 +258,7 @@ const result = {
 }
 ```
 
-**`updateResult()` + `shouldNotifyListeners()` — 미세 리렌더 제어**
+**`updateResult()` + `shouldNotifyListeners()`: 미세 리렌더 제어**
 
 ```typescript
 updateResult(): void {
@@ -270,7 +270,7 @@ updateResult(): void {
 }
 ```
 
-**`trackResult()` — "읽은 prop"만 추적하는 Proxy**
+**`trackResult()`: "읽은 prop"만 추적하는 Proxy**
 
 ```typescript
 trackResult(result) {
@@ -285,7 +285,7 @@ trackResult(result) {
 
 > 컴포넌트가 `data`만 구조분해하면 `#trackedProps = {data}`가 되고, 이후 `isStale`/`failureCount` 등이 바뀌어도 **리렌더하지 않습니다**.
 
-**fetch/stale 판단 헬퍼 (파일 하단) — 옵션 의미의 단일 출처**
+**fetch/stale 판단 헬퍼 (파일 하단): 옵션 의미의 단일 출처**
 
 ```typescript
 // 4개 헬퍼 = "지금 이 쿼리, 데이터를 받아야 하나?"를 판단 (맨 아래 isStale가 가장 기본 단위)
@@ -355,14 +355,14 @@ function isStale(query, options) {
 
 #### STEP 5 · `QueryClient`: 최상위 오케스트레이터
 
-앱 전체의 **캐시·기본옵션·전역 이벤트를 총괄하는 단일 컨트롤 타워**입니다. 직접 데이터를 들고 있지는 않고, 내부의 `QueryCache`/`MutationCache`에 위임하면서 바깥으로는 `invalidate`·`prefetch`·`setQueryData` 같은 공개 API만 노출합니다.
+앱 전체의 **캐시와 기본 옵션, 전역 이벤트를 총괄하는 단일 컨트롤 타워**입니다. 직접 데이터를 들고 있지는 않고, 내부의 `QueryCache`/`MutationCache`에 위임하면서 바깥으로는 `invalidate`·`prefetch`·`setQueryData` 같은 공개 API만 노출합니다.
 
 ```typescript
 // queryClient.ts — 보유 상태
 #queryCache; #mutationCache; #defaultOptions; #queryDefaults; #mutationDefaults; #mountCount
 ```
 
-**mount/unmount — refcount 기반 전역 이벤트 구독** (`QueryClientProvider`가 호출)
+**mount/unmount: refcount 기반 전역 이벤트 구독** (`QueryClientProvider`가 호출)
 
 `QueryClientProvider`가 마운트되면 `client.mount()`를 호출해 focus/online 같은 **전역 이벤트 리스너를 등록**합니다. Provider가 여러 개여도 참조 카운트로 묶어 **실제 등록은 단 한 번만** 하고, 마지막 Provider가 사라질 때 해제합니다.
 
@@ -381,7 +381,7 @@ mount(): void {
 }
 ```
 
-**defaultQueryOptions — merge + queryHash + 의존 기본값** (`_defaulted` 플래그로 멱등)
+**defaultQueryOptions: merge + queryHash + 의존 기본값** (`_defaulted` 플래그로 멱등)
 
 사용자 옵션에 전역/키별 기본값을 **합치고**, `queryKey`로 안정적인 `queryHash` 문자열을 계산합니다. 결과 객체에 `_defaulted = true`를 찍어 두어서, **이미 처리된 옵션이 다시 들어와도 같은 결과**(= 멱등)가 됩니다.
 
@@ -431,7 +431,7 @@ refetchQueries(filters, options = {}) {
 
 #### STEP 6 · `QueryCache`: Query get-or-create
 
-즉, **queryKey로 캐시를 뒤져 보고 — 있으면 그 Query 그대로, 없으면 새로 만들어 등록**합니다.
+즉 **queryKey로 캐시를 뒤져 보고, 있으면 그 Query 그대로, 없으면 새로 만들어 등록**합니다.
 
 ```typescript
 // queryCache.ts — Map<queryHash, Query> 한 개가 전부
@@ -525,7 +525,7 @@ async fetch(options?, fetchOptions?): Promise<TData> {
 }
 ```
 
-> **이 코드에서 꼭 볼 곳 4개:** ① *dedupe* — 이미 fetching이면 새 요청 대신 기존 promise 재사용 · ② `#dispatch({ type: 'fetch' })` — 시작하자마자 `fetching` 상태로 · ③ `createRetryer(...).start()` — 실제 `queryFn` 실행은 retryer가 담당 (STEP 9) · ④ `setData(data)` → `#dispatch('success')` — 성공이 곧 상태 변경(STEP 8로 연결).
+> **이 코드에서 꼭 볼 곳 4개:** ① *dedupe*: 이미 fetching이면 새 요청 대신 기존 promise 재사용 / ② `#dispatch({ type: 'fetch' })`: 시작하자마자 `fetching` 상태로 · ③ `createRetryer(...).start()`: 실제 `queryFn` 실행은 retryer가 담당 (STEP 9) · ④ `setData(data)` → `#dispatch('success')`: 성공이 곧 상태 변경(STEP 8로 연결).
 
 #### STEP 8 · `#dispatch`: reducer + 알림 (반응성의 심장)
 
@@ -576,7 +576,7 @@ export function fetchState(data, options) {
 | `fetch` | `fetchStatus: 'fetching'` (offline이면 `'paused'`), data 없으면 `status: 'pending'` |
 | `success` | `data` 저장, `dataUpdateCount++`, `fetchStatus: 'idle'`, `isInvalidated: false` |
 | `error` | `status: 'error'`, `errorUpdateCount++`, `fetchStatus: 'idle'`, `isInvalidated: true` |
-| `failed` | retry 진행 중 카운트 — `fetchFailureCount/Reason` 갱신 (status는 그대로) |
+| `failed` | retry 진행 중 카운트. `fetchFailureCount/Reason` 갱신 (status는 그대로) |
 | `pause` / `continue` | `fetchStatus: 'paused'` ↔ `'fetching'` (offline/blur) |
 | `invalidate` | `isInvalidated: true` (fetch는 아직 안 함) |
 
@@ -713,9 +713,9 @@ invalidateQueries → findAll(partialMatchKey) → q.invalidate()  // isInvalida
 > 위 코드가 다 안 들어와도 괜찮습니다. **이 4문장만** 잡으면 80%는 이해한 겁니다.
 
 1. **컴포넌트가 `useQuery`를 부르면** → 그 쿼리를 지켜보는 *감시자(observer)* 가 하나 생기고, React에 "이거 바뀌면 다시 그려줘"라고 등록합니다. *(STEP 1~3)*
-2. **데이터가 없거나 오래됐으면** → 감시자가 `queryFn`을 실행시킵니다. 같은 `queryKey`는 *캐시 한 곳을 공유*하므로 중복 호출이 자동으로 합쳐집니다. *(STEP 4·6·7)*
+2. **데이터가 없거나 오래됐으면** → 감시자가 `queryFn`을 실행시킵니다. 같은 `queryKey`는 *캐시 한 곳을 공유*하므로 중복 호출이 자동으로 합쳐집니다. *(STEP 4, 6, 7)*
 3. **데이터가 도착하면** → 쿼리 안의 `state`가 바뀌고(`#dispatch`), 그걸 보던 모든 감시자에게 알림이 갑니다. *(STEP 8)*
-4. **알림은 모았다가 한 번에** 흘려보내서 → 화면은 *딱 필요한 만큼만, 한 번* 다시 그려집니다. *(STEP 9·10)*
+4. **알림은 모았다가 한 번에** 흘려보내서 → 화면은 *딱 필요한 만큼만, 한 번* 다시 그려집니다. *(STEP 9, 10)*
 
 > **딱 3가지만 외운다면:** ① 같은 `queryKey` = 같은 캐시(공유) · ② `invalidate`는 "오래됨" 표시일 뿐 *즉시 fetch가 아님* · ③ 화면 갱신은 전부 `#dispatch` → `notifyManager`를 거친다.
 
@@ -729,7 +729,7 @@ invalidateQueries → findAll(partialMatchKey) → q.invalidate()  // isInvalida
 
 ### Q2. `useSyncExternalStore`가 도대체 뭐예요?
 
-React 18에 추가된 **내장 훅**입니다. React state가 아닌 "외부 스토어"(여기선 TanStack Query의 캐시/observer)의 값을 React 컴포넌트가 안전하게 구독하게 해 줍니다. 인자는 3개 — `subscribe`(변경 알림 등록), `getSnapshot`(현재 값), `getServerSnapshot`(SSR용)입니다. React는 렌더 직전에 `getSnapshot`을 다시 호출해 tearing을 막습니다.
+React 18에 추가된 **내장 훅**입니다. React state가 아닌 "외부 스토어"(여기선 TanStack Query의 캐시/observer)의 값을 React 컴포넌트가 안전하게 구독하게 해 줍니다. 인자는 `subscribe`(변경 알림 등록), `getSnapshot`(현재 값), `getServerSnapshot`(SSR용) 셋입니다. React는 렌더 직전에 `getSnapshot`을 다시 호출해 tearing을 막습니다.
 
 ### Q3. tearing(찢김)이 뭐예요?
 
@@ -757,7 +757,7 @@ Observer 패턴의 "구독자"입니다. `QueryObserver`는 특정 `Query`(캐�
 
 ### Q11. `notifyManager.batch`가 React 18 자동 배칭과 뭐가 달라요?
 
-React 자동 배칭은 "이벤트 핸들러/마이크로태스크 안의 setState"를 묶습니다. `notifyManager`는 그 이전 단계 — 라이브러리 내부에서 발생하는 여러 observer 알림을 모아 한 번에 흘려보내는 큐입니다. 둘이 협력해 "Query state 여러 번 변경 → React 리렌더 1회"를 만듭니다.
+React 자동 배칭은 "이벤트 핸들러/마이크로태스크 안의 setState"를 묶습니다. `notifyManager`는 그 이전 단계입니다. 라이브러리 내부에서 발생하는 여러 observer 알림을 모아 한 번에 흘려보내는 큐입니다. 둘이 협력해 "Query state 여러 번 변경 → React 리렌더 1회"를 만듭니다.
 
 ### Q12. thenable이 뭐예요?
 
@@ -778,10 +778,10 @@ React 자동 배칭은 "이벤트 핸들러/마이크로태스크 안의 setStat
 
 ### 난이도별 학습 예시
 
-- **기본:** `useUserQuery` — 단일 user fetch, `enabled`
-- **중급:** `useUserListQuery` — 필터 queryKey, `keepPreviousData`, pagination
-- **고급:** `useUsersQueries` — `useQueries`로 여러 user 병렬 fetch
-- **mutation:** `useUpdateUserMutation` — invalidate, optimistic update
+- **기본:** `useUserQuery`. 단일 user fetch, `enabled`
+- **중급:** `useUserListQuery`. 필터 queryKey, `keepPreviousData`, pagination
+- **고급:** `useUsersQueries`. `useQueries`로 여러 user 병렬 fetch
+- **mutation:** `useUpdateUserMutation`. invalidate, optimistic update
 - **RSC:** 서버에서 `prefetchQuery(userQueryKeys.detail(id))` 후 클라이언트 hydrate
 
 ---
@@ -789,9 +789,9 @@ React 자동 배칭은 "이벤트 핸들러/마이크로태스크 안의 setStat
 
 ## 4. 이 구조가 치른 대가
 
-여기까지가 어떻게 동작하는지입니다. 여기서부터는 그 선택들에 대한 제 판단입니다.
+동작은 여기까지입니다. 아래는 그 설계가 무엇을 맞바꿨는지에 대한 제 판단입니다.
 
-**`useSyncExternalStore`로 간 것.** v4는 `useState` + `useEffect` 조합으로 외부 스토어를 구독했습니다. 이 방식은 concurrent 렌더링에서 tearing이 납니다. 렌더 도중에 스토어가 바뀌면, 먼저 렌더된 컴포넌트와 나중에 렌더된 컴포넌트가 서로 다른 값을 그립니다. `useSyncExternalStore`는 React가 그 일관성을 보장해주는 대신, **구독·스냅샷·서버 스냅샷 세 함수를 정확히 맞춰야 하는 제약**을 겁니다. 스냅샷이 매번 새 객체를 반환하면 무한 루프가 나니까요.
+**`useSyncExternalStore`로 간 것.** v4는 `useState` + `useEffect` 조합으로 외부 스토어를 구독했습니다. 이 방식은 concurrent 렌더링에서 tearing이 납니다. 렌더 도중에 스토어가 바뀌면, 먼저 렌더된 컴포넌트와 나중에 렌더된 컴포넌트가 서로 다른 값을 그립니다. `useSyncExternalStore`는 React가 그 일관성을 보장해주는 대신, **구독, 스냅샷, 서버 스냅샷 세 함수를 정확히 맞춰야 하는 제약**을 겁니다. 스냅샷이 매번 새 객체를 반환하면 무한 루프가 나니까요.
 
 이건 라이브러리 쪽 복잡도를 올려서 앱 쪽 버그를 없앤 거래입니다. 앱 개발자는 tearing을 몰라도 되지만, 대신 라이브러리 내부는 훨씬 읽기 어려워졌습니다. `QueryObserver`가 결과 객체를 캐싱하고 참조 동등성을 유지하려 애쓰는 코드 상당 부분이 여기서 나옵니다.
 
@@ -817,7 +817,7 @@ React 자동 배칭은 "이벤트 핸들러/마이크로태스크 안의 setStat
 
 그래서 이 글은 **가설을 세울 근거**를 주는 것이지 답을 주지는 않습니다. "리렌더가 잦다 → Proxy 추적 필드를 의심해본다" 까지가 소스 지식이 해줄 수 있는 일이고, 그다음은 Devtools와 Profiler입니다.
 
-[확인필요: 실제로 이 지식으로 진단한 성능 문제 사례가 있으면 여기에 넣으면 이 절이 훨씬 설득력 있어집니다]
+실제로 이 지식이 쓰인 자리는 두 곳이었습니다. 하나는 필터를 빠르게 바꿀 때 이전 요청의 응답이 나중에 도착해 새 화면을 덮는 문제였습니다. `Query.fetch`가 queryFn 컨텍스트에 `signal`을 넘긴다는 걸 알고 있어서(Q8), 그 `signal`을 실제 `fetch`까지 전달하도록 API 계층을 고쳐 이전 요청이 취소되게 했습니다. 다른 하나는 mutation 뒤 무효화입니다. `invalidateQueries`가 표시와 refetch 두 단계라는 걸 알면(STEP 5), 화면에 없는 도메인의 쿼리는 `refetchType: 'none'`으로 표시만 해두고 다음 진입 때 받게 할 수 있습니다. 둘 다 문서만 읽고는 확신이 안 서던 것들입니다.
 
 ## 6. 이걸 알면 뭐가 달라지나
 
@@ -827,24 +827,24 @@ React 자동 배칭은 "이벤트 핸들러/마이크로태스크 안의 setStat
 
 모델이 있으면 순서가 반대가 됩니다. 리렌더가 잦다면 Observer가 몇 개인지, 어떤 필드를 읽고 있는지, 알림이 어느 배치에 묶이는지를 먼저 확인하고, 그다음에 고칩니다. 시도 횟수가 줄어드는 게 아니라 **틀렸을 때 왜 틀렸는지를 알게 됩니다.**
 
-그리고 이 라이브러리를 읽으면서 얻은 게 하나 더 있습니다. 여기서 본 패턴들 — 외부 스토어 구독, 참조 동등성으로 리렌더 줄이기, 알림 배칭, 클로저로 상태 감추기 — 은 TanStack Query만의 것이 아닙니다. 리액트 생태계의 상태 라이브러리 대부분이 같은 문제를 각자의 방식으로 풀고 있습니다. 하나를 끝까지 읽어두면 다음 라이브러리는 훨씬 빨리 읽힙니다.
+그리고 이 라이브러리를 읽으면서 얻은 게 하나 더 있습니다. 여기서 본 패턴들은 TanStack Query만의 것이 아닙니다. 외부 스토어 구독, 참조 동등성으로 리렌더 줄이기, 알림 배칭, 클로저로 상태 감추기. 리액트 생태계의 상태 라이브러리 대부분이 같은 문제를 각자의 방식으로 풀고 있습니다. 하나를 끝까지 읽어두면 다음 라이브러리는 훨씬 빨리 읽힙니다.
 
 다음에 읽어볼 건 같은 문제를 signals로 푸는 쪽입니다. 구독을 명시적으로 걸지 않고 읽기만으로 의존성을 추적하는 모델이 여기서 본 Observer 구조와 어디서 갈라지는지 궁금합니다.
 
 ## 참고
 
-- [TanStack Query GitHub — v5 소스](https://github.com/TanStack/query)
+- [TanStack Query GitHub: v5 소스](https://github.com/TanStack/query)
 - [`useBaseQuery` 구현](https://github.com/TanStack/query/blob/main/packages/react-query/src/useBaseQuery.ts)
 - [`queryObserver` 구현](https://github.com/TanStack/query/blob/main/packages/query-core/src/queryObserver.ts)
 - [`retryer` 구현](https://github.com/TanStack/query/blob/main/packages/query-core/src/retryer.ts)
-- [React — `useSyncExternalStore` 문서](https://react.dev/reference/react/useSyncExternalStore)
-- [React 18 Working Group — tearing 설명](https://github.com/reactwg/react-18/discussions/69)
-- [TkDodo — Inside React Query](https://tkdodo.eu/blog/inside-react-query)
+- [React: `useSyncExternalStore` 문서](https://react.dev/reference/react/useSyncExternalStore)
+- [React 18 Working Group: tearing 설명](https://github.com/reactwg/react-18/discussions/69)
+- [TkDodo: Inside React Query](https://tkdodo.eu/blog/inside-react-query)
 
 {/* 이미지 체크리스트
 IMG-01 [mermaid로 대체됨] 전체 라이프사이클 시퀀스
-IMG-02 [내가 캡처] Devtools에서 같은 queryKey에 Observer가 여러 개 붙은 화면 — 미완료
+IMG-02 [내가 캡처] Devtools에서 같은 queryKey에 Observer가 여러 개 붙은 화면: 미완료
          의도: 4장 "Observer는 컴포넌트당 하나"를 실물로
-IMG-03 [내가 캡처] Profiler — Proxy 추적으로 리렌더가 걸러지는 전/후 — 미완료
+IMG-03 [내가 캡처] Profiler에서 Proxy 추적으로 리렌더가 걸러지는 전/후: 미완료
          의도: trackResult의 효과와 "왜 걸렸는지 안 보인다"는 대가를 동시에
 */}

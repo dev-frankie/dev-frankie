@@ -7,7 +7,7 @@ series: null
 version_note: "@sentry/nextjs v10 · Next 16 · React 19 기준"
 ---
 
-에러는 잡히고 있었습니다. 그런데 이슈를 열어보면 압축된 스택 한 줄이 전부였습니다. 누가 겪었는지, 어떤 API가 터졌는지, 어느 화면에서 무슨 요청을 하다 그랬는지, 어느 릴리즈부터인지 — 궁금한 건 하나도 없었습니다.
+에러는 잡히고 있었습니다. 그런데 이슈를 열어보면 압축된 스택 한 줄이 전부였습니다. 누가 겪었는지, 어떤 API가 터졌는지, 어느 화면에서 무슨 요청을 하다 그랬는지, 어느 릴리즈부터인지. 궁금한 건 하나도 없었습니다.
 
 Sentry는 `feature/sentry` 브랜치에 DSN을 꽂고 예제 라우트로 "에러가 올라오네"까지 확인한 상태였습니다. 딱 거기까지였죠. 실제로 `captureException`을 부르는 곳은 `global-error.tsx` 단 한 곳이었습니다. 나머지는 전부 SDK 자동 캡처에 맡기고 있었고요.
 
@@ -22,9 +22,9 @@ Sentry는 `feature/sentry` 브랜치에 DSN을 꽂고 예제 라우트로 "에�
 | 영역 | 처음 상태 |
 | --- | --- |
 | 계측 실사용 | `captureException` 단 1곳(`global-error.tsx`). 나머지는 SDK 자동 캡처 |
-| 환경 구분 | `environment` 없음 — dev/qa/prod를 프로젝트(DSN)로만 구분 |
-| 릴리즈 | `release` 없음 — "어느 배포부터인지" 추적 불가 |
-| 샘플링 | `tracesSampleRate: 1`(전량) — prod 비용·quota 폭발 위험 |
+| 환경 구분 | `environment` 없음. dev/qa/prod를 프로젝트(DSN)로만 구분 |
+| 릴리즈 | `release` 없음. 어느 배포부터인지 추적 불가 |
+| 샘플링 | `tracesSampleRate: 1`(전량). prod 비용과 quota 폭발 위험 |
 | 유저 컨텍스트 | `setUser` 없음. 거기에 `sendDefaultPii: true`로 PII는 통째로 전송 |
 | 노이즈 필터 | `beforeSend`·`ignoreErrors`·`denyUrls` 전부 없음 |
 | 설정 파일 | `sentry.client.config.ts`와 `instrumentation-client.ts`가 공존(값까지 불일치). Next 16은 후자만 로드 |
@@ -108,7 +108,7 @@ Sentry.withScope((scope) => {
 });
 ```
 
-OS·브라우저·기종은 Sentry가 user-agent로 자동 수집하고, 앱 버전(release)과 환경(environment)은 init에서 박아뒀습니다. 처음에 원했던 발생 장소·세부·환경·시점이 이슈 하나에 다 담기게 됐습니다.
+OS·브라우저·기종은 Sentry가 user-agent로 자동 수집하고, 앱 버전(release)과 환경(environment)은 init에서 박아뒀습니다. 처음에 원했던 게 이슈 하나에 다 담기게 됐습니다. 발생 장소, 세부 내용, 환경, 그리고 시점.
 
 ## 3. 노이즈를 3계층으로 거르기
 
@@ -131,18 +131,18 @@ OS·브라우저·기종은 Sentry가 user-agent로 자동 수집하고, 앱 버
 
 `beforeSend`가 런타임별로 따로 돌기 때문에 가능한 분기였습니다.
 
-캡처 정책은 결국 "신호만"으로 정리됐습니다. 5xx·네트워크(서버)·파싱 실패·미지의 code만 issue로 보내고, 예상된 4xx는 breadcrumb으로만 남깁니다.
+캡처 정책은 결국 "신호만"으로 정리됐습니다. 5xx, 서버 쪽 네트워크 실패, 파싱 실패, 미지의 code만 issue로 보내고, 예상된 4xx는 breadcrumb으로만 남깁니다.
 
 ## 4. Alert과 사람
 
-정보가 풍부해지고 노이즈가 걸러졌으니, 이제 "몇 건 이상, 어떤 Level"일 때만 울리는 Alert을 걸 차례입니다. 앞서 심은 태그(`level`·`api.endpoint`·`error.page`·`release`)를 필터로 씁니다.
+정보가 풍부해지고 노이즈가 걸러졌으니, 이제 "몇 건 이상, 어떤 Level"일 때만 울리는 Alert을 걸 차례입니다. 앞서 심은 태그를 필터로 씁니다. `level`, `api.endpoint`, `error.page`, `release`.
 
 | 이름 | 조건 | 액션 |
 | --- | --- | --- |
 | Critical | `level:fatal` 1건이라도 | Slack 알림 (critical 채널) |
 | Warning | `level:warning` 20건 초과 / 1시간 | Slack 알림 (warning 채널) |
 | 스파이크 | 동일 이슈 50건 초과 / 1시간 | Slack 알림 (warning 채널) |
-| 신규 회귀 | 최신 `release`에서 신규 이슈 생성 | Slack 알림 — "최신 배포가 새 에러 유발" |
+| 신규 회귀 | 최신 `release`에서 신규 이슈 생성 | Slack 알림 ("최신 배포가 새 에러 유발") |
 
 임계값은 처음부터 맞을 리 없습니다. 운영하면서 다듬을 숫자입니다.
 
@@ -162,13 +162,13 @@ OS·브라우저·기종은 Sentry가 user-agent로 자동 수집하고, 앱 버
 
 배포 파이프라인에 기술심사용 난독화 스텝이 있습니다. 이게 `next build`(= Sentry 소스맵 업로드) **이후**에 앱 청크를 mangle하면서 소스맵을 재생성하지 않습니다. 업로드된 소스맵과 배포된 코드가 어긋나니, 앱 코드의 스택트레이스 복원이 흔들립니다. vendor 청크는 정상입니다.
 
-난독화는 반드시 유지해야 하는 요구사항이라 이 한계는 수용했습니다. 그런데 여기서 2장에 공들인 게 빛을 봤습니다. 이슈 이름·tags·fingerprint·context·breadcrumbs는 **스택트레이스 심볼리케이션에 의존하지 않습니다.** API 에러는 이것만으로 충분히 좇을 수 있고, `fatal` 렌더 크래시의 스택만 손해입니다.
+난독화는 반드시 유지해야 하는 요구사항이라 이 한계는 수용했습니다. 그런데 여기서 2장에 공들인 게 빛을 봤습니다. 이슈 이름, tags, fingerprint, context, breadcrumbs. 이것들은 **스택트레이스 심볼리케이션에 의존하지 않습니다.** API 에러는 이것만으로 충분히 좇을 수 있고, `fatal` 렌더 크래시의 스택만 손해입니다.
 
 결과적으로는 그렇게 됐지만, 처음부터 이걸 노리고 설계한 건 아니었습니다. Scope에 정보를 많이 심어둔 게 다른 곳의 결함을 덮어준 셈입니다.
 
 ## 6. 이 선택들이 치른 대가
 
-여기까지가 무엇을 했는지입니다. 여기서부터는 그 대가에 대한 이야기입니다.
+위 선택들에는 각각 대가가 있었습니다.
 
 **Fingerprint를 API 축으로 고정한 것.** 이게 제일 큰 트레이드오프입니다. 같은 엔드포인트에서 서로 다른 원인으로 터진 500 에러가 이제 한 이슈로 뭉칩니다. `[500 Error] POST /api/eval-runs`가 DB 타임아웃 때문일 수도, 직렬화 실패 때문일 수도 있는데 이슈 목록에서는 구분이 안 됩니다. `backend.code`를 fingerprint에 같이 넣어 어느 정도 갈랐지만, code가 같고 원인이 다른 경우는 여전히 뭉칩니다.
 
@@ -180,7 +180,7 @@ OS·브라우저·기종은 Sentry가 user-agent로 자동 수집하고, 앱 버
 
 ## 7. 그럼 기본 설정으로는 부족한가
 
-솔직히 말하면, 서비스에 따라 다릅니다.
+서비스에 따라 다릅니다.
 
 Sentry 기본 설정만으로 충분한 경우가 있습니다. 프론트엔드가 얇고 대부분의 로직이 서버에 있다면, 프론트에서 잡히는 건 렌더 크래시 정도라 스택트레이스만으로 충분합니다. 여기서 한 작업은 오버엔지니어링입니다.
 
@@ -194,13 +194,15 @@ Sentry 기본 설정만으로 충분한 경우가 있습니다. 프론트엔드�
 
 ## 8. 마치며
 
-"에러가 잡히는가"에서 "에러 하나로 원인을 좇을 수 있는가"로 옮긴 게 이번 작업의 핵심입니다. 설정만으로도 환경·릴리즈·샘플링·노이즈가 정리됐지만, 진짜 가치는 Scope 계측에서 나왔습니다.
+"에러가 잡히는가"에서 "에러 하나로 원인을 좇을 수 있는가"로 옮긴 게 이번 작업의 핵심입니다. 설정만으로도 환경과 릴리즈가 박히고 샘플링이 잡히고 노이즈가 걸러졌습니다. 그래도 진짜 가치는 Scope 계측에서 나왔습니다.
 
-작업하면서 생각이 바뀐 게 하나 있습니다. 처음에는 이걸 "Sentry를 잘 쓰는 법"이라고 생각했는데, 끝나고 보니 아니었습니다. 실제로 결정적이었던 건 **에러가 한 길목을 지나가도록 앱이 이미 만들어져 있었다는 사실**이었습니다. `PlatformApiError`가 `status`와 `code`를 들고 있었던 것, 모든 요청이 TanStack Query를 탔던 것 — 이건 모니터링을 염두에 두고 한 설계가 아니었는데, 결과적으로 계측 비용을 한 자리로 줄여줬습니다.
+작업하면서 생각이 바뀐 게 하나 있습니다. 처음에는 이걸 "Sentry를 잘 쓰는 법"이라고 생각했는데, 끝나고 보니 아니었습니다. 실제로 결정적이었던 건 **에러가 한 길목을 지나가도록 앱이 이미 만들어져 있었다는 사실**이었습니다. `PlatformApiError`가 `status`와 `code`를 들고 있었던 것, 모든 요청이 TanStack Query를 탔던 것. 이건 모니터링을 염두에 두고 한 설계가 아니었는데, 결과적으로 계측 비용을 한 자리로 줄여줬습니다.
 
 관측 가능성은 도구를 붙여서 생기는 게 아니라 **코드가 자기 상태를 말할 수 있는 구조인가**에서 나옵니다. Sentry는 그걸 받아 적는 쪽이지, 없는 걸 만들어주지는 않습니다. 다음에 새 서비스를 만든다면 에러 타입에 `code`를 넣을지부터 정하고 시작할 것 같습니다.
 
 남은 일은 Alert 임계값을 실제 트래픽에 맞춰 조정하는 것, 그리고 6장에서 짚은 fingerprint 문제가 실제로 발목을 잡는지 몇 달 지켜보는 것입니다.
+
+> **후기 (2026-09):** 에러 탭만 보다가 같은 Sentry의 Web Vitals 탭을 열었더니 랜딩 `/`의 LCP p75가 5.3초였습니다. 코드에는 서버에서 리다이렉트한다고 적혀 있었는데 응답은 200이었습니다. 에러 이슈만 보고 있었으면 못 봤을 숫자입니다. 그 추적은 [redirect()를 썼는데 307이 아니었다](/blog/frontend/performance/landing-redirect-lcp)에 따로 적었습니다.
 
 ## 참고
 
@@ -208,12 +210,13 @@ Sentry 기본 설정만으로 충분한 경우가 있습니다. 프론트엔드�
 - [Sentry Fingerprinting 규칙](https://docs.sentry.io/concepts/data-management/event-grouping/fingerprint-rules/)
 - [Sentry Inbound Filters](https://docs.sentry.io/concepts/data-management/filtering/)
 - [`beforeSend` / `beforeSendTransaction` 훅](https://docs.sentry.io/platforms/javascript/configuration/filtering/)
-- [TanStack Query — QueryCache `onError`](https://tanstack.com/query/latest/docs/reference/QueryCache)
-- [확인필요: 참고한 원본 아티클 링크 — 3·5장에서 세 번 인용했는데 출처가 없습니다]
+- [TanStack Query: QueryCache `onError`](https://tanstack.com/query/latest/docs/reference/QueryCache)
+
+{/* 확인필요: 참고한 원본 아티클 링크. 3, 5장에서 세 번 인용했는데 출처가 없습니다. 링크를 찾으면 위 목록에 추가 */}
 
 {/* 이미지 체크리스트
-IMG-01 [내가 캡처] 개선 전/후 Sentry 이슈 목록 비교 — 미완료
+IMG-01 [내가 캡처] 개선 전/후 Sentry 이슈 목록 비교: 미완료
          의도: "압축된 스택 한 줄"과 "[500 Error] GET /api/..."의 차이를 한눈에
-IMG-02 [내가 캡처] 이슈 상세의 Tags·Context 패널 — 미완료
+IMG-02 [내가 캡처] 이슈 상세의 Tags·Context 패널: 미완료
          의도: 재현 없이 원인을 좁힐 수 있다는 주장의 실물 증거
 */}

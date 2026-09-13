@@ -26,7 +26,7 @@
 **Skill Description**
 
 - **아키텍처 리팩토링** — FSD(Feature-Sliced Design), SSR/SSG/ISR, v→v 전면 리팩토링(Redux/RTK Query·SSR 도입), Middleware/BFF 패턴으로 변경 안전성과 확장성을 확보합니다.
-- **계측 기반 성능 최적화** — Core Web Vitals, @next/bundle-analyzer, Lighthouse CI Budget Gate, User Timing API 자동 측정으로 "체감"이 아닌 수치로 개선을 증명합니다.
+- **계측 기반 성능 최적화** — Core Web Vitals, @next/bundle-analyzer, Lighthouse CI 예산 검사, User Timing API 자동 측정으로 "체감"이 아닌 수치로 개선을 증명합니다.
 - **상태 관리** — Zustand·Recoil·Redux, TanStack Query/RTK Query로 복잡한 환경의 전역 상태와 서버 상태 캐시를 일관되게 관리합니다.
 - **테스트 · 품질 자동화** — Vitest 단위 테스트 + Playwright E2E + GitHub Actions로 lint·format·typecheck·test·build를 merge 차단 게이트로 운영합니다.
 - **AI 개발 방법론** — 작성자(Claude) ≠ 검증자(Codex) 교차검증 하네스를 사내 NPM 패키지로 자산화해 팀 전체의 리뷰 일관성을 끌어올립니다.
@@ -199,7 +199,7 @@
 **성과**
 
 - recharts **116.5KB**(gzip)를 초기·공유 번들에서 제거 — 총 번들은 스플릿 오버헤드로 +2KB지만 **라우트 First Load JS는 −117KB** (총합이 아닌 초기 로드로 판단)
-- **Task 진입 472ms → 323ms(약 32%↓, 4케이스 평균)**, 최악 케이스(llm-as-judge)는 **623ms → 148ms(약 4배)**, 최적화 대상 라우트(Task Results) Lighthouse 성능 **99점** · LCP 0.9s · CLS **0** (2026-07 실측 · 로그인/가입 98~100점). 다만 아직 root 57점 · workspace-info 47점이 남아 있어 라우트별 예산 게이트로 관리하고 있습니다
+- **Task 진입 472ms → 323ms(약 32%↓, 4케이스 평균)**, 최악 케이스(llm-as-judge)는 **623ms → 148ms(약 4배)**, 최적화 대상 라우트(Task Results) Lighthouse 성능 **99점** · LCP 0.9s · CLS **0** (2026-07 실측 · 로그인/가입 98~100점). 다만 아직 root 57점 · workspace-info 47점이 남아 있습니다. 라우트별 예산은 PR마다 검사하되 현재는 `continue-on-error`로 경고 단계이고, 남은 라우트의 기준을 실측으로 확정한 뒤 차단으로 승격하는 순서로 두었습니다
 - 80샘플 자동 측정 + 번들 diff CI로 성능 회귀를 PR 단계에서 자동 감지, "번들 최적화는 총합이 아니라 라우트별 초기 로드로 판단"을 팀 규칙(`fsd-architecture.mdc` · `CLAUDE.md`)으로 문서화
 
 ---

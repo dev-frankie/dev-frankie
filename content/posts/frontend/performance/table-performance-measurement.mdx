@@ -8,8 +8,9 @@ version_note: "Playwright + User Timing API · 측정 시점 2026-06-17"
 ---
 
 > **테이블 성능 측정 시리즈**
-> - [1편 — 무엇을 알아냈고, 무엇이 틀렸나](./table-performance-optimization): 결과와 재측정, 그리고 철회
-> - **2편 (이 글)** — 측정 하네스를 어떻게 만들었나
+>
+> - [1편: 무엇을 알아냈고, 무엇이 틀렸나](./table-performance-optimization): 결과와 재측정, 그리고 철회
+> - **2편 (이 글)**: 측정 하네스를 어떻게 만들었나
 
 "Prefetch를 켜면 얼마나 빨라지나"를 재려면 켠 상태와 끈 상태를 비교해야 합니다. 그런데 브랜치를 두 개 파서 각각 측정하면 빌드가 달라지고, 손으로 스톱워치를 누르면 재현이 안 됩니다.
 
@@ -31,14 +32,14 @@ flowchart TD
   A --> F
 ```
 
-| 계층 | 파일 | 역할 | 상태 |
-| --- | --- | --- | --- |
-| 프로덕션 | `EvalRunsList.tsx`, `EvalRunListItem.tsx` | Run detail hover prefetch | ✅ 유지 |
-| 프로덕션 | `tasks/[taskId]/page.tsx` | SSR prefetch + HydrationBoundary | ✅ 유지 |
-| 프로덕션 | `TaskResultsTable.tsx` | `Table` `virtualize` | ✅ 유지 |
-| TEMP | `eval-runs-prefetch-bench-temp.ts` | 플래그, User Timing, scroll bench | 🗑️ 제거 |
-| TEMP | `eval-runs-perf-bench.spec.ts` | 4-way 자동 측정 + median | 🗑️ 제거 |
-| TEMP | `e2e-auth.ts`, `load-e2e-env.ts` | 로그인 헬퍼, `.env.local` 로드 | 🗑️ 제거 |
+| 계층     | 파일                                      | 역할                              | 상태    |
+| -------- | ----------------------------------------- | --------------------------------- | ------- |
+| 프로덕션 | `EvalRunsList.tsx`, `EvalRunListItem.tsx` | Run detail hover prefetch         | ✅ 유지 |
+| 프로덕션 | `tasks/[taskId]/page.tsx`                 | SSR prefetch + HydrationBoundary  | ✅ 유지 |
+| 프로덕션 | `TaskResultsTable.tsx`                    | `Table` `virtualize`              | ✅ 유지 |
+| TEMP     | `eval-runs-prefetch-bench-temp.ts`        | 플래그, User Timing, scroll bench | 🗑️ 제거 |
+| TEMP     | `eval-runs-perf-bench.spec.ts`            | 4-way 자동 측정 + median          | 🗑️ 제거 |
+| TEMP     | `e2e-auth.ts`, `load-e2e-env.ts`          | 로그인 헬퍼, `.env.local` 로드    | 🗑️ 제거 |
 
 ## 2. 무엇을 지표로 삼을까
 
@@ -57,35 +58,35 @@ sequenceDiagram
   P->>A: runScrollBench()
 ```
 
-| 지표 | 무엇을 재는가 | 시작 ~ 끝 | 주로 영향 | 수집 API |
-| --- | --- | --- | --- | --- |
-| **navMs** | Task 페이지 **진입~표시** 구간 시간 | task row/link **클릭** (`eval-run-task-navigate-click`) → task results **data 로드 후 1회 measure** (`eval-run-task-page-ready`) | **Prefetch** (hover prefetch, SSR `HydrationBoundary`) · API 응답 시간 · React 렌더 | `performance.measure` → `getLastTaskNavMeasure()` |
-| **scrollMs** | Results 테이블 **세로 스크롤 1회** 시간 | `scrollTop = 0` (2× rAF) → `scrollTop = scrollHeight` (2× rAF) 사이 `performance.now()` 차이 | DOM 행 수 · layout/paint · virtualize 유무 (행 많을수록 차이 커짐) | `runScrollBench()` → `durationMs` |
-| **domRows** | 스크롤 **직후** DOM에 남아 있는 데이터 행 수 | `[data-testid="eval-run-task-results-table"] tbody tr` 개수 (스크롤 후 재카운트) | **Virtualize** — ON: viewport+overscan만 (예: 18행) · OFF: 전체 행 (예: 46행) | `runScrollBench()` → `visibleRowCount` |
+| 지표         | 무엇을 재는가                                | 시작 ~ 끝                                                                                                                        | 주로 영향                                                                           | 수집 API                                          |
+| ------------ | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------- |
+| **navMs**    | Task 페이지 **진입~표시** 구간 시간          | task row/link **클릭** (`eval-run-task-navigate-click`) → task results **data 로드 후 1회 measure** (`eval-run-task-page-ready`) | **Prefetch** (hover prefetch, SSR `HydrationBoundary`) · API 응답 시간 · React 렌더 | `performance.measure` → `getLastTaskNavMeasure()` |
+| **scrollMs** | Results 테이블 **세로 스크롤 1회** 시간      | `scrollTop = 0` (2× rAF) → `scrollTop = scrollHeight` (2× rAF) 사이 `performance.now()` 차이                                     | DOM 행 수 · layout/paint · virtualize 유무 (행 많을수록 차이 커짐)                  | `runScrollBench()` → `durationMs`                 |
+| **domRows**  | 스크롤 **직후** DOM에 남아 있는 데이터 행 수 | `[data-testid="eval-run-task-results-table"] tbody tr` 개수 (스크롤 후 재카운트)                                                 | **Virtualize**. ON이면 viewport+overscan만 (예: 18행), OFF면 전체 행 (예: 46행)      | `runScrollBench()` → `visibleRowCount`            |
 
 **집계:** 케이스당 5회 측정 → **median** → 표의 `navMs` / `scrollMs` / `domRows` (평균 행의 `navMedianMs` 등은 4 URL median의 다시 평균).
 
 ## 3. 1샘플이 도는 절차
 
-| # | 동작 | 수집 지표 |
-| --- | --- | --- |
-| 1 | `browser.newContext()` — 캐시·쿠키 격리 | — |
-| 2 | E2E 로그인 → `/eval-runs?benchPrefetch=&benchVirtualize=` | — |
-| 3 | Run expand — prefetch ON이면 chevron **hover 1초** 후 click | — (이후 **navMs**에 간접 영향) |
-| 4 | Task link click — prefetch ON이면 link **hover 1초** 후 click → `markEvalRunTaskNavigateClick` | **navMs** 시작점 |
-| 5 | Task Results 페이지 로드 · 테이블 visible → `measureEvalRunTaskPageReady` | **navMs** 종료점 |
-| 6 | `getLastTaskNavMeasure()` → 숫자 저장 | **navMs** |
-| 7 | `runScrollBench()` — 맨 위→맨 아래 스크롤 + tbody `tr` 카운트 | **scrollMs**, **domRows** |
-| 8 | `context.close()` — 같은 시나리오 **5회** 반복 후 median | 3지표 median |
+| #   | 동작                                                                                           | 수집 지표                      |
+| --- | ---------------------------------------------------------------------------------------------- | ------------------------------ |
+| 1   | `browser.newContext()`로 캐시와 쿠키 격리                                                      | 없음                           |
+| 2   | E2E 로그인 → `/eval-runs?benchPrefetch=&benchVirtualize=`                                      | 없음                           |
+| 3   | Run expand. prefetch ON이면 chevron **hover 1초** 후 click                                     | 없음 (이후 **navMs**에 간접 영향) |
+| 4   | Task link click. prefetch ON이면 link **hover 1초** 후 click → `markEvalRunTaskNavigateClick`  | **navMs** 시작점               |
+| 5   | Task Results 페이지 로드 · 테이블 visible → `measureEvalRunTaskPageReady`                      | **navMs** 종료점               |
+| 6   | `getLastTaskNavMeasure()` → 숫자 저장                                                          | **navMs**                      |
+| 7   | `runScrollBench()`로 맨 위→맨 아래 스크롤 + tbody `tr` 카운트                                  | **scrollMs**, **domRows**      |
+| 8   | `context.close()`. 같은 시나리오 **5회** 반복 후 median                                        | 3지표 median                   |
 
 **4-way 플래그**
 
-| benchPrefetch | benchVirtualize | 의미 |
-| --- | --- | --- |
-| 1 | 1 | prefetch ON + virtualize ON |
-| 1 | 0 | prefetch ON + virtualize OFF |
-| 0 | 1 | prefetch OFF + virtualize ON |
-| 0 | 0 | baseline (OFF + OFF) |
+| benchPrefetch | benchVirtualize | 의미                         |
+| ------------- | --------------- | ---------------------------- |
+| 1             | 1               | prefetch ON + virtualize ON  |
+| 1             | 0               | prefetch ON + virtualize OFF |
+| 0             | 1               | prefetch OFF + virtualize ON |
+| 0             | 0               | baseline (OFF + OFF)         |
 
 ## 4. 앱 쪽 계측 코드
 
@@ -215,12 +216,13 @@ export function markEvalRunTaskNavigateClick(taskId: number): void {
 }
 ```
 
-**2) 페이지 ready 시 measure** (`EvalRunTaskResultsView` — task results data 로드 후 1회)
+**2) 페이지 ready 시 measure** (`EvalRunTaskResultsView`, task results data 로드 후 1회)
 
 ```typescript
 const TASK_NAVIGATE_CLICK_MARK_PREFIX = "eval-run-task-navigate-click";
 const TASK_PAGE_READY_MARK_PREFIX = "eval-run-task-page-ready";
-export const EVAL_RUN_TASK_NAV_TO_READY_MEASURE = "eval-run-task-navigate-to-ready";
+export const EVAL_RUN_TASK_NAV_TO_READY_MEASURE =
+  "eval-run-task-navigate-to-ready";
 
 export function measureEvalRunTaskPageReady(taskId: number): void {
   if (process.env.NODE_ENV !== "development") return;
@@ -243,7 +245,11 @@ export function measureEvalRunTaskPageReady(taskId: number): void {
 
   console.info(
     `[eval-runs bench] task ${taskId} navigate→ready: ${entry.duration.toFixed(1)} ms`,
-    { prefetchEnabled: flags.prefetch, virtualizeEnabled: flags.virtualize, durationMs: Math.round(entry.duration) },
+    {
+      prefetchEnabled: flags.prefetch,
+      virtualizeEnabled: flags.virtualize,
+      durationMs: Math.round(entry.duration),
+    },
   );
 }
 ```
@@ -263,7 +269,8 @@ export function getLastTaskNavMeasureMs(): number | null {
 }
 
 export function installEvalRunsBenchGlobal(): void {
-  if (process.env.NODE_ENV !== "development" || typeof window === "undefined") return;
+  if (process.env.NODE_ENV !== "development" || typeof window === "undefined")
+    return;
 
   window.__EVAL_RUNS_BENCH__ = {
     getFlags: getEvalRunsBenchFlags,
@@ -282,23 +289,28 @@ useEffect(() => {
 Playwright:
 
 ```typescript
-const navMs = await page.evaluate(() => window.__EVAL_RUNS_BENCH__!.getLastTaskNavMeasure()!);
+const navMs = await page.evaluate(
+  () => window.__EVAL_RUNS_BENCH__!.getLastTaskNavMeasure()!,
+);
 ```
 
 ### Step 6 · `runScrollBench()` 내부 (scrollMs + domRows)
 
 ```typescript
 export type EvalRunsScrollBenchResult = {
-  durationMs: number;      // → scrollMedianMs
+  durationMs: number; // → scrollMedianMs
   visibleRowCount: number; // → domRows (스크롤 후 tbody tr 수)
   totalRowCount: number;
   virtualizeEnabled: boolean;
 };
 
 export async function runEvalRunsTaskTableScrollBench(): Promise<EvalRunsScrollBenchResult | null> {
-  if (process.env.NODE_ENV !== "development" || typeof document === "undefined") return null;
+  if (process.env.NODE_ENV !== "development" || typeof document === "undefined")
+    return null;
 
-  const root = document.querySelector('[data-testid="eval-run-task-results-table"]');
+  const root = document.querySelector(
+    '[data-testid="eval-run-task-results-table"]',
+  );
   if (root == null) return null;
 
   const scrollEl =
@@ -310,14 +322,14 @@ export async function runEvalRunsTaskTableScrollBench(): Promise<EvalRunsScrollB
 
   // 1) scrollTop 0으로 리셋 → 2× rAF 대기
   scrollEl.scrollTop = 0;
-  await new Promise<void>(resolve => {
+  await new Promise<void>((resolve) => {
     requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
   });
 
   // 2) 맨 아래로 스크롤 → 구간 시간 측정
   const start = performance.now();
   scrollEl.scrollTop = scrollEl.scrollHeight;
-  await new Promise<void>(resolve => {
+  await new Promise<void>((resolve) => {
     requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
   });
   const durationMs = Math.round(performance.now() - start);
@@ -370,14 +382,14 @@ pnpm dev                                            # 별도 터미널, baseURL 
 
 **공통 env** (`.env.local` 또는 셸 export)
 
-| 변수 | 용도 |
-| --- | --- |
-| `E2E_LOGIN_EMAIL` / `E2E_LOGIN_PASSWORD` | 로그인 E2E · AI Tools E2E |
-| `E2E_BASE_URL` | 기본 `http://localhost:3000` (선택) |
-| `E2E_BENCHMARK_PATH` | Benchmark Set Detail 경로 (AI Tools 패널) |
-| `E2E_HEADLESS=false` | 브라우저 UI 표시 (headed) |
-| `E2E_SLOWMO=50` | headed 시 동작 지연 ms (선택) |
-| `E2E_PAUSE_AT_END=true` | headed + login spec 종료 시 `page.pause()` |
+| 변수                                     | 용도                                       |
+| ---------------------------------------- | ------------------------------------------ |
+| `E2E_LOGIN_EMAIL` / `E2E_LOGIN_PASSWORD` | 로그인 E2E · AI Tools E2E                  |
+| `E2E_BASE_URL`                           | 기본 `http://localhost:3000` (선택)        |
+| `E2E_BENCHMARK_PATH`                     | Benchmark Set Detail 경로 (AI Tools 패널)  |
+| `E2E_HEADLESS=false`                     | 브라우저 UI 표시 (headed)                  |
+| `E2E_SLOWMO=50`                          | headed 시 동작 지연 ms (선택)              |
+| `E2E_PAUSE_AT_END=true`                  | headed + login spec 종료 시 `page.pause()` |
 
 ### `playwright.config.ts` (발췌)
 
@@ -429,13 +441,13 @@ pnpm exec playwright test tests/e2e/login.spec.ts --debug
 "e2e:login:headed": "E2E_HEADLESS=false playwright test tests/e2e/login.spec.ts --reporter=dot"
 ```
 
-**CI** (`.github/workflows/ci.yml` advisory job): `pnpm exec playwright install --with-deps chromium` 후 Storybook test 등 — E2E 스펙은 로컬·수동 실행 기준.
+**CI** (`.github/workflows/ci.yml` advisory job): `pnpm exec playwright install --with-deps chromium` 후 Storybook test 등을 돌립니다. E2E 스펙은 로컬·수동 실행 기준.
 
 ### 당시 성능 측정 전용
 
 ```bash
 pnpm dev
-pnpm e2e:eval-runs-perf   # 당시 스크립트 — 재측정 시 스펙 복원 필요
+pnpm e2e:eval-runs-perf   # 당시 스크립트. 재측정 시 스펙 복원 필요
 ```
 
 ```json
@@ -456,27 +468,37 @@ import { expect, test } from "playwright/test";
 import { E2E_ENV_KEYS, E2E_TEST_DATA, SELECTORS, TEXT } from "./e2e-constants";
 
 test("TC-LOGIN-01: 성공 로그인 및 대시보드 진입", async ({ page }) => {
-  test.skip(!E2E.loginEmail || !E2E.loginPassword, "E2E 로그인 계정이 필요합니다.");
+  test.skip(
+    !E2E.loginEmail || !E2E.loginPassword,
+    "E2E 로그인 계정이 필요합니다.",
+  );
 
   await page.goto("/sign-in");
   await page.locator(SELECTORS.signInEmail).fill(E2E.loginEmail ?? "");
   await page.locator(SELECTORS.signInPassword).fill(E2E.loginPassword ?? "");
   await page.getByRole("button", { name: TEXT.logInButton }).click();
 
-  await expect(page.getByRole("heading", { name: TEXT.dashboardHeading })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: TEXT.dashboardHeading }),
+  ).toBeVisible();
 });
 ```
 
 ### AI Tools 패널 E2E (`tests/e2e/ai-tools-panel.spec.ts` · 현재 유지)
 
 ```typescript
-test.skip(requiresEnv, "E2E_LOGIN_EMAIL / E2E_LOGIN_PASSWORD / E2E_BENCHMARK_PATH 가 필요합니다.");
+test.skip(
+  requiresEnv,
+  "E2E_LOGIN_EMAIL / E2E_LOGIN_PASSWORD / E2E_BENCHMARK_PATH 가 필요합니다.",
+);
 
 test.beforeEach(async ({ page }) => {
-  await login(page);  // sign-in → dashboard heading
+  await login(page); // sign-in → dashboard heading
 });
 
-test("TC-AITOOLS-01: AI Tools 버튼으로 패널을 열고 네 가지 도구가 노출된다", async ({ page }) => {
+test("TC-AITOOLS-01: AI Tools 버튼으로 패널을 열고 네 가지 도구가 노출된다", async ({
+  page,
+}) => {
   const panel = await openAiToolsPanel(page);
   await expect(panel.getByRole("button", { name: /Generator/ })).toBeVisible();
   await expect(panel.getByRole("button", { name: /Validator/ })).toBeVisible();
@@ -511,7 +533,9 @@ async function runSingleSample(
   });
 
   await page.goto(`${listPath}?${benchQuery}`);
-  await page.locator('[data-testid="eval-runs-list"]').waitFor({ state: "visible" });
+  await page
+    .locator('[data-testid="eval-runs-list"]')
+    .waitFor({ state: "visible" });
 
   const run = page.locator(`[data-run-id="${benchCase.runId}"]`);
   const expandButton = run.locator("button[aria-expanded]").first();
@@ -522,7 +546,9 @@ async function runSingleSample(
       await page.waitForTimeout(1_000);
     }
     await expandButton.click();
-    await run.locator('[data-testid="eval-run-detail-table"]').waitFor({ state: "visible" });
+    await run
+      .locator('[data-testid="eval-run-detail-table"]')
+      .waitFor({ state: "visible" });
   }
 
   const taskLink = run.locator(`a[href*="/tasks/${benchCase.taskId}"]`).first();
@@ -532,11 +558,15 @@ async function runSingleSample(
   }
 
   await Promise.all([
-    page.waitForURL(new RegExp(`/eval-runs/${benchCase.runId}/tasks/${benchCase.taskId}`)),
+    page.waitForURL(
+      new RegExp(`/eval-runs/${benchCase.runId}/tasks/${benchCase.taskId}`),
+    ),
     taskLink.click(),
   ]);
 
-  await page.locator('[data-testid="eval-run-task-results-table"]').waitFor({ state: "visible" });
+  await page
+    .locator('[data-testid="eval-run-task-results-table"]')
+    .waitFor({ state: "visible" });
 
   // measureEvalRunTaskPageReady() 완료 대기
   await page.waitForFunction(
@@ -569,7 +599,7 @@ async function runSingleSample(
 
 **median 집계:** 4 시나리오 × 4 URL × 5회 → median → 16행 JSON + `console.table`
 
-**env** — `E2E_LOGIN_EMAIL`, `E2E_LOGIN_PASSWORD`, `E2E_EVAL_RUNS_LIST_PATH`, `E2E_BENCH_ITERATIONS=5`
+**env:** `E2E_LOGIN_EMAIL`, `E2E_LOGIN_PASSWORD`, `E2E_EVAL_RUNS_LIST_PATH`, `E2E_BENCH_ITERATIONS=5`
 
 **E2E 셀렉터:** `eval-runs-list` · `eval-run-detail-table` · `eval-run-task-results-table` · `data-run-id`
 
@@ -595,13 +625,13 @@ async function runSingleSample(
 
 실서비스 데이터의 장점은 분명합니다. 실제 셀 렌더러, 실제 payload 분포, 실제 네트워크. 합성 데이터는 그걸 다 잃습니다. 대신 **변수를 원하는 만큼 밀어볼 수 있습니다.** 1편의 재측정에서 5만 행까지 올릴 수 있었던 건 합성 데이터였기 때문입니다.
 
-| | 실서비스 데이터 | 합성 데이터 |
-| --- | --- | --- |
-| 답하는 질문 | 지금 우리 사용자는 얼마나 기다리나 | 이 기법은 어느 구간부터 이기나 |
-| 변수 통제 | 불가 (데이터에 묶임) | 자유 |
-| 셀 렌더러 비용 | 포함 | 빠짐 |
-| 인증·네트워크 | 포함 | 없음 |
-| 못 하는 것 | 손익분기점 탐색 | "우리 경우"에 대한 답 |
+|                | 실서비스 데이터                    | 합성 데이터                    |
+| -------------- | ---------------------------------- | ------------------------------ |
+| 답하는 질문    | 지금 우리 사용자는 얼마나 기다리나 | 이 기법은 어느 구간부터 이기나 |
+| 변수 통제      | 불가 (데이터에 묶임)               | 자유                           |
+| 셀 렌더러 비용 | 포함                               | 빠짐                           |
+| 인증·네트워크  | 포함                               | 없음                           |
+| 못 하는 것     | 손익분기점 탐색                    | "우리 경우"에 대한 답          |
 
 **둘은 대체재가 아니라 순서입니다.** 합성 데이터로 손익분기점을 먼저 찾고, 실서비스 측정으로 우리가 그 선의 어느 쪽에 있는지 확인하는 게 맞는 순서였습니다. 저는 반대로 했고, 그래서 1편에서 틀렸습니다.
 
@@ -613,23 +643,25 @@ async function runSingleSample(
 
 1편에서 제가 틀린 것도 측정 자체는 정상 동작했습니다. `domRows` 46 → 18은 정확한 값입니다. 틀린 건 **그 지표를 고른 판단**이었습니다. 측정 코드는 "무엇을 재라"는 지시를 그대로 따랐을 뿐입니다.
 
-그래서 하네스를 만들 때 코드보다 앞서는 게 지표 선정이라고 생각하게 됐습니다. 2장에서 지표 세 개를 정의하는 데 든 시간이 4·5장 코드를 짜는 시간보다 짧았는데, 순서가 반대였어야 했습니다. **"이 숫자가 나빠지면 사용자가 무엇을 느끼는가"**에 답이 안 나오는 지표는 애초에 재지 말았어야 합니다.
+그래서 하네스를 만들 때 코드보다 앞서는 게 지표 선정이라고 생각하게 됐습니다. 2장에서 지표 세 개를 정의하는 데 든 시간이 4, 5장 코드를 짜는 시간보다 짧았는데, 순서가 반대였어야 했습니다. "이 숫자가 나빠지면 사용자가 무엇을 느끼는가"에 답이 안 나오는 지표는 애초에 재지 말았어야 합니다.
 
-지금 이 하네스는 지웠습니다. 프로덕션에 측정 코드를 남길 수 없어서였는데, 다시 재야 할 때마다 되살리는 비용이 듭니다. 다음에는 Storybook 위에서 컴포넌트만 띄우고 재는 방식 — 1편의 재측정에서 쓴 그 방식 — 을 상시로 두려고 합니다. 프로덕션 코드를 안 건드리니 지울 이유가 없고, 변수를 밀어볼 수도 있습니다.
+지금 이 하네스는 지웠습니다. 프로덕션에 측정 코드를 남길 수 없어서였는데, 다시 재야 할 때마다 되살리는 비용이 듭니다. 다음에는 Storybook 위에서 컴포넌트만 띄우고 재는 방식을 상시로 두려고 합니다. 1편의 재측정에서 쓴 그 방식입니다. 프로덕션 코드를 안 건드리니 지울 이유가 없고, 변수를 밀어볼 수도 있습니다.
+
+> **후기 (2026-09):** 상시 하네스는 두 갈래로 남았습니다. 테이블은 Storybook 위에서 합성 데이터로 재는 `perf:table-virtual`, 상호작용은 Playwright로 실제 클릭을 넣고 `PerformanceEventTiming`을 페이지 안에서 수집해 입력 지연 / 처리 / 페인트로 쪼개 보는 `perf:inp`입니다. 둘 다 프로덕션 코드에 마크를 심지 않습니다. 이 글의 TEMP 계층이 안고 있던 "지워야 하는 코드" 문제는 그렇게 풀었습니다.
 
 ## 참고
 
 - [Playwright 공식 문서](https://playwright.dev/)
-- [Playwright — `CDPSession`으로 성능 지표 수집](https://playwright.dev/docs/api/class-cdpsession)
-- [MDN — User Timing API](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API/User_timing)
-- [MDN — `PerformanceObserver`와 long task](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceLongTaskTiming)
-- [web.dev — 실험실 측정과 실사용자 측정의 차이](https://web.dev/articles/lab-and-field-data-differences)
-- [TanStack Virtual — 측정 시 주의점](https://tanstack.com/virtual/latest/docs/introduction)
+- [Playwright: `CDPSession`으로 성능 지표 수집](https://playwright.dev/docs/api/class-cdpsession)
+- [MDN: User Timing API](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API/User_timing)
+- [MDN: `PerformanceObserver`와 long task](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceLongTaskTiming)
+- [web.dev: 실험실 측정과 실사용자 측정의 차이](https://web.dev/articles/lab-and-field-data-differences)
+- [TanStack Virtual: 측정 시 주의점](https://tanstack.com/virtual/latest/docs/introduction)
 
 <!-- 이미지 체크리스트
-IMG-01 [내가 캡처] 하네스 실행 로그 — 80샘플이 도는 터미널 화면 — 미완료
+IMG-01 [내가 캡처] 하네스 실행 로그, 80샘플이 도는 터미널 화면 : 미완료
          의도: "9.4분에 80샘플"이 실제로 어떤 모습인지
-IMG-02 [내가 캡처] DevTools Performance 패널의 User Timing 트랙 (mark 2개) — 미완료
+IMG-02 [내가 캡처] DevTools Performance 패널의 User Timing 트랙 (mark 2개) : 미완료
          의도: 2장. 앱 안에서 찍은 마크가 어디에 나타나는지
 IMG-03 [mermaid로 대체됨] 드라이버 → 앱 → 마크 → 판정 흐름
 -->
