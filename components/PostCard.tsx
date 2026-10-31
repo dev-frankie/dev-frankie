@@ -20,7 +20,7 @@ export const PostCard = ({ post }: PostCardProps) => (
             href={`/blog/${post.category.join("/")}`}
             className={styles.category}
           >
-            {post.categoryLabels.join(" · ")}
+            {post.categoryLabels.join(" / ")}
           </Link>
         </>
       ) : null}

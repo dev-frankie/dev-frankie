@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>경력기술서 · 안동주</title>
+  <title>경력기술서 | 안동주</title>
   <link rel="stylesheet" href="./assets/resume.css" />
 </head>
 <body>
@@ -18,14 +18,14 @@
   <main class="doc-content">
 <h2>1. Outline</h2>
 <h3>1.1. Profile</h3>
-<p>이름: 안동주 (An Dongju)</p>
-<ul>
-<li>연락처: +82 10-6303-2184</li>
-<li>이메일: <a href="mailto:andongjoo1@naver.com">andongjoo1@naver.com</a></li>
-<li>GitHub: <a href="https://github.com/dev-frankie">https://github.com/dev-frankie</a></li>
-<li>LinkedIn: <a href="https://www.linkedin.com/in/adj0715/">https://www.linkedin.com/in/adj0715/</a></li>
-</ul>
-<p>측정으로 개선을 증명하는 4년차 프론트엔드 리드 개발자입니다. AI 스타트업에서 프론트엔드를 주력으로 백엔드·CI/CD까지 폭넓게 경험하며 10여 종의 제품을 개발·런칭했습니다. <strong>계측 기반 성능 최적화 · 대규모 아키텍처 리팩토링 · AI 개발 프로세스 방법론</strong>에 강점이 있고, 단순 기능 구현을 넘어 팀이 지속적으로 성장·검증할 수 있는 구조와 자산화된 개발 방식을 만드는 데 기여합니다.</p>
+<p><strong>안동주 (An Dongju)</strong> | Frontend Engineer</p>
+<p>+82 10-6303-2184 | <a href="mailto:andongjoo1@naver.com">andongjoo1@naver.com</a> | <a href="https://github.com/dev-frankie">GitHub</a> | <a href="https://www.linkedin.com/in/adj0715/">LinkedIn</a></p>
+<p>제품 개발과 함께 프론트엔드 아키텍처, 개발 생산성, 품질과 배포 체계를 설계하고 운영해 온 5년차 프론트엔드 엔지니어입니다.</p>
+<p>셀렉트스타에서 LLM 평가 플랫폼 DATUMO의 프론트엔드 파트를 리드하고 있습니다. 인증과 권한을 서버에서 처리하는 BFF 구조를 세우고, 온프레미스 고객사 4곳과 글로벌 SaaS를 한 코드베이스로 납품하는 배포 구조를 만들었습니다.</p>
+<p>lint, 타입, 테스트, e2e 등 자동 검사 19개를 merge 조건으로 운영하고, AI 리뷰 하네스로 결함을 개발 단계에서 잡습니다. 순환 의존처럼 한 번 정리한 문제는 lint 규칙으로 다시 생기지 않게 막습니다.</p>
+<p>이전에는 딥브레인AI에서 AI 영상 SaaS와 금융/공공기관 대상 온프레미스 프로젝트를 개발했습니다.</p>
+<p>개발 환경이 편해야 팀이 제품을 빠르게 만든다고 생각해 개발자 경험(DX)을 꾸준히 개선해 왔습니다. 또한, 프론트엔드 성능 최적화에 강점이 있으며 개선 효과는 수치로 증명해 왔습니다.</p>
+<p>이력서의 항목을 문제, 과정, 성과 순서로 풀어 썼습니다. 결과와 함께 처음 판단이 틀렸던 지점, 고르지 않은 대안과 그 이유, 고친 것이 실제로 고쳐졌는지 확인한 방법도 적었습니다.</p>
 <h3>1.2. SKILLS</h3>
 <table>
 <thead>
@@ -36,321 +36,341 @@
 </thead>
 <tbody><tr>
 <td>Language</td>
-<td>TypeScript, JavaScript, Python</td>
+<td>TypeScript, JavaScript</td>
 </tr>
 <tr>
-<td>Framework / Library</td>
-<td>React 18, Next.js, Node.js</td>
+<td>Frontend</td>
+<td>React 19, Next.js 16(App Router, Route Handler, Proxy), TanStack Query/Table, Zustand, Redux Toolkit/RTK Query</td>
 </tr>
 <tr>
-<td>State</td>
-<td>Zustand, Recoil, Redux, TanStack Query, RTK Query</td>
-</tr>
-<tr>
-<td>UI / 시각화</td>
-<td>shadcn/ui, Storybook, Canvas · Fabric.js, D3.js · ECharts · Chart.js</td>
+<td>API / Auth</td>
+<td>OpenAPI(openapi-typescript, openapi-fetch, orval), Zod, BFF, JWE 세션, OAuth 2.0 + PKCE, SSO, SSE</td>
 </tr>
 <tr>
 <td>Test / Quality</td>
-<td>Vitest, Playwright, ESLint, Husky, Lighthouse CI, Sentry, OpenTelemetry</td>
+<td>Vitest, Playwright, type-aware ESLint, eslint-plugin-boundaries, Lighthouse CI, Sentry</td>
 </tr>
 <tr>
-<td>Infra / CI-CD</td>
-<td>Docker, Kubernetes, Redis, AWS(S3 · SES · ElastiCache), Jenkins, ArgoCD, GitHub Actions</td>
+<td>Infra / CI</td>
+<td>GitHub Actions, Docker(standalone), Kubernetes, AWS, gitleaks, Dependabot</td>
 </tr>
 <tr>
-<td>기타</td>
-<td>OpenAPI 타입 · Zod 자동화, NextAuth, SSE, FSD 아키텍처, MCP, @datumo/agent-harness</td>
+<td>AI Engineering</td>
+<td>Claude Code, Codex, 작성자와 검증자를 분리한 리뷰 하네스(<code>@datumo/agent-harness</code>), MCP(codegraph, Lighthouse), ADR 기반 에이전트 컨텍스트</td>
 </tr>
 </tbody></table>
-<p><strong>Skill Description</strong></p>
-<ul>
-<li><strong>아키텍처 리팩토링</strong> — FSD(Feature-Sliced Design), SSR/SSG/ISR, v→v 전면 리팩토링(Redux/RTK Query·SSR 도입), Middleware/BFF 패턴으로 변경 안전성과 확장성을 확보합니다.</li>
-<li><strong>계측 기반 성능 최적화</strong> — Core Web Vitals, @next/bundle-analyzer, Lighthouse CI 예산 검사, User Timing API 자동 측정으로 &quot;체감&quot;이 아닌 수치로 개선을 증명합니다.</li>
-<li><strong>상태 관리</strong> — Zustand·Recoil·Redux, TanStack Query/RTK Query로 복잡한 환경의 전역 상태와 서버 상태 캐시를 일관되게 관리합니다.</li>
-<li><strong>테스트 · 품질 자동화</strong> — Vitest 단위 테스트 + Playwright E2E + GitHub Actions로 lint·format·typecheck·test·build를 merge 차단 게이트로 운영합니다.</li>
-<li><strong>AI 개발 방법론</strong> — 작성자(Claude) ≠ 검증자(Codex) 교차검증 하네스를 사내 NPM 패키지로 자산화해 팀 전체의 리뷰 일관성을 끌어올립니다.</li>
-</ul>
 <h3>1.3. EXPERIENCE SUMMARY</h3>
-<p><strong>셀렉트스타</strong> (Seoul, Korea) · 프론트엔드 파트 리더 <em>(2025.07 ~ 현재)</em></p>
+<p><strong>셀렉트스타</strong> (Seoul, Korea) | 프론트엔드 파트 리더 <em>(2025.07 ~ 현재)</em></p>
 <blockquote>
-<p><strong>Datumo Platform — LLM 평가 SaaS 프론트엔드 리드 개발</strong></p>
+<p><strong>DATUMO Platform</strong> (LLM 평가, 레드티밍, Observability B2B 플랫폼)</p>
 <ul>
-<li>레거시 SSG → 동적 아키텍처 전환 및 Company/Workspace/Application 3계층 권한 체계 구축</li>
-<li>전역 상태 Recoil → Zustand 429개 이관, OpenAPI → 타입·Zod schema-first 도입</li>
-<li>실시간 협업(SSE) · Red Teaming · 대용량 테이블(TanStack Table) 등 핵심 기능 개발</li>
-<li>계측 기반 성능 최적화(barrel 코드 스플리팅 규명, User Timing 자동 측정)</li>
-<li>AI 개발 방법론 자산화(@datumo/agent-harness NPM 패키지 배포)</li>
-<li>테스트·CI·관측성 체계화 및 프론트엔드 파트 리딩(파트원 3명)</li>
+<li>리뷰부터 배포까지 파트의 개발 체계 수립. 19개 자동 검사를 merge 조건으로 운영, 테스트 약 4,100 케이스 확보</li>
+<li>작성 모델과 검토 모델을 분리한 AI 리뷰 하네스 설계와 사내 패키지 배포</li>
+<li>BFF 요청 경로, 3계층 권한 구조와 Rule Based 권한 키 설계</li>
+<li>next-auth 제거와 자체 세션 계층, 구글과 Microsoft 로그인</li>
+<li>온프레미스 고객사 4곳과 글로벌 SaaS를 단일 코드베이스로 운영하는 배포 구조</li>
+<li>OpenAPI 계약 자동화와 계약 검사 도구</li>
+<li>성능 진단 흐름과 개선. 랜딩 LCP 3.2초에서 2.0초, 44개 라우트 First Load JS 111KB 감소</li>
+<li>Criteria AI 도구, 평가 대시보드, Observability, 다국어 파이프라인</li>
 </ul>
 </blockquote>
-<p><strong>딥브레인 AI</strong> (Seoul, Korea) · 웹 개발 <em>(2022.03 ~ 2025.03)</em></p>
+<p><strong>딥브레인 AI</strong> (Seoul, Korea) | 프론트엔드 개발 <em>(2022.03 ~ 2025.03)</em></p>
 <blockquote>
 <p><strong>AI Studios v3 서비스 개발</strong></p>
 <ul>
-<li>대규모 데이터 실시간 통계 및 시각화</li>
-<li>요금제 확장 및 구독 해지 방어 시스템 개발</li>
-<li>캔버스 기반 에디터 신규 개발 및 유지보수</li>
-<li>마케팅 도구를 활용한 전략 지원 및 캠페인</li>
-<li>글로벌 다국어 지원 및 지역화 서비스</li>
+<li>대규모 데이터 통계 대시보드, 요금제 확장/구독 해지 방어, 캔버스 에디터, 다국어/중국 리전</li>
 </ul>
 <p><strong>Account 서버 설계 및 백오피스 개발</strong></p>
 <ul>
-<li>자사 서비스 통합 로그인 npm 패키지 배포</li>
-<li>로그인 인증 · 통합 어드민 · 백오피스 시스템 설계 및 개발</li>
+<li>자사 서비스 통합 로그인 npm 패키지, 인증, 통합 어드민, 백오피스</li>
 </ul>
-<p><strong>B2B · 대형 SI 프로젝트</strong></p>
+<p><strong>금융/공공 B2B 프로젝트</strong></p>
 <ul>
-<li>월드비전 AI 시상영상 · KB증권 드림아바타 · 태블릿 AI 실시간 통역 · 서울시 교육청 AI 디지털 교과서 · 국민은행 금융비서 · 농협은행 AI 허브/Kiosk · AI 학습 데이터 라벨링·검수 플랫폼</li>
+<li>농협은행 AI 허브/키오스크, 국민은행 금융비서, 태블릿 AI 실시간 통역, AI 학습 데이터 플랫폼(정부과제), KB증권 PoC, 서울시교육청 AI 디지털 교과서, 월드비전 AI 시상영상</li>
 </ul>
-</blockquote>
-<p><strong>Deepbuild Inc</strong> (Seoul, Korea) · ML Engineering Team <em>(2021.07 ~ 2022.02)</em></p>
-<blockquote>
-<p><strong>Pinterior 서비스 개발</strong> — 상권 데이터 분석, 인테리어 추천 모델 최적화 및 웹 서빙</p>
 </blockquote>
 <h2>2. WORK EXPERIENCE</h2>
-<h3>2.1. 셀렉트스타 — Datumo Platform</h3>
-<p>셀렉트스타는 누적 투자 434억 규모의 AI 학습 데이터 구축 전문 기업으로, LLM 평가 SaaS <strong>Datumo Platform</strong>의 프론트엔드 리드 개발을 담당하고 있습니다. 단일 평가 도구(Eval)에서 <strong>Eval + Red Teaming + Console + Observability</strong>를 아우르는 플랫폼으로의 확장을 아키텍처 리팩토링과 핵심 기능 개발 양면에서 리드했습니다.</p>
+<h3>2.1. 셀렉트스타 (DATUMO Platform)</h3>
+<p>AI 학습 데이터 구축 기업 셀렉트스타의 LLM 평가 플랫폼. 기업이 자사 LLM 애플리케이션을 평가하고 레드티밍하며 운영 중 실패 사례를 추적하는 B2B 제품으로, 글로벌 SaaS와 금융/공공 등 고객사 온프레미스를 함께 운영</p>
 <ul>
-<li>역할: 프론트엔드 파트 리더 (파트원 3명)</li>
-<li>Skills: TypeScript, Next.js 14→16, Zustand, TanStack Query, openapi-fetch · orval(zod), NextAuth, next-intl, Sentry, Vitest, Playwright, eslint-plugin-boundaries</li>
+<li>역할: 프론트엔드 파트 리더. 제품 레포, 어드민 레포, 공용 AI 리뷰 패키지 담당</li>
+<li>규모: TS/TSX 약 4,000파일, API 라우트 364개</li>
+<li>Skills: TypeScript, Next.js(14에서 16으로 업그레이드), TanStack Query, Zustand, openapi-fetch, orval(zod), Vitest, Playwright, eslint-plugin-boundaries, GitHub Actions</li>
 </ul>
-<h4>2.1.1 <strong>레거시 SSG → 동적 아키텍처 전환 및 3계층 권한 체계</strong></h4>
+<hr>
+<h4>2.1.1 <strong>파트 리딩과 품질 게이트</strong></h4>
 <p><strong>문제</strong></p>
 <ul>
-<li>레거시가 SSG(정적 생성) 기반이라 서버 사이드에서 인증 검증과 권한 기반 라우팅 제어가 <strong>구조적으로 불가능</strong>했습니다.</li>
-<li>단일 평가 도구를 Company/Workspace 다계층 권한 플랫폼으로 확장하는 데 근본 제약이 있었습니다.</li>
+<li>PR에서 자동으로 도는 테스트와 검사가 없어, 결함은 수동 QA나 배포 후에야 발견되는 구조</li>
+<li>글로벌 SaaS와 온프레미스 고객사 4곳을 한 코드베이스로 운영해, 회귀 하나가 모든 고객사로 번질 수 있는 환경</li>
 </ul>
-<p><strong>가정</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>정적 구조의 한계는 렌더링 방식이 아니라 <em>서버에서 요청을 가로챌 수 없다</em>는 데 있으므로, API Routes 기반 동적 구조 + Middleware(BFF)로 전환하면 인증 가드가 성립할 것으로 판단했습니다.</li>
+<li>업무 배분, 착수 전 설계 리뷰, 격주 기술 세미나, 신규 입사자 온보딩 담당. 큰 작업은 설계와 구현 가이드를 직접 맡고 구현은 파트원에게 넘겨 리뷰하는 방식으로 운영(권한 체계 개편 등). 일정과 요구사항은 PO/백엔드와 직접 조율</li>
+<li>기술 부채를 테스트, 성능, CI/CD, 관측, 아키텍처, 유지보수, 보안 7개 축으로 진단하고, 진단 결과와 진행 상황을 팀 공유 문서로 계속 갱신. 해결 항목에는 실제 머지된 것만 기록</li>
+<li>PR마다 자동 검사 19개를 병렬 Job으로 나눠 돌리고, 하나라도 실패하면 merge 차단<ul>
+<li>코드 규칙 4개(lint, 포맷, 안 쓰는 코드, Next 파일 위치 규칙)</li>
+<li>타입 3개(타입 검사, 타입이 의도대로 정의됐는지 확인하는 테스트, 아직 켜지 못한 엄격한 타입 규칙의 위반 개수 상한)</li>
+<li>테스트 2개(단위 테스트와 커버리지 최저선, 실제 빌드로 돌리는 e2e)</li>
+<li>빌드 1개</li>
+<li>다국어 3개(영어 원문과 코드 일치, 번역 키, 번역 설정 키)</li>
+<li>보안 4개(배포될 코드와 PR 커밋의 시크릿 유출, 추적 env 파일, 프로덕션 의존성 취약점)</li>
+<li>그 밖의 안전장치 2개(리다이렉트 주소, 스토어 쓰기 effect 수 상한)</li>
 </ul>
-<p><strong>해결</strong></p>
-<ul>
-<li>Next.js 14 → 16 업그레이드 후 SSG → API Routes 기반 동적 아키텍처로 전환</li>
-<li>NextAuth + Next.js Proxy(BFF)로 브라우저는 Next API Routes만 호출하고 플랫폼 API는 서버에서만 접근하도록 구성</li>
-<li><strong>Company / Workspace / Application 3계층 권한(+슈퍼어드민)</strong> 라우팅 가드 설계·구현</li>
-<li>FSD(Feature-Sliced Design) 도입으로 <code>app / views / widgets / features / entities / shared</code> 계층과 단방향 의존성 규칙 확립, public API(barrel) 규칙으로 임의 deep import 차단 — 총 <strong>67개 슬라이스</strong>(Entities 9 · Features 23 · Widgets 17 · Views 18), 슬라이스별 번들 크기 자동 추적</li>
+</li>
+<li>타입 정보를 쓰는 lint는 캐시를 쓰면 다른 파일의 변경 영향을 놓칠 수 있어 캐시 없이 실행하고, 늘어난 시간은 병렬화로 회수</li>
+<li>바로 켤 수 없는 규칙은 지금의 위반 개수를 상한으로 기록하고, 그보다 늘어나는 PR만 막아 위반이 줄어들기만 하도록 도입. 테스트 커버리지도 도입 당시 수치를 최저선으로 정해 내려가지 않게 하고, 테스트가 없는 파일도 계산에 넣어 수치가 부풀지 않게 측정</li>
+<li>새로 만든 테스트와 검사가 실제로 문제를 잡는지 확인하는 절차를 정함. 버그를 고치며 추가한 테스트는 고치기 전 코드에서 실패해야 하고, 새 검사는 잘못된 코드를 넣었을 때 실패해야 제대로 된 테스트로 인정. 항상 통과만 하는 테스트를 걸러내기 위해서</li>
+<li>e2e 테스트를 merge 조건에 넣자마자, 로그아웃해도 곧 다시 로그인 상태가 되는 실제 버그 발견</li>
+<li>설계 결정을 ADR로 기록. ADR마다 영향받는 파일 경로를 적어, AI 리뷰어가 변경과 맞는 결정을 먼저 읽고 리뷰하도록 연결</li>
 </ul>
 <p><strong>성과</strong></p>
 <ul>
-<li>정적 구조에서 불가능했던 <strong>인증 기반 라우팅 가드</strong>를 실현하여 서비스 보안성·확장성 확보</li>
-<li>기능 수정 시 영향 범위를 FSD 레이어 내로 격리, 사이드이펙트 예측 가능성 확보</li>
+<li>테스트 약 4,100 케이스(524파일), 배포 전 자동 검사 19개</li>
+<li>ADR 13건 기록</li>
+<li>파트 공동 과제로 클라이언트 번들 14.4% 감소, 수천 줄짜리 대형 컴포넌트 5개를 6,509줄에서 1,745줄로 분리, QA 시나리오 문서 321개 정비</li>
 </ul>
 <hr>
-<h4>2.1.2 <strong>FSD 아키텍처 강제 및 전역 상태 이관</strong></h4>
+<h4>2.1.2 <strong>AI 개발 방법론 (<code>@datumo/agent-harness</code>)</strong></h4>
 <p><strong>문제</strong></p>
 <ul>
-<li>FSD 규칙은 문서로 존재했지만 강제력 격차가 컸습니다 — <code>feature → feature</code> import 약 <strong>39건</strong>, deep import 약 30건이 대부분 사람의 기억에 의존해 drift.</li>
-<li>전역 상태가 Recoil atom/atomFamily <strong>429개</strong>(atom 427 + atomFamily 2)로 흩어져 흐름 파악이 어렵고, DevTools 미지원으로 디버깅 비용이 높았습니다.</li>
+<li>AI 에이전트가 &quot;테스트 통과, 문제없음&quot;이라고 보고해도 그 보고를 검증하는 주체가 없었음. 같은 모델이 같은 맥락으로 자기 코드를 검토하면 같은 맹점을 두 번 통과시킴</li>
 </ul>
-<p><strong>가정</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>사람이 기억하는 규칙은 결국 drift하므로 <em>ESLint로 경계를 강제</em>해야 위반이 멈춘다고 봤습니다.</li>
-<li>상태는 <em>중앙 스토어 + DevTools로 추적 가능성 확보</em>가 최우선이라 판단(atom 분산이 유지되는 Jotai가 아닌 Zustand 선택).</li>
-</ul>
-<p><strong>해결</strong></p>
-<ul>
-<li><code>eslint-plugin-boundaries</code>로 FSD 레이어 의존 방향과 slice public API import를 강제(relative import까지 검사), 경계 검사 자체에 대한 테스트 추가</li>
-<li>Recoil → <strong>Zustand 429개 이관</strong> — Flux 단방향 + 중앙 스토어 + Redux DevTools(타임트래블). 기존 atom 인터페이스를 selector로 래핑해 소비처 변경을 최소화하며 <strong>도메인별 점진 이관</strong></li>
+<li>코드 리뷰에서 작성자와 리뷰어를 나누는 원칙을 그대로 적용해, 코드를 쓰는 모델(Claude)과 검토하는 모델(Codex)을 분리. 검토자에게는 대화 기록 없이 작업 요약 문서(handoff)와 변경 내용(diff), 검사 결과만 넘기고, 검토 지시문은 git으로 관리해 작성자가 바꿀 수 없게 고정</li>
+<li>검토 모델은 지적 사항을 심각도 3단계로 나눠 정해진 형식으로 제출하고, 심각한 두 단계 중 하나라도 있으면 하네스가 실패로 처리</li>
+<li>작성 모델과 검토 모델이 수정과 재검토를 최대 2라운드 주고받은 뒤, 남은 사항은 사람이 판단</li>
+<li>검토 모델이 코드 그래프 MCP(codegraph)로 변경의 영향 범위를 분석하고, diff를 보기 전에 변경과 맞는 ADR과 도메인 문서를 먼저 읽도록 연결</li>
+<li>merge 차단은 타입 검사, lint, 테스트가 담당. AI 리뷰는 오탐이 얼마나 나오는지 충분히 지켜본 뒤 merge 조건에 넣기로 하고, 그 전까지는 결과만 PR에 남김</li>
+<li>공유 npm 패키지로 추출해 규칙, 지시문, 게이트를 한 곳에서 관리하고 <code>sync</code>로 여러 레포에 전파. 각 레포의 로컬 수정은 덮어쓰지 않고 차이를 먼저 표시. 레포 접근 권한은 개인 토큰에서 조직 GitHub App으로 이전</li>
 </ul>
 <p><strong>성과</strong></p>
 <ul>
-<li><code>feature → feature</code> import <strong>39 → 0</strong>, 위반 시 PR 차단 → <strong>문서 규칙에서 실행 규칙으로</strong> 전환</li>
-<li>전역 상태 추적·디버깅 효율 개선, 변경 영향 범위를 FSD 레이어 내로 격리</li>
+<li>도입 첫날 하네스가 자기 자신의 결함 12건 발견(타입 검사가 크래시했는데 오류 0줄이라 통과로 처리하던 것 포함)</li>
+<li>제품, 어드민, 문서 사이트 3개 레포 적용. 레포마다 복사해 쓰던 규칙의 차이 제거</li>
 </ul>
 <hr>
-<h4>2.1.3 <strong>타입 안전성 시스템화 · API 계약 자동화</strong></h4>
+<h4>2.1.3 <strong>BFF 요청 경로와 라우트 팩토리</strong></h4>
 <p><strong>문제</strong></p>
 <ul>
-<li><code>strict: true</code>였지만 <strong>type-aware ESLint 미사용</strong>(<code>parserOptions.project: false</code>)이라 타입 정보 기반 규칙이 전혀 돌지 않았습니다.</li>
-<li>타입 우회로: <code>as unknown as never</code> 이중 단언 <strong>53곳</strong>(프로덕션 38), non-null <code>!</code> 약 72곳. 배열/Record 인덱스 접근이 <code>undefined</code>를 반영하지 않음(<code>noUncheckedIndexedAccess</code> off).</li>
-<li>손으로 유지하던 <strong>약 3,200줄 <code>PlatformBackendPaths</code> 타입 계층</strong>의 경로 누락·느슨한 <code>requestBody(Record&lt;string, unknown&gt;)</code>가 백엔드 계약과 drift.</li>
+<li>정적 생성(SSG) 기반이라 서버에서 요청을 가로챌 수 없어, 인증 검증과 권한 기반 라우팅을 서버에서 할 수 없는 구조. 브라우저가 토큰을 들고 백엔드를 직접 호출</li>
 </ul>
-<p><strong>가정</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>단순 <code>strict</code> 플래그로는 부족 — 컴파일러가 타입 정보로 인덱스 접근·uncaught promise·불필요 단언까지 잡게 하면 실제 버그가 표면화되고, 계약은 <em>스펙 원본에서 자동 생성</em>해야 drift가 멈춘다.</li>
-</ul>
-<p><strong>해결</strong></p>
-<ul>
-<li><strong>type-aware ESLint</strong>(<code>projectService</code>) 도입 + <code>no-unsafe-*</code> · <code>no-floating-promises</code> · <code>no-unnecessary-type-assertion</code> · <code>switch-exhaustiveness-check</code>를 error로 승격</li>
-<li><strong><code>noUncheckedIndexedAccess</code></strong> 활성화 후 발생한 타입 오류 <strong>221건</strong>을 6개 디렉토리에 걸쳐 전수 해소 — 사용처마다 고치는 대신 <em>변수 정의부에서 1회 가드</em>하는 소스-가드 전략(예: <code>Table.tsx</code> 가드 1개로 33건, columns 빌더 40 → 4)</li>
-<li><code>no-floating-promises</code> 방치 Promise <strong>109건</strong> triage(프로덕션 66건 <code>void</code> 처리), <code>no-unnecessary-type-assertion</code> <strong>125건</strong> auto-fix(단, load-bearing 단언 오탐을 겪고 &#39;auto-fix 후 tsc 검증 필수&#39; 원칙 정립)</li>
-<li><code>as unknown as never</code> 53곳의 근본 원인을 수기 타입 계층으로 특정 → <code>sanitize → orval(zod) → prettier</code> <strong>OpenAPI 자동 생성 파이프라인</strong> 구축, <code>GET /api/member/me</code> 응답 검증기 슬라이스로 반복 가능성 입증(agent:verify·review 모두 GREEN)</li>
+<li>정적 export(SSG) 방식으로 배포하던 앱을, API Route Handler를 BFF로 두는 서버 실행 구조(standalone)로 전환. Next.js는 14에서 16으로 업그레이드</li>
+<li>모든 데이터 요청이 같은 경로(TanStack Query 훅, 공용 API 함수, same-origin BFF)를 거치도록 제한하고, BFF가 암호화 쿠키에서 꺼낸 토큰을 붙여 백엔드를 호출. 다른 경로는 lint로 차단</li>
+<li>라우트마다 반복되던 파라미터 파싱, 인증 헤더, 프록시 호출, 응답 검증 코드를 선언형 라우트 팩토리로 통합. 다만 팩토리가 바디 스키마를 필수로 요구해 바디가 없는 POST(clone, retry, stop 등) 97개 중 68개는 팩토리를 쓸 수 없었음. 빈 스키마를 억지로 넣는 대신 팩토리의 타입을 고쳐 바디 스키마를 선택 사항으로 변경</li>
+<li>스트리밍, 바이너리, 파일 업로드 라우트는 팩토리로 옮기지 않음. 팩토리는 사용자가 요청을 취소해도 백엔드에 알리지 못해서</li>
+<li>BFF의 에러 응답 형식을 <code>{ error: { code, message } }</code> 하나로 통일. 브라우저는 이 code를 보고 세션 만료 같은 처리를 결정</li>
+<li>세션이 만료된 사용자가 빈 화면에 남는 결함을 추적한 결과, 일부 라우트가 401에 에러 코드를 싣지 않아 브라우저가 그 응답을 무시하던 것이 원인. 401을 만드는 지점 19곳을 공용 함수 하나로 통일해, 새 라우트도 같은 응답을 쓰도록 고정</li>
 </ul>
 <p><strong>성과</strong></p>
 <ul>
-<li>type-aware ESLint 도입 후 프로덕션 <code>no-unsafe-*</code> 위반 <strong>7건</strong>에 불과함을 측정 — <code>strict:true</code> 위에 실질 타입 안전성 확보</li>
-<li><code>noUncheckedIndexedAccess</code> <strong>221건 전수 해소</strong>, 브랜치 GREEN(tsc 0 · eslint clean) 유지, 손유지 3,200줄 계약을 스펙 자동 생성으로 대치 시작</li>
+<li>토큰과 백엔드 주소를 브라우저에서 제거</li>
+<li>팩토리를 쓸 수 없던 라우트 68개를 0개로 줄이고, 이후 파트원과 함께 이관을 이어가 현재 API 라우트 364개 중 316개가 팩토리 사용</li>
+<li>세션 만료 시 빈 화면에 남던 라우트 55개 복구</li>
 </ul>
 <hr>
-<h4>2.1.4 <strong>실시간 협업 · Red Teaming · 대용량 테이블</strong></h4>
+<h4>2.1.4 <strong>3계층 권한 구조와 Rule Based 권한 키</strong></h4>
 <p><strong>문제</strong></p>
 <ul>
-<li>LLM 평가는 수 분–수십 분이 걸리는 비동기 작업이라 진행 상태를 실시간으로 파악하기 어려웠습니다.</li>
-<li>여러 사용자가 같은 평가를 동시에 다룰 때의 편집 충돌, 수천–수만 행 결과의 렌더링 성능이 과제였습니다.</li>
+<li>화면마다 역할(owner, admin 등)을 직접 비교해 권한을 판단하는 구조라, 역할 구성이 바뀌면 프론트 곳곳의 비교 코드를 찾아 고쳐야 했음</li>
+<li>조직(Organization)과 워크스페이스 역할을 함께 다루는 권한 모델이 필요해진 상황</li>
 </ul>
-<p><strong>가정</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>폴링의 낭비는 <em>클라이언트가 서버에 계속 되묻는</em> 구조에서 나오므로 서버 푸시(SSE)로 제거할 수 있고, 대용량 테이블은 무거운 그리드 라이브러리 대신 <em>화면에 필요한 만큼만 DOM에 유지</em>(headless + 가상화)하면 성능과 커스터마이징 자유도를 함께 얻을 것으로 봤습니다.</li>
-</ul>
-<p><strong>해결</strong></p>
-<ul>
-<li><strong>실시간 협업</strong> — Polling → SSE로 전환해 평가 진행을 실시간 스트리밍(불필요한 반복 요청 제거). 4개 named event(스냅샷·잡 진행·프레즌스·버전) + viewerSessionId 기반 echo suppression(자기 변경 제외) + <code>navigator.sendBeacon</code> leave 신호로 active users 표시와 편집 버전 충돌 감지·최신 반영을 갖춘 공동 편집 구현</li>
-<li><strong>Red Teaming</strong> — 공격셋 기반 자동 Red Teaming 플로우 + human-in-the-loop 채팅으로 평가 → 취약점 탐지 → 재현을 한 흐름으로 연결</li>
-<li><strong>대용량 테이블</strong> — 무거운 그리드 라이브러리 의존을 제거하고 Headless(TanStack Table) + shadcn/ui로 가상화 · 2중 헤더 · rowspan/colspan 테이블을 직접 구현, 상세는 가상화 + 동적 컬럼(show/hide, 드래그앤드랍 순서 변경) 적용</li>
-<li><strong>대시보드</strong> — D3 → ECharts/Recharts 전환 + 드래그앤드랍 그리드로 사용자가 위젯을 배치하는 커스텀 대시보드 제공</li>
+<li>Organization과 Workspace 역할이 하위 Application 권한까지 이어지는 3계층 구조 설계. Organization의 Owner와 Admin은 Workspace 권한을 물려받고, Application 권한은 Workspace 역할에서 나오도록 정리</li>
+<li>어떤 역할이 어떤 권한을 갖는지는 백엔드 규칙(Rule Based)이 정하고, 프론트는 <code>/api/member/me</code>가 내려주는 플랫폼, 조직, 워크스페이스 범위의 권한 키(<code>resource.action</code>)만 확인하도록 계약 정리</li>
+<li>화면 노출 판단은 <code>usePermissions</code> 훅 하나로 통일. 화면의 판단은 UI 노출에만 쓰고 실제 권한 검사는 서버가 매 요청마다 수행</li>
+<li>설계와 구현 가이드를 맡고, 파트원의 구현 PR을 리뷰</li>
 </ul>
 <p><strong>성과</strong></p>
 <ul>
-<li>평가 진행이 실시간 반영되고 폴링 대비 요청 수가 크게 감소, 다중 사용자가 충돌 없이 협업</li>
-<li>가상화는 도입에서 끝내지 않고 손익분기점을 합성 데이터로 실측했습니다. 렌더되는 <code>&lt;tr&gt;</code>은 데이터 양과 무관하게 22개로 상수이고, 이 상수가 이득이 되는 지점은 지표마다 달랐습니다 — <strong>초기 렌더는 1,000행부터</strong>(677 → 90ms, 7.5배), <strong>스크롤은 5,000행부터</strong>(15.6 → 63fps, long task 30 → 0건)이고, 50,000행에서는 DOM <strong>1,400,191 → 808노드</strong> · 힙 <strong>2,508 → 268MB</strong> · 페인트 <strong>31.2초 → 0.22초</strong></li>
-<li>반대로 현재 페이지 크기(100행) 구간에서는 행당 payload가 클 때만 초기 렌더가 개선되고(47KB에서 455 → 163ms) 스크롤 FPS는 118 → 76으로 <strong>오히려 나빠지는</strong> 트레이드오프임을 확인해, 처음에 근거로 적었던 &quot;DOM 46 → 18행&quot; 문장을 철회하고 이 수치로 대체했습니다</li>
+<li>역할 구성이 바뀌어도 프론트 수정 없이 반영되는 구조</li>
+<li>120여 개 파일, 150여 곳의 권한 판단을 함수 하나로 통일</li>
 </ul>
 <hr>
-<h4>2.1.5 <strong>계측 기반 페이지 성능 최적화</strong></h4>
+<h4>2.1.5 <strong>next-auth 제거와 자체 세션 계층</strong></h4>
 <p><strong>문제</strong></p>
 <ul>
-<li>초기 로딩 지연·Layout Shift로 사용성이 저하됐고, 차트 라이브러리 <code>recharts</code>(282.5KB parsed / <strong>116.5KB gzip</strong>)가 대시보드를 열지도 않는 사용자에게까지 <strong>공유 초기 번들</strong>로 배달됐습니다.</li>
-<li>Task 진입(평가 Run 조회)은 <strong>7-way 조인</strong>이 필요해 목록·상세가 느렸고, 성능을 지속 측정·감시할 체계가 없었습니다.</li>
+<li>세션은 <code>next-auth@5 beta</code> 위에서 동작했지만 실제로 쓰는 기능은 Credentials 로그인과 암호화 쿠키뿐. ID 연동은 백엔드가 이미 담당했고, 인증 코드 대부분이 라이브러리를 우회하는 코드</li>
+<li>Auth.js는 세션을 읽을 때마다 쿠키를 새로 씀. 로그아웃 직전에 출발한 요청이 뒤늦게 도착해 지운 쿠키를 되살렸고, 로그아웃해도 곧 다시 로그인 상태가 되는 버그를 e2e 테스트가 발견</li>
+<li>Session 객체가 브라우저로 전달되는 구조라 그 위에 실린 백엔드 토큰도 함께 노출. 보안 감사에서 최상위 등급으로 지적된 항목</li>
+<li>소셜 로그인은 기존 회원의 로그인인지 신규 가입인지에 따라 다음 화면이 달라지는데, 라이브러리의 <code>signIn()</code>은 성공 여부만 반환</li>
 </ul>
-<p><strong>가정</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>처음엔 <em>대시보드 컴포넌트를 <code>dynamic(ssr:false)</code>로 지연하면 분리될 것</em>으로 가정했으나 리빌드 후 청크 콘텐츠 해시가 <strong>바이트 동일</strong>(<code>6333-3f3bb7b9…</code> before=after)이라 <strong>가설 기각</strong> — 진범은 barrel(<code>widgets/.../index.ts</code>)의 정적 재수출로, ModalRegister(앱 부팅) 등 <strong>6개 소비처</strong>가 recharts를 정적 그래프로 끌어들이고 있었습니다.</li>
-<li>&quot;체감이 빨라졌다&quot;는 주장이 아니라 <em>ms 단위 계측으로 증명</em>해야 한다고 봤습니다.</li>
-</ul>
-<p><strong>해결</strong></p>
-<ul>
-<li><strong>barrel 재수출 제거 + 소비처 deep 경로 dynamic import</strong>로 정적 경로를 완전히 차단(변경 파일 2개). <code>build-manifest</code>(공유 초기 청크)에서 recharts 추방 + <code>react-loadable-manifest</code>에 동적 청크(2560·6723) 등록으로 async임을 실측</li>
-<li><strong>Task 진입 최적화</strong> — 카드 <strong>호버 시점 prefetch(hover 인텐트) + SSR HydrationBoundary</strong> + <code>@tanstack/react-virtual</code> 가상화. <strong>Playwright + User Timing API</strong>로 prefetch·virtualize 4조합 × 4 Task × 5회 median(<strong>총 80샘플, 약 9.4분</strong>) 자동 측정해 수치로 검증</li>
-<li>이미지·폰트 사이즈 예약 + 스켈레톤으로 Layout Shift 방지, 정적 파일 S3 업로드 + CDN 캐싱</li>
-<li><code>perf:rank</code> 번들 랭킹(First-party·서드파티·청크 3섹션 + 중복 버전 감지) + Lighthouse median(라우트당 3회) 파이프라인 구축, <code>perf:bundle-diff</code>로 main 번들 baseline 대비 PR별 gzip·패키지별 증감을 diff하고 <strong>Top 15 패키지 랭킹 + Lighthouse 결과를 PR 스티키 코멘트로 자동 게시</strong>(GitHub Actions)</li>
+<li>먼저 라이브러리를 유지한 채 토큰을 Session에서 빼는 우회 방식을 적용(ADR-0004). 동작은 했지만 우회 코드가 한 겹 늘어남</li>
+<li>라이브러리가 제공하는 ID 연동은 쓰지 않으면서, 필요한 쿠키 쓰기 시점 제어와 소셜 로그인 결과 전달은 라이브러리에 막혀 있다고 판단해 자체 세션 계층으로 교체(ADR-0005)</li>
+<li>쿠키는 내용이 바뀔 때만 쓴다는 원칙으로 설계. 로그인, 토큰 회전, 만료, 로그아웃에서만 쿠키를 써서 쿠키가 되살아나는 경로를 제거. 세션은 JWE로 암호화한 쿠키에 저장하고, HTTPS에서는 다른 서브도메인이 쿠키를 심을 수 없도록 설정</li>
+<li>쿠키를 쓸 수 있는 곳(Route Handler, Proxy)과 읽기만 하는 곳(Server Component)을 나눠 토큰 갱신은 쓸 수 있는 곳에서만 일어나게 함. 401이 동시에 몰려도 토큰 갱신은 한 번만 일어나도록 중복 제거</li>
+<li>구글 로그인은 BFF가 authorization code 플로우(PKCE)를 수행해 브라우저가 구글 토큰을 갖지 않는 구조(ADR-0006). 로드밸런서 뒤 어느 인스턴스로 콜백이 와도 처리되도록 진행 중 상태를 10분 동안만 유효한 암호화 쿠키에 보관</li>
+<li>Microsoft 로그인을 같은 BFF 플로우에 추가하고, 이메일이 없는 Microsoft 계정은 실패 사유를 알려주는 화면으로 안내(ADR-0011~0013)</li>
 </ul>
 <p><strong>성과</strong></p>
 <ul>
-<li>recharts <strong>116.5KB</strong>(gzip)를 초기·공유 번들에서 제거 — 총 번들은 스플릿 오버헤드로 +2KB지만 <strong>라우트 First Load JS는 −117KB</strong> (총합이 아닌 초기 로드로 판단)</li>
-<li><strong>Task 진입 472ms → 323ms(약 32%↓, 4케이스 평균)</strong>, 최악 케이스(llm-as-judge)는 <strong>623ms → 148ms(약 4배)</strong>, 최적화 대상 라우트(Task Results) Lighthouse 성능 <strong>99점</strong> · LCP 0.9s · CLS <strong>0</strong> (2026-07 실측 · 로그인/가입 98~100점). 다만 아직 root 57점 · workspace-info 47점이 남아 있습니다. 라우트별 예산은 PR마다 검사하되 현재는 <code>continue-on-error</code>로 경고 단계이고, 남은 라우트의 기준을 실측으로 확정한 뒤 차단으로 승격하는 순서로 두었습니다</li>
-<li>80샘플 자동 측정 + 번들 diff CI로 성능 회귀를 PR 단계에서 자동 감지, &quot;번들 최적화는 총합이 아니라 라우트별 초기 로드로 판단&quot;을 팀 규칙(<code>fsd-architecture.mdc</code> · <code>CLAUDE.md</code>)으로 문서화</li>
+<li>next-auth 의존성 완전 제거(127개 파일 변경). Auth.js를 쓰려고 덧대던 회전 추적, 토큰 보관소 등 우회 코드 제거</li>
+<li>백엔드 토큰이 브라우저에 노출되는 경로와 로그아웃 후 세션이 되살아나는 버그를 원인 단위에서 제거</li>
+<li>같은 계층 위에 구글, Microsoft 로그인과 가입, 온보딩 추가</li>
 </ul>
 <hr>
-<h4>2.1.6 <strong>Sentry 관측성 고도화</strong></h4>
+<h4>2.1.6 <strong>온프레미스/멀티 테넌트 배포 구조</strong></h4>
 <p><strong>문제</strong></p>
 <ul>
-<li>에러 계측이 <code>captureException</code> 단 1곳(<code>global-error.tsx</code>)뿐이고 환경·릴리즈·샘플링·노이즈 필터가 전무해, 이슈만으로는 원인 추적이 불가능했습니다.</li>
-<li><code>sendDefaultPii: true</code>로 PII가 전량 전송되고 <code>tracesSampleRate: 1</code>로 트레이스를 전량 수집(quota·비용 위험). <code>SENTRY_AUTH_TOKEN</code>이 <code>.gitignore</code> 누락(점 없는 파일명)으로 커밋돼 여러 원격 브랜치에 노출됐습니다.</li>
+<li>금융/공공 고객사마다 요구가 다름. 포털 SSO로만 로그인하고 계정 기능을 꺼야 하는 곳, HTTPS 없이 사내망 HTTP로 서비스하는 곳, 비밀번호 로그인만 쓰는 곳이 공존</li>
+<li>기존 고객사별 기능 표는 테넌트마다 boolean 표 하나라서, SaaS와 온프레미스의 기본값 차이나 로그인 방법 같은 목록형 설정을 표현할 수 없었음. 고객사가 늘 때마다 코드 분기도 늘어나는 구조</li>
 </ul>
-<p><strong>가정</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>이슈 하나로 원인까지 추적하려면 에러를 <strong>API 단위로 그룹핑</strong>하고, 노이즈는 메시지 문자열이 아니라 <strong>에러 code 기반</strong>으로 걸러야 다국어·문구 변경에도 필터가 깨지지 않는다고 봤습니다.</li>
-</ul>
-<p><strong>해결</strong></p>
-<ul>
-<li><strong>중앙 집중 계측</strong> — TanStack Query <code>QueryCache/MutationCache</code>의 <code>onError</code> 단일 길목에서 전 서버 요청 에러에 Scope(level·tags·context·fingerprint)를 자동 부착(계측 지점 1곳 → 전 API 커버 단일 진입점)</li>
-<li><strong>커스텀 fingerprint</strong>로 그룹화 축을 StackTrace → API(method+endpoint+status+code)로 고정, 이슈 제목에 상태코드·메서드·BFF 경로 + 가변 세그먼트를 <code>{id}</code>로 정규화(예: <code>[500] GET /api/applications/{id}/eval-runs/{id}/tasks/{id}</code>)</li>
-<li><strong>노이즈 3계층 필터</strong>(Inbound Filters · beforeSend · SKIP_RULES) — <code>PlatformApiError.code</code> 기반 정밀 skip + BFF 특성 반영(클라 런타임 네트워크 throw는 drop, BFF→백엔드 실패는 신호로 유지)</li>
-<li>4단계 Level 체계(fatal/error/warning/breadcrumb), Tags/Context/<code>setUser(id+email)</code> 적재, <code>tracesSampleRate 1 → tracesSampler</code> 샘플링, environment(dev/qa/prod/onprem)·<code>release=git SHA</code> 마킹, <code>sendDefaultPii</code> PII를 scrub 모듈로 스크럽</li>
-<li>커밋된 <code>SENTRY_AUTH_TOKEN</code> 발견 → 토큰 재발급·<code>.gitignore</code> 수정·추적 해제 무중단 조치</li>
+<li>기능 값을 배포 환경변수, 테넌트 설정(에디션 기본값과 다른 값만), 에디션 기본값(SaaS, 온프레미스) 순서로 찾고, 먼저 값을 정한 층을 따르도록 변경</li>
+<li>로그인 방법을 목록형 설정(<code>signInMethods</code>)으로 분리. 알 수 없는 값이 들어와도 로그인 수단이 하나도 없는 상태가 되지 않도록 기본값으로 복귀</li>
+<li>HTTP로만 서비스하는 고객사는 <code>Secure</code> 쿠키와 <code>__Host-</code> 접두사를 쓸 수 없어, 세션 쿠키 이름과 속성을 origin에 따라 선택. 금융권 포털 SSO는 일회성 토큰을 검증한 뒤 해당 그룹의 워크스페이스로 바로 이동</li>
+<li>고객사별 환경 파일과 실행 스크립트를 <code>.env.onprem.&lt;tenant&gt;</code>, <code>&lt;cmd&gt;:onprem:&lt;tenant&gt;</code> 규칙으로 정리하고 standalone Docker 이미지로 납품</li>
+<li>기존 테스트를 고치지 않은 채 통과시켜 기존 동작이 바뀌지 않았음을 확인</li>
 </ul>
 <p><strong>성과</strong></p>
 <ul>
-<li>재현 없이 원인 추적 가능한 관측 도구로 전환, 동일 API 에러를 하나로 묶어 이슈 노이즈 제거, 배포별 회귀(release) 자동 계산 기반 확보, PII 유출 리스크 제거</li>
+<li>온프레미스 고객사 4곳과 글로벌 SaaS를 한 브랜치, 한 코드베이스로 운영</li>
+<li>기능 코드에는 고객사별 분기를 두지 않고, 고객사의 새 요구는 설정 항목으로 추가(유휴 로그아웃 시간, 레드티밍 전용 메뉴 등). 가장 최근 고객사는 파트원이 고객사 등록과 설정 추가로 연결</li>
 </ul>
 <hr>
-<h4>2.1.7 <strong>i18n 자동화 파이프라인</strong></h4>
+<h4>2.1.7 <strong>API 계약 자동화와 타입 안전성</strong></h4>
 <p><strong>문제</strong></p>
 <ul>
-<li>문구 반영 시 개발자가 <code>en/ko/ja.json</code> + TSV를 수동 편집했고, merge/pull 시 <strong>영어가 ko/ja로 역류</strong>해 상시 &#39;영어 회귀 복구용 응급 스크립트&#39;가 필요했으며 번역 충돌이 잦았습니다.</li>
+<li>백엔드 API 타입을 수기 파일로 관리해, 백엔드가 경로나 필드를 바꾸면 런타임에야 드러남</li>
+<li><code>strict: true</code>였지만 타입 정보를 쓰는 ESLint 규칙은 꺼져 있었고, 프로덕션 코드에 <code>as unknown as</code> 이중 단언 40곳, 배열 인덱스 접근은 <code>undefined</code>를 반영하지 않는 상태</li>
 </ul>
-<p><strong>가정</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>번역 키 값에 <strong>소유권을 단일화</strong>(한 셀에 주인 하나) + <strong>단방향 흐름</strong>을 설계하면 충돌·역류가 구조적으로 사라진다고 봤습니다.</li>
-</ul>
-<p><strong>해결</strong></p>
-<ul>
-<li>next-intl(en/ko/ja) 기반, leaf 세그먼트를 곧 영어 원문으로 두는 키 컨벤션 + <code>en.json</code>을 코드에서 자동 생성(<code>build-en</code>) → <strong>개발자는 <code>t()</code>만 작성</strong></li>
-<li>변수 바인딩 기반 정적 추출기(<code>extract-keys</code>)로 한 파일에 네임스페이스가 여럿인 경우(전체 30%)도 <code>t()/t.rich()</code>를 정확히 매핑, dev watcher(<code>instrumentation.ts → build-en --watch</code>, write-if-changed로 불필요 리로드 방지)</li>
-<li>안 쓰는 키만 안전 제거하는 <code>prune</code>을 <strong>4중 조건</strong>(en 존재 ∧ 코드 리터럴 부재 ∧ base 부재 ∧ 동적 네임스페이스 아님)으로 설계, <code>--dry-run</code>으로 동적 dispatch 키 오삭제 사전 검출</li>
-<li>GitHub Actions 자동화(i18n-sync: 키 push·promote / i18n-pull: sync PR 생성), 시트 &#39;번역 완료&#39; 버튼을 Apps Script <code>repository_dispatch</code>로 CI 연동, CI의 라이브 시트 pull을 <code>build-en --check</code> 게이트로 교체(결정적 빌드), 런타임 en deep-merge 폴백으로 미번역 키의 raw key 노출 방지</li>
+<li>백엔드에 OpenAPI 스펙 기반 타입 생성을 제안해 도입(엔드포인트 300개 이상, 스키마 800개 이상). 코드에 적은 경로가 스펙에 없으면 빌드 실패</li>
+<li>타입과 테스트로는 잡히지 않는 결함을 찾으려고 계약 검사 도구(<code>audit:paths</code>) 제작. 브라우저 호출부, BFF 라우트, 스펙 경로를 대조해 라우트 없는 호출, deprecated 경로 사용, 스펙에 없는 프록시를 검출. 경로가 상수가 아닌 문자열로 적혀 있어 모든 게이트를 통과하던 애플리케이션 생성 404가 대표 사례</li>
+<li>세 검사마다 실제 결함을 다시 넣어 도구가 잡는지 확인. 마지막 오탐은 예외 목록에 넣는 대신 파싱을 고쳐 해결했고, 소스 텍스트에서 의도를 추정하는 도구라 결과는 단서로만 쓰고 빌드를 막는 게이트로는 쓰지 않음</li>
+<li><code>as unknown as</code> 중 30건은 생성 타입으로 바꾼 뒤에야 지울 수 있다고 보고 보류해 둔 상태. 실제로 지워 보니 28건은 타입 오류가 0건이었고, 옆 줄에서 복사된 단언이었음. 이후 계획의 다른 단계도 전제부터 다시 측정하는 것을 원칙으로 삼음. 남은 11건에는 근거 주석을 달고 신규 유입은 lint로 차단</li>
+<li>감사 중 직접 낸 실수도 있었음. 어느 호출부도 넘기지 않는 prop이라 판단해 지웠는데, 근거로 본 검색 결과가 잘려 5곳 중 2곳만 확인한 상태였음. 게이트는 모두 통과했고 PR 리뷰에서 발견. 이후 삭제 근거는 전수 조사로만 판단</li>
+<li>타입 정보를 쓰는 ESLint 규칙과 <code>noUncheckedIndexedAccess</code>를 켜서 드러난 221건을 전수 수정. 사용처마다 고치는 대신 변수 정의 지점에서 한 번 좁혀, 가드 하나로 수십 건이 함께 풀린 경우도 있었음. 바로 켤 수 없는 <code>exactOptionalPropertyTypes</code>는 위반 수를 CI에 고정하고 감소만 허용</li>
 </ul>
 <p><strong>성과</strong></p>
 <ul>
-<li>개발자는 <code>t()</code>만·번역자는 ko/ja만·나머지는 CI가 자동 처리하는 파이프라인 확립, <strong>번역 머지 충돌 0건(구조적 제거)</strong>, 영어 역류 복구 응급 스크립트 제거, 약 1,300키를 결정적 빌드로 관리</li>
+<li>수기 경로 타입 3,984줄에서 591줄로 축소, API 계약 불일치를 빌드 단계에서 검출</li>
+<li>테스트로는 드러나지 않던 레거시 API 호출 등 결함 4건 발견 및 제거</li>
+<li>프로덕션 코드의 <code>as unknown as</code> 40건에서 11건으로 축소(남은 건은 모두 근거 주석), 잠재 타입 오류 221건 해소</li>
 </ul>
 <hr>
-<h4>2.1.8 <strong>AI 개발 방법론 자산화 — @datumo/agent-harness</strong></h4>
+<h4>2.1.8 <strong>모듈 경계와 상태 관리</strong></h4>
 <p><strong>문제</strong></p>
 <ul>
-<li>AI 에이전트가 &quot;테스트 통과, 문제없음&quot;이라 보고할 때 <strong>누가 검증하나</strong>. self-review는 같은 모델·같은 컨텍스트라 <strong>같은 맹점을 두 번 통과</strong>(동조검증)시킵니다.</li>
+<li>FSD(Feature-Sliced Design) 규칙이 문서로만 있어 feature 간 직접 import 39건, 순환 의존 33건이 누적</li>
+<li>전역 상태가 Recoil atom 429개로 흩어져 흐름을 따라가기 어려움</li>
+<li>수백 줄짜리 컴포넌트가 로컬 상태를 effect로 전역 스토어에 복사하는 패턴이 반복돼, 값의 출처가 두 곳으로 갈리는 버그 발생</li>
 </ul>
-<p><strong>가정</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>코드리뷰의 Reviewer ≠ Assignee 원리를 이식해 <strong>작성자(Claude) ≠ 검증자(Codex)</strong> 로 분리하면 교차검증이 성립한다고 봤습니다. 검증자 프롬프트는 버전관리로 고정해야 작성자가 &quot;이건 검토하지 마&quot; 식으로 조작할 수 없습니다.</li>
-</ul>
-<p><strong>해결</strong></p>
-<ul>
-<li>typecheck·eslint·unit·i18n <strong>4종 기계 게이트</strong>(<code>pnpm agent:verify</code>)로 두 에이전트가 같은 명령으로 동일 결과를 재현하게 표준화. 게이트는 <code>depInstalled</code>/<code>hasPackageScript</code> 기반 자동 skip(동일 config로 front 4게이트·admin 2게이트 자동 적용)</li>
-<li><strong>버전관리된 고정 프롬프트</strong>로 Codex 호출, 검증자 입력을 <strong>handoff·diff·verify 3개로 제한</strong>해 작성자의 대화 히스토리 상속을 차단, S1/S2/S3 severity verdict + 2라운드 상한·사람 에스컬레이션의 3중 수렴 장치, codegraph MCP를 검증자에 주입해 변경 blast-radius를 인지한 리뷰</li>
-<li>공유 npm 패키지 <strong><code>@datumo/agent-harness</code></strong> 로 추출(12개 파일·8단계 루프, verify·review·plan-review·init·sync 5개 CLI + Claude Code Stop 훅) → front·admin <strong>다중 레포 배포</strong>, <strong>drift-aware sync</strong>(managed 파일 해시 기록, 로컬 수정분은 경고만)로 정본 <code>AGENTS.md</code>를 컴파일해 30여 종 에이전트가 동일 규칙 참조</li>
+<li><code>eslint-plugin-boundaries</code>로 레이어 의존 방향과 슬라이스 공개 API를 강제하고 경계 검사 자체에도 테스트 추가. 순환 의존 33건을 없앤 뒤 <code>import/no-cycle</code> 활성화</li>
+<li>Recoil에서 Zustand로 옮길 때 기존 atom 이름을 selector로 감싸, 화면 코드를 고치지 않고 도메인별로 점진 이관. 이관 방식은 직접 설계하고 작업은 파트원과 나눠 진행</li>
+<li>큰 컴포넌트는 나누기 전에 특성화 테스트로 현재 동작부터 고정. 스토어에 쓰는 effect의 수를 세는 검사를 CI에 래칫으로 걸어 같은 패턴의 재발 차단</li>
 </ul>
 <p><strong>성과</strong></p>
 <ul>
-<li>도입 첫날 하네스가 <strong>자기 자신의 결함 12건</strong>(typecheck 크래시 시 에러 0줄이라 통과로 오판하던 false GREEN 등)을 교차검증으로 규명</li>
-<li>규칙·프롬프트·게이트를 한 곳에서 유지보수하고 <code>sync</code>로 전 레포 전파해 <strong>복붙 드리프트 제거</strong></li>
+<li>feature 간 직접 import와 순환 의존 0건, 위반 시 PR 차단</li>
+<li>Recoil atom 429개를 도메인별 Zustand 스토어 20여 개로 정리</li>
 </ul>
-<blockquote>
-<p>교훈: <strong>신뢰는 검증 주체의 성능이 아니라 작성자와 검증자의 분리에서 나온다.</strong></p>
-</blockquote>
 <hr>
-<h4>2.1.9 <strong>품질 · CI · TDD 게이트 및 파트 리딩</strong></h4>
+<h4>2.1.9 <strong>성능 진단 체계와 개선</strong></h4>
 <p><strong>문제</strong></p>
 <ul>
-<li>레거시(<code>llm-eval-front</code>)는 실행 가능한 테스트가 <strong>0개</strong>, 소스 lint만 해도 <strong>56 errors / 710 warnings</strong>, <code>eslint.ignoreDuringBuilds</code>로 오류가 있어도 배포되는 구조라 품질이 개인 숙련도·수동 QA에 전적으로 의존했습니다.</li>
+<li>평가 상세 진입이 느렸지만, 실사용자 지표와 랩 측정을 연결해 원인을 찾는 체계가 없던 상태</li>
+<li>Sentry 기준 랜딩 페이지의 LCP p75가 5.3초로 앱에서 가장 느렸음. 화면을 그리지 않고 리다이렉트만 하는 페이지</li>
 </ul>
-<p><strong>가정</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>품질은 개인의 주의가 아니라 <em>merge를 막는 차단 게이트</em>로 시스템화해야 무너지지 않고, &quot;테스트가 있음&quot;이 아니라 <em>커버리지 미달 시 PR이 막히는</em> 래칫이어야 실효가 있다고 봤습니다.</li>
-</ul>
-<p><strong>해결</strong></p>
-<ul>
-<li>파트원(3명) 업무 분배 · 코드 리뷰 · 기술 전파를 담당하고, PO와 요구사항을 정의·조율</li>
-<li>순수 로직 TDD로 테스트를 <strong>파일 68 → 95(+27) · 케이스 493 → 633(+140)</strong> 백필(계약/경계/빈 입력/에러 경로 중심), QA 버그 수정 시 테스트 시나리오 업데이트 필수화</li>
-<li><strong>커버리지 게이트</strong> — <code>all:true</code>로 테스트 0개 파일이 분모에서 빠지는 허위 커버리지를 차단(정직한 floor 38%에서 시작), include를 <code>lib/**</code>·<code>shared/api/error/**</code>로 한정해 순수 로직 바닥을 계측, CI를 <code>pnpm test → test:coverage</code>로 교체해 미달 시 <strong>실제 빌드 차단(래칫)</strong>. 실측 커버리지 Functions 91% · Branches 79% · Statements/Lines 85%</li>
-<li>GitHub Actions로 lint · format · typecheck · unit coverage · build를 <strong>merge 차단 게이트</strong>로 실행, 테스트 전략 문서(<code>docs/testing-strategy.md</code>)로 테스트 피라미드 명문화</li>
-<li><code>.env.{dev,dev2,qa,prod,onprem}</code> <strong>5개 환경 매트릭스</strong> + 고객사 대응 온프레미스 standalone Docker 이미지로 SaaS·온프레미스 동시 지원</li>
+<li>랜딩 페이지는 서버 컴포넌트에서 <code>redirect()</code>를 호출하는데도 307이 아니라 200으로 응답하고 있었음. App Router는 응답 셸을 먼저 보내기 때문에 page의 리다이렉트는 RSC 페이로드에 담기고, 브라우저가 JS를 받아 하이드레이션을 마친 뒤에야 이동. 리다이렉트를 Proxy로 옮겨 307로 바로 응답하도록 변경. CPU를 3배 느리게 해도 개선폭이 같아, 병목이 연산보다 하이드레이션을 기다리는 왕복에 있음을 확인</li>
+<li>수정 후에는 <code>/</code>가 307로 바로 넘어가 페이지 로드 기록 자체가 사라지므로, 필드 지표로는 전후 비교가 불가능. 수정 전후 커밋을 각각 빌드해 같은 조건(Lighthouse 데스크톱, 콜드 캐시, 5회 median)으로 측정. 이후 상대 URL 리다이렉트가 스테이징에서 500을 일으켜 절대 URL로 되돌리고, 같은 실수를 막는 검사를 CI에 추가</li>
+<li>평가 상세의 Task 결과 테이블은 Server Component에서 쿼리 캐시를 미리 채우고 목록에서는 호버 시점에 프리페치. Playwright와 User Timing으로 4개 케이스를 케이스당 5회씩 측정해 효과를 검증</li>
+<li>번들 분석기가 청크 이름만 보여줘 다음 행동이 나오지 않아, 청크 안의 패키지와 줄이는 방법을 함께 보여주는 랭킹 도구 제작. 이 도구로 차트 라이브러리 두 개(echarts, recharts)가 공유 청크에 함께 실리던 문제 발견</li>
+<li>recharts를 쓰는 대시보드는 <code>dynamic()</code>으로 지연 로딩해도 초기 번들에서 빠지지 않았음. 추적해 보니 모든 라우트에 실리는 모달 등록 모듈이 같은 barrel에서 import하고 있어 recharts가 함께 딸려 들어가던 것이 원인. barrel 재수출을 끊어 분리</li>
+<li>가상화는 도입 후 46행부터 5만 행까지 합성 데이터로 다시 측정. 초기 렌더는 1,000행부터(677ms에서 90ms), 스크롤은 5,000행부터(15.6fps에서 63.4fps) 이득이었고, 현재 페이지 크기(최대 100행)에서는 스크롤이 오히려 나빠짐. 처음 성과로 적었던 DOM 46행에서 18행 감소는 동작 확인용 지표였다고 보고 철회</li>
+<li>상호작용 지연을 입력 지연, 처리, 페인트로 나눠 재는 INP 랩 측정 하네스 구축. 프로덕션 빌드를 CPU 3배 감속 조건에서 띄워 Run 목록 행 펼침 같은 주요 상호작용을 측정</li>
+<li>Lighthouse CI(라우트별 3회 median, 인증 라우트는 쿠키 주입) 결과와 main 대비 번들 증감, Top 15 패키지를 PR 코멘트로 자동 게시. 라우트별 예산은 기준을 실측으로 확정할 때까지 경고 단계로 운영</li>
 </ul>
 <p><strong>성과</strong></p>
 <ul>
-<li>실행 테스트 <strong>0 → 633 케이스</strong>, 소스 lint <strong>56 errors → 0</strong>, 오류가 있어도 배포되던 구조에서 <em>merge 전 커버리지 게이트로 차단</em>하는 체계로 전환</li>
-<li>사내 프론트엔드 레포 성숙도 평가 <strong>4.0 → 6.5/10</strong>(테스트·CI·아키텍처 축 개선), 팀 공통 컨벤션·온보딩 기준 정립</li>
+<li>랜딩 LCP 3.2초에서 2.0초로 38% 단축(랩 측정, 5회 median), 성능 점수 81점에서 90점</li>
+<li>평가 상세 진입 시간 평균 422ms에서 323ms로 23% 단축(가상화를 켠 상태 기준, 가장 크게 줄어든 케이스 497ms에서 148ms). 네 케이스 중 하나는 224ms에서 353ms로 오히려 느려져 케이스별 편차가 큼</li>
+<li>44개 라우트의 First Load JS 111KB(gzip) 감소. Red Teaming 태스크 화면 기준 947KB에서 836KB로 11.7% 감소</li>
+<li>가상화 적용 기준(초기 렌더 1,000행, 스크롤 5,000행) 수립, Run 목록 행 펼침 INP 32ms 확인(33행, CPU 3배 감속, 6회 median)</li>
 </ul>
 <hr>
-<h3>2.2. 딥브레인 AI — AI Studios v3</h3>
-<p>AI Studios는 인공지능 합성 기술을 기반으로 사용자가 AI 가상인간을 활용해 개인화된 영상 콘텐츠를 제작하는 SaaS 플랫폼입니다. v2 → v3 전면 리팩토링(Redux · RTK Query)으로 SSR · 디바운싱 · 코드 스플리팅을 적용해 FCP/LCP/TTI 평균 30%+ 단축을 달성했습니다.</p>
-<h4>2.2.1 <strong>대규모 데이터 실시간 통계 및 시각화</strong></h4>
-<p>1,000만 건 이상의 프로젝트 데이터를 실시간으로 조회 가능한 통계 대시보드 및 데일리 리포트 자동화 시스템을 구축했습니다.</p>
+<h4>2.1.10 <strong>운영과 보안</strong></h4>
+<p><strong>문제</strong></p>
+<ul>
+<li>task, run, version, judge model 같은 이름이 여러 도메인의 API 응답에 중복으로 실려, 이름을 바꿔도 다른 화면의 목록에는 이전 이름이 남는 버그가 반복. 약 150개 mutation이 약 135개 query 중 무엇을 갱신해야 하는지 각자 기억해야 하는 구조</li>
+<li>외부 진단에서 보안과 거버넌스가 최하위 영역으로 평가됨. git이 추적하는 환경 변수 파일에 인증 비밀값과 테스트 계정 정보가 있었고, CODEOWNERS, 시크릿 스캔, 의존성 보안 자동화가 없던 상태</li>
+</ul>
+<p><strong>과정</strong></p>
+<ul>
+<li>쿼리 캐시와 mutation 캐시의 공통 onError에서 API 오류를 Sentry로 보고하고, 세션을 끝내는 401에서만 한 번 로그아웃하도록 일원화</li>
+<li>성공한 mutation은 전체 캐시를 무효화하되, 즉시 다시 요청하지 않고 표시만 하도록(<code>refetchType: &quot;none&quot;</code>) 표준화. 추가 요청 없이 다음에 화면이 열릴 때 최신 값을 가져오고, 캐시에 영향이 없는 mutation(미리보기, 연결 테스트 등)은 meta 플래그로 제외</li>
+<li>프로필 쿼리가 한 번 실패하면 복구되지 않는다는 티켓을 받고 query-core 소스를 읽어 전제가 틀렸음을 확인. 실제 결함은 반대로, 한 번 성공하면 세션 내내 갱신되지 않는 것이었음. 정책을 고친 뒤 테스트 4건을 추가하고, 옛 정책으로 되돌리면 2건이 실패하는 것까지 확인</li>
+<li>인증, BFF, 배포 설정에 CODEOWNERS를 지정하고 gitleaks를 현재 코드와 PR 커밋 범위에 이중 적용. 현재 코드만 검사하면 커밋 이력에 남은 유출을 놓치기 때문</li>
+<li>추적 중인 env 파일에서 인증 비밀값과 테스트 계정 정보를 제거하고, 추적 가능한 env 파일을 허용 목록으로 CI에서 검사</li>
+<li>사용자에게 배포되는 프로덕션 의존성 취약점만 merge를 막고 개발 의존성은 주간 리포트로 분리. 둘 다 막으면 merge가 너무 자주 막혀 팀이 경고를 무시하는 습관이 생긴다고 판단</li>
+</ul>
+<p><strong>성과</strong></p>
+<ul>
+<li>이름을 바꾼 뒤 다른 화면에 이전 이름이 남던 문제를 추가 요청 없이 해결</li>
+<li>보안 기준선 수립(CODEOWNERS, 시크릿 이중 스캔, 의존성 게이트), 추적 저장소의 비밀값 노출 제거</li>
+<li>Dependabot 경고 누적 139건 해소(파트 리드로서 승인하는 레포 전체 기준)</li>
+</ul>
+<hr>
+<h4>2.1.11 <strong>주요 기능 개발</strong></h4>
+<p><strong>Criteria AI 도구와 실시간 협업 페이지</strong></p>
+<ul>
+<li>평가 기준을 AI로 생성, 수정, 검증, 증강하는 Generator, Modifier, Validator, Augmenter 설계와 개발. 컬럼 단위 생성과 전체 생성, 템플릿 기반 Setup, 버전 히스토리 포함. 레포에서 가장 큰 기능 영역(약 420개 파일 중 189개 작성)</li>
+<li>SSE 기반 실시간 협업 페이지 개발. 스냅샷, 작업 진행, 프레즌스, 버전 4개 이벤트로 지금 보고 있는 사람을 표시하고, 세션 ID로 내가 보낸 변경이 되돌아와 화면이 두 번 바뀌는 것을 방지. 다른 사람이 먼저 저장했으면 충돌을 알리고 최신 내용을 반영. 탭을 닫을 때도 퇴장 신호가 가도록 <code>sendBeacon</code> 사용</li>
+</ul>
+<p><strong>워크스페이스 전환 충돌</strong></p>
+<ul>
+<li>서버가 회원마다 현재 워크스페이스 값을 하나만 가지고 있어, 탭 두 개를 열면 서로 그 값을 덮어써 전환이 되돌아가고 404 뒤 다른 화면으로 튕기는 문제. 모든 워크스페이스를 읽을 수 있는 슈퍼 어드민 계정에서는 드러나지 않았음</li>
+<li>두 탭 시나리오를 Playwright로 재현한 뒤, URL을 애플리케이션의 단일 기준으로 삼고 워크스페이스는 애플리케이션별로 한 번 알아낸 값을 기억하도록 재설계(ADR-0003). 값을 모를 때는 요청을 만들지 않고 기다리도록 변경</li>
+</ul>
+<p><strong>그 밖의 기능</strong></p>
+<ul>
+<li>평가 대시보드, Eval Runs, Observability 실패 사례 목록/상세/커스텀 메트릭, LLM 애플리케이션 API 연동(멀티턴 포함) 개발</li>
+<li>Stripe와 토스 결제 개발 중</li>
+<li>사내 운영용 어드민 콘솔 레포 단독 구축(인증, 배포 CI, AI 리뷰 하네스 연동). 대화 로그가 CloudWatch를 거쳐 Observability QA로 이어지는 챗봇 테스트 화면 포함</li>
+</ul>
+<p><strong>다국어 파이프라인</strong></p>
+<ul>
+<li>개발자가 <code>en/ko/ja.json</code>을 직접 고치다 보니 머지 때 영어가 한국어, 일본어 파일로 역류. 키 값마다 주인을 하나로 정해 흐름을 한 방향으로 정리. 영어 원문은 코드가, 한국어와 일본어는 스프레드시트에서 번역가가 소유하고 동기화는 CI가 자동 PR로 처리(지금까지 23회 반영)</li>
+<li>안 쓰는 키를 지울 때는 동적으로 조합되는 키가 지워지지 않도록 네 가지 조건을 모두 만족할 때만 지우고, <code>--dry-run</code>으로 먼저 확인하는 절차 추가</li>
+<li>번역 키 약 4,200개를 머지 충돌 없이 운영, 영어 역류를 복구하던 응급 스크립트 제거</li>
+</ul>
+<hr>
+<h3>2.2. 딥브레인 AI (AI Studios v3)</h3>
+<p>AI 가상인간으로 개인화된 영상 콘텐츠를 만드는 SaaS 플랫폼. v2에서 v3로 넘어가는 전면 리팩토링에서 설계 리뷰에 참여하고 어드민, 아바타와 템플릿 카탈로그 페이지 담당. Redux Toolkit/RTK Query 전환과 SSR, 디바운싱, 코드 스플리팅으로 FCP/LCP/TTI 평균 30% 이상 단축</p>
+<h4>2.2.1 <strong>대규모 데이터 통계 대시보드</strong></h4>
+<p>1,000만 건 이상의 프로젝트 데이터를 조회하는 통계 대시보드와 데일리 리포트 자동화 시스템 구축</p>
 <ul>
 <li>기여도: 100%</li>
 <li>Skills: Next.js, Kubernetes, Chart.js, MongoDB</li>
 </ul>
 <p><strong>문제</strong></p>
 <ul>
-<li>유저 유입·프로젝트 사용 현황·에러율 등 통계를 실시간으로 파악하기 어려웠습니다.</li>
-<li>기관별·팀별·개인별 분석 데이터가 없어 운영·의사결정에 어려움이 있었습니다.</li>
-<li>1,000만 건 이상 데이터를 기간별로 조회할 때마다 집계가 3초 이상 걸려 실시간 분석이 어려웠습니다.</li>
+<li>유저 유입, 프로젝트 사용 현황, 에러율 같은 통계를 한눈에 파악하기 어려움</li>
+<li>기관별, 팀별, 개인별 분석 데이터가 없어 운영 판단의 근거 부족</li>
+<li>1,000만 건 이상 데이터를 기간별로 조회할 때마다 집계에 3초 이상 소요</li>
 </ul>
-<p><strong>가정</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>조회 시점에 raw를 매번 집계하는 게 병목이므로, <em>사전 집계 + 배치</em>로 조회를 단순 read로 바꾸면 응답이 상수 시간에 가까워질 것으로 봤습니다.</li>
-</ul>
-<p><strong>해결</strong></p>
-<ul>
-<li>쿠버네티스 기반 Cron 배치로 매일 기관/팀/개인별 프로젝트·유저 로그를 수집하고 로우 데이터를 정제, 운영진에게 메일 리포트 자동 발송</li>
-<li>MongoDB 사전 집계 API로 통계 대시보드를 개발해 실시간 조회·분석 지원, Chart.js 코드 스플리팅으로 초기 번들 축소</li>
+<li>조회할 때마다 원본 데이터를 집계하는 것이 병목이라고 보고, 미리 집계해 두고 조회는 읽기만 하도록 구조 변경</li>
+<li>쿠버네티스 기반 Cron 배치로 매일 기관/팀/개인별 프로젝트, 유저 로그를 수집하고 로우 데이터를 정제해 운영진에게 메일 리포트 자동 발송</li>
+<li>MongoDB 사전 집계 API로 통계 대시보드를 개발해 조회와 분석 지원, Chart.js 코드 스플리팅으로 초기 번들 축소</li>
 </ul>
 <p><strong>성과</strong></p>
 <ul>
-<li>FCP 1.2s → 0.4s(약 67%↓), LCP 4.5s → 2.2s(약 51%↓), 조회 응답 3s+ → 1s 미만</li>
-<li>데일리 수집·리포트 시스템 구축으로 운영팀의 데이터 기반 의사결정·전략 수립에 기여</li>
+<li>FCP 1.2초에서 0.4초(약 67% 감소), LCP 4.5초에서 2.2초(약 51% 감소), 조회 응답 3초 이상에서 1초 미만으로 단축</li>
+<li>운영팀이 기관, 팀, 개인 단위 사용 현황을 매일 메일로 받아보는 리포트 체계 마련</li>
 </ul>
 <hr>
 <h4>2.2.2 <strong>요금제 확장 및 구독 해지 방어 시스템</strong></h4>
@@ -360,25 +380,22 @@
 </ul>
 <p><strong>문제</strong></p>
 <ul>
-<li>레거시 요금제와 신규 요금제를 병행하면서 요금제 간 기능·권한 관리 로직이 혼재해 코드 복잡도가 크게 증가했습니다.</li>
-<li>요금제별 권한·접근 제어가 명확히 구분되지 않아 기능이 불필요하게 중복 구현됐습니다.</li>
-<li>구독 해지 과정에서 고객 피드백을 수집·분석할 체계가 없었습니다.</li>
+<li>레거시 요금제와 신규 요금제를 병행하면서 요금제 간 기능, 권한 관리 로직이 섞여 코드 복잡도 증가</li>
+<li>요금제별 권한과 접근 제어가 명확히 구분되지 않아 같은 기능이 중복 구현됨</li>
+<li>구독 해지 과정에서 고객 피드백을 수집하고 분석할 체계 부재</li>
 </ul>
-<p><strong>가정</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>권한 분기가 코드에 흩어진 게 문제이므로 <em>권한을 데이터로 모델링</em>하고 훅으로 추상화하면 중복이 사라지고, 해지는 단일 확인창이 아니라 <em>단계별 방어 퍼널</em>로 붙잡을 여지가 있다고 봤습니다.</li>
-</ul>
-<p><strong>해결</strong></p>
-<ul>
-<li>각 기능별 접근 권한 필드를 DB에 추가해 자동화된 권한 관리 체계 구축, 요금제 권한을 가져오는 커스텀 훅 개발로 중복 코드 제거</li>
-<li>구독/업그레이드/다운그레이드 기준을 동적으로 판단하는 매트릭스 설계</li>
-<li>구독 해지 방어 퍼널(설문으로 해지 이유 실시간 수집 → 크레딧/할인 리워드 추천 → 유지 유도) + 해지 히스토리 관리 페이지 구축, Stripe 연동</li>
+<li>권한 분기가 코드에 흩어진 것이 원인이라고 보고 권한을 데이터로 모델링한 뒤 훅으로 추상화. 해지는 확인창 하나로 끝내지 않고 단계별 방어 퍼널로 설계</li>
+<li>기능별 접근 권한 필드를 DB에 추가해 권한을 데이터로 관리하고, 요금제 권한을 가져오는 커스텀 훅으로 중복 코드 제거</li>
+<li>구독, 업그레이드, 다운그레이드 기준을 동적으로 판단하는 매트릭스 설계</li>
+<li>설문으로 해지 이유를 수집하고 크레딧, 할인 리워드를 제안해 유지를 유도하는 해지 방어 퍼널과 해지 히스토리 관리 페이지 구축, Stripe 연동</li>
 </ul>
 <p><strong>성과</strong></p>
 <ul>
-<li>레거시 요금제를 유지하면서 신규 요금제 확장으로 <strong>약 2개월간 구독자 300명 증가</strong></li>
-<li>요금제별 권한·접근 제어 개선으로 중복 코드 대폭 제거, 유지보수·확장성 향상</li>
-<li>구독 해지 방어 시스템으로 고객 이탈 방지 및 해지 히스토리 기반 개선 방안 마련</li>
+<li>레거시 요금제를 유지한 채 신규 요금제 확장, 출시 후 약 2개월간 신규 구독 300건</li>
+<li>요금제별 권한 분기를 데이터와 훅으로 옮겨 기능마다 반복되던 권한 코드 제거</li>
+<li>해지 사유와 이력을 기록해 개선 방안을 찾을 데이터 확보</li>
 </ul>
 <hr>
 <h4>2.2.3 <strong>캔버스 기반 에디터 신규 개발 및 유지보수</strong></h4>
@@ -387,239 +404,257 @@
 <li>Skills: Next.js, Fabric.js, Redux, Canvas, FFmpeg</li>
 </ul>
 <blockquote>
-<p><strong>기능 요구사항 1</strong> — 텍스트 입력으로 생성형 AI 이미지/비디오를 생성해 웹 에디터에 연동</p>
+<p><strong>기능 요구사항 1.</strong> 텍스트 입력으로 생성형 AI 이미지와 비디오를 만들어 웹 에디터에 연동</p>
 </blockquote>
-<p><strong>문제 / 가정</strong></p>
+<p><strong>문제</strong></p>
 <ul>
-<li>이미지·비디오는 생성 시간이 일정하지 않아 즉시 응답을 받을 수 없고, 캔버스 내 미디어 객체 관리가 복잡했습니다. → Job 리스트를 주기적 인터벌로 폴링해 비동기 반영하면 UX를 막지 않을 것으로 봤습니다.</li>
+<li>이미지와 비디오는 생성 시간이 일정하지 않아 즉시 응답을 받을 수 없고, 캔버스 안의 미디어 객체 관리도 복잡해짐</li>
 </ul>
-<p><strong>해결</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>사용자 텍스트를 입력받아 이미지/비디오를 생성하는 API를 연동하고 Job 리스트를 주기적 인터벌로 fetching</li>
-<li>ChatGPT 연동으로 미디어 생성 힌트 제공, Fabric.js로 생성 미디어 속성 분석 후 캔버스에 추가하고 Redux 미들웨어로 DB 저장</li>
+<li>생성 작업(Job) 목록을 주기적으로 조회해 결과를 비동기로 반영하면 편집 흐름을 막지 않는다고 보고, 사용자 텍스트로 이미지와 비디오를 생성하는 API 연동</li>
+<li>ChatGPT 연동으로 미디어 생성 힌트 제공, Fabric.js로 생성 미디어 속성을 분석해 캔버스에 추가하고 Redux 미들웨어로 DB 저장</li>
 </ul>
 <img src="./assets/generativeAI.gif" width="500"/>
 
-<p><strong>성과</strong> — 텍스트 입력만으로 고품질 이미지/비디오를 생성해 사용자 편의성을 대폭 향상</p>
+<p><strong>성과</strong></p>
+<ul>
+<li>텍스트 입력만으로 이미지와 비디오를 생성해 캔버스에 바로 배치하는 흐름 제공</li>
+</ul>
 <hr>
 <blockquote>
-<p><strong>기능 요구사항 2</strong> — 에셋 정렬 기준을 손쉽게 확인하는 에디터 내 스냅 가이드 제공</p>
+<p><strong>기능 요구사항 2.</strong> 에셋 정렬 기준을 바로 확인할 수 있는 에디터 내 스냅 가이드</p>
 </blockquote>
-<p><strong>문제 / 가정</strong></p>
+<p><strong>문제</strong></p>
 <ul>
-<li>에셋 추가 시 오브젝트 간 정렬·간격 조절 로직이 복잡하고, 위치 변경마다 실시간 좌표 계산·렌더링이 필요했습니다. → 병목은 <em>매 프레임 재계산</em>에 있으니 드래그 시작 시 1회 계산 + 축별 후보 축소로 완화할 수 있다고 봤습니다.</li>
+<li>에셋을 추가할 때 오브젝트 간 정렬과 간격 조절 로직이 복잡하고, 위치가 바뀔 때마다 좌표 계산과 렌더링이 필요</li>
 </ul>
-<p><strong>해결</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>각 오브젝트의 시작/중앙/끝 좌표를 배열로 관리하고, 선택 오브젝트 좌표와 비교해 겹치는 기준선을 감지·가상 렌더링, 임계값 이내 접근 시 자동 정렬(스냅) 적용</li>
-<li>좌표 비교 오버헤드를 <strong>드래그 시작 시 1회 캐싱 + 축별 사전 필터링 + 가이드라인 DOM 렌더 분리</strong>로 완화해 실시간 피드백 제공</li>
+<li>병목이 매 프레임 재계산에 있다고 보고, 드래그 시작 시 한 번만 계산하고 축별로 후보를 줄이는 방향으로 설계</li>
+<li>각 오브젝트의 시작, 중앙, 끝 좌표를 배열로 관리하고, 선택 오브젝트 좌표와 비교해 겹치는 기준선을 감지해 가상으로 렌더링. 임계값 이내로 접근하면 자동 정렬(스냅)</li>
+<li>드래그 시작 시 좌표 1회 캐싱, 축별 사전 필터링, 가이드라인 DOM 렌더 분리로 좌표 비교 오버헤드를 줄여 드래그 중 실시간 피드백 유지</li>
 </ul>
 <img src="./assets/snap_guide.gif" width="500"/>
 
-<p><strong>성과</strong> — 대규모 에셋에서도 정렬 작업을 직관적·즉각적으로 만들어 편집 흐름 개선</p>
+<p><strong>성과</strong></p>
+<ul>
+<li>에셋이 많은 대형 캔버스에서도 드래그 중 프레임 드랍 없이 정렬 가이드 표시</li>
+</ul>
 <hr>
 <blockquote>
-<p><strong>기능 요구사항 3</strong> — 비디오 에셋 편집(트림) 기능으로 콘텐츠 제작 효율 향상</p>
+<p><strong>기능 요구사항 3.</strong> 비디오 에셋 편집(트림) 기능</p>
 </blockquote>
-<p><strong>문제 / 가정</strong></p>
+<p><strong>문제</strong></p>
 <ul>
-<li>비디오 썸네일 추출 시 서버 부하가 우려됐고, 비디오 변경 시 캔버스·DB 동시 업데이트와 이동/사이즈/트림 상호작용에서 사이드이펙트가 발생했습니다.</li>
+<li>비디오 썸네일 추출 시 서버 부하가 우려됐고, 비디오를 바꿀 때 캔버스와 DB를 동시에 갱신하는 과정과 이동, 크기 조절, 트림 상호작용에서 사이드이펙트 발생</li>
 </ul>
-<p><strong>해결</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>FFmpeg으로 썸네일 추출 속도 저하 해결, 슬라이더 기반 구간 설정 제공, 트림 시 이전 상태를 Redux·DB에 저장해 복구 가능</li>
-<li>트림 모드 진입 시 Video Element로 실시간 재생·구간 미리보기, Canvas/Redux/Video Element 연동으로 편집 상태 일관 관리, 트림 종료 후 썸네일 재생성</li>
+<li>FFmpeg으로 썸네일 추출 속도 저하 해결, 슬라이더 기반 구간 설정 제공, 트림 시 이전 상태를 Redux와 DB에 저장해 복구 지원</li>
+<li>트림 모드에서 Video Element로 재생과 구간 미리보기를 제공하고, Canvas, Redux, Video Element의 편집 상태를 하나로 맞춘 뒤 트림 종료 시 썸네일 재생성</li>
 </ul>
 <img src="./assets/trim_video.gif" width="500"/>
 
-<p><strong>성과</strong> — 비디오 트림·썸네일 미리보기·플레이 제공으로 작업 효율 증대</p>
+<p><strong>성과</strong></p>
+<ul>
+<li>에디터 안에서 비디오 트림, 썸네일 미리보기, 재생 지원</li>
+</ul>
 <hr>
 <blockquote>
-<p><strong>기능 요구사항 4</strong> — 에셋 툴바 컴포넌트 설계 및 구현</p>
+<p><strong>기능 요구사항 4.</strong> 에셋 툴바 컴포넌트 설계 및 구현</p>
 </blockquote>
-<p><strong>문제 / 가정</strong></p>
+<p><strong>문제</strong></p>
 <ul>
-<li>에셋마다 지원 기능이 달라 툴바를 동적으로 렌더링해야 하고, 제한된 화면 공간에서 일부 기능이 가려졌습니다. → 특정 크기 이하에선 Floating 모드 전환이 필요하다고 봤습니다.</li>
+<li>에셋마다 지원 기능이 달라 툴바를 동적으로 렌더링해야 하고, 좁은 화면에서는 일부 기능이 가려짐</li>
 </ul>
-<p><strong>해결</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li><code>useResizeObserver</code>로 툴바·화면 크기를 실시간 모니터링해 임계값 이하 시 자동 Floating 모드 전환</li>
-<li>React Portal로 툴바를 최상위 DOM에 렌더링해 화면에서 사라지지 않도록 위치 동적 조정</li>
+<li>특정 크기 이하에서는 Floating 모드로 바꾸기로 하고, <code>useResizeObserver</code>로 툴바와 화면 크기를 감시해 임계값 이하가 되면 자동으로 Floating 모드 전환</li>
+<li>React Portal로 툴바를 최상위 DOM에 렌더링해 화면에서 사라지지 않도록 위치를 동적으로 조정</li>
 </ul>
 <img src="./assets/toptoolbar.gif" width="500"/>
 
 <hr>
 <blockquote>
-<p><strong>기능 요구사항 5</strong> — 홈페이지에서 AI Studios 에디터/기능 연동 (Powerpoint to AI Video, AI Generator, URL to Video, Audio/Video Converter)</p>
+<p><strong>기능 요구사항 5.</strong> 홈페이지에서 AI Studios 에디터와 기능 연동(Powerpoint to AI Video, AI Generator, URL to Video, Audio/Video Converter)</p>
 </blockquote>
-<p><strong>문제 / 가정</strong></p>
+<p><strong>문제</strong></p>
 <ul>
-<li>웹플로우 기반 홈페이지와 Next.js 기반 AI Studios 기능의 통합, 쿼리 파라미터 전송 시 보안, 원활한 통신 보장이 과제였습니다.</li>
+<li>웹플로우 기반 홈페이지와 Next.js 기반 AI Studios 기능을 통합하면서 쿼리 파라미터 전송 보안과 두 시스템 간 통신을 보장해야 하는 상황</li>
 </ul>
-<p><strong>해결 (기여도: 스크립트 삽입 100% / 기능 연동 30%)</strong></p>
+<p><strong>과정 (기여도: 스크립트 삽입 100%, 기능 연동 30%)</strong></p>
 <ul>
-<li>AI Studios: 홈페이지 origin 허용 설정, 홈페이지용 API 정의·연동</li>
-<li>홈페이지: HTML·JavaScript 웹플로우 커스텀 코드 삽입</li>
+<li>AI Studios 쪽에는 홈페이지 origin 허용 설정과 홈페이지용 API 정의, 연동</li>
+<li>홈페이지 쪽에는 웹플로우 커스텀 코드(HTML, JavaScript) 삽입</li>
 </ul>
 <img src="./assets/powerpoint-to-video.gif" width="500"/>
 
-<p><strong>성과</strong> — 홈페이지 방문자의 AI Studios 대거 유입, 추가 기능 확장 기반(베이스 코드) 마련</p>
+<p><strong>성과</strong></p>
+<ul>
+<li>홈페이지에서 AI Studios 기능으로 바로 들어가는 진입 경로 마련, 이후 기능 추가에 쓸 베이스 코드 정리</li>
+</ul>
 <hr>
 <h4>2.2.4 <strong>마케팅 도구를 활용한 전략 지원 및 캠페인</strong></h4>
 <p><strong>문제</strong></p>
 <ul>
-<li>사업 전략 분석 체계·유저 행동 로그 등 근거 데이터가 부족했고, 비디오 합성 시간이 길어 결과를 못 본 사용자가 이탈했으며, 유저별 최적화 이메일 캠페인이 미흡했습니다.</li>
+<li>사업 전략 분석 체계와 유저 행동 로그 같은 근거 데이터 부족. 비디오 합성 시간이 길어 결과를 보기 전에 이탈하는 사용자가 있었고, 유저별로 맞춘 이메일 캠페인도 부족</li>
 </ul>
-<p><strong>해결</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li><strong>이벤트 트래킹·분석</strong> — GA4, Amplitude, Baidu Analytics로 태그 설정·행동 세분화·구매/전환 추적</li>
-<li><strong>HubSpot 연동</strong> — 커스터마이징 입력 폼으로 사용자 데이터를 수집해 CRM 연동, 리드 분석 지원</li>
-<li><strong>G2 인앱 리뷰 연동</strong> — 사용자별 G2 API 키 발급 및 리뷰 데이터 동적 임베딩</li>
-<li><strong>합성 완료 알림</strong> — Service Worker 웹 푸시 + AWS SES 합성 완료 메일 발송</li>
-<li><strong>A/B 테스트·데모 퍼널</strong> — 신규/기존 유저 대상 A/B 테스트로 전환율 높은 데모 페이지 도출</li>
-<li><strong>드립 이메일 캠페인</strong> — 쿠버네티스 기반 메일 발송 자동화, 유저 그룹별 맞춤 이메일·추적</li>
-<li><strong>설문 기반 대시보드 개선</strong> — 회원가입 시 설문으로 대시보드 최적화</li>
+<li>GA4, Amplitude, Baidu Analytics로 이벤트 태그 설정, 행동 세분화, 구매/전환 추적</li>
+<li>커스터마이징 입력 폼으로 사용자 데이터를 수집해 HubSpot CRM에 연동, 리드 분석 지원</li>
+<li>사용자별 G2 API 키를 발급하고 리뷰 데이터를 동적으로 임베딩하는 G2 인앱 리뷰 연동</li>
+<li>합성이 끝나면 Service Worker 웹 푸시와 AWS SES 메일로 완료 알림 발송</li>
+<li>신규/기존 유저 대상 A/B 테스트로 전환율이 높은 데모 페이지 도출</li>
+<li>쿠버네티스 기반 메일 발송 자동화로 유저 그룹별 드립 이메일 캠페인 운영과 추적</li>
+<li>회원가입 시 설문 결과로 대시보드 구성 최적화</li>
 </ul>
 <p><strong>성과</strong></p>
 <ul>
-<li>데이터 기반 분석 체계 구축으로 마케팅 의사결정 지원, GA4·Amplitude 도입으로 타겟 마케팅 정밀도 향상</li>
-<li>HubSpot·G2 연동으로 리드 분석·전환율 기여, 웹 푸시·이메일 알림으로 제작 완료 후 재방문율 증가, 드립 캠페인으로 구독 유지·재가입률 향상</li>
+<li>마케팅팀이 GA4와 Amplitude에서 사용자 행동과 전환을 직접 조회하는 이벤트 체계 마련</li>
+<li>합성 완료 알림으로 결과 확인 전에 이탈하던 흐름을 보완하고, HubSpot과 G2 연동으로 리드와 리뷰 데이터를 수집하는 경로 확보</li>
 </ul>
 <hr>
 <h4>2.2.5 <strong>글로벌 다국어 지원 및 지역화 서비스</strong></h4>
 <p><strong>문제</strong></p>
 <ul>
-<li>다국적 사용자 대응을 위해 다국어·지역화가 필요했고, 국가별 로그인·결제 수단 등 특수 요구사항과 수기 번역 관리의 비효율이 있었습니다.</li>
+<li>다국적 사용자를 위해 다국어와 지역화가 필요했고, 국가별 로그인과 결제 수단 같은 요구사항, 수기 번역 관리의 비효율도 있었음</li>
 </ul>
-<p><strong>해결</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>next-i18next로 다국어 번역·언어 전환 구현, 언어별 텍스트 길이를 고려한 반응형 UI로 핵심 컴포넌트 일관성 확보</li>
-<li>리전 커스터마이징 — 중국 시장 위챗 로그인·알리페이 등 특화 기능 개발, 리전별 기능 제한 적용</li>
-<li>번역 키·언어 매핑을 Google Sheet ↔ JSON으로 체계 관리하고 Node.js 스크립트로 워크플로우 자동화</li>
+<li>next-i18next로 번역과 언어 전환 구현, 언어별 텍스트 길이를 고려한 반응형 UI로 주요 컴포넌트 레이아웃 유지</li>
+<li>중국 시장용 위챗 로그인, 알리페이 결제 등 리전 전용 기능 개발과 리전별 기능 제한 적용</li>
+<li>번역 키와 언어 매핑을 Google Sheet와 JSON 사이에서 동기화하고 Node.js 스크립트로 자동화</li>
 </ul>
 <p><strong>성과</strong></p>
 <ul>
-<li>다국어·국가별 맞춤화로 글로벌 사용자 경험 개선, 번역 자동화로 작업 시간 단축, 중국 등 폐쇄적 시장에 효과적으로 진입</li>
+<li>10개 언어 지원과 중국 리전 대응(위챗 로그인, 알리페이 결제, Alibaba Cloud 배포), 번역 반영을 스크립트로 자동화</li>
 </ul>
 <hr>
-<h3>2.3. 딥브레인 AI — Account 서버 · 백오피스</h3>
+<h3>2.3. 딥브레인 AI (Account 서버, 백오피스)</h3>
 <h4>2.3.1 <strong>자사 서비스 통합 로그인 모듈 패키지</strong></h4>
 <p><strong>문제</strong></p>
 <ul>
-<li>자사 서비스별 로그인 방식이 달라 사용자 경험이 단절되고, 서비스마다 인증을 중복 구현하면서 개발 효율이 저하됐습니다.</li>
+<li>자사 서비스마다 로그인 방식이 달라 사용자가 서비스를 옮길 때마다 다시 로그인해야 했고, 서비스마다 인증을 중복 구현</li>
 </ul>
-<p><strong>해결</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>NextAuth 기반 OAuth 로그인 모듈을 npm 패키지 <strong><code>@deepbrain/next-auth-account</code></strong> 로 개발·배포(설치만으로 적용, Atomic Design)</li>
-<li>6종 소셜 로그인(Google · MS · Apple · Facebook · <strong>WeChat</strong> <code>snsapi_login</code> · <strong>Alipay</strong> RSA-SHA256 커스텀 서명) 통합, Redis 싱글턴 세션으로 서비스 간 SSO 구현</li>
+<li>NextAuth 기반 OAuth 로그인 모듈을 npm 패키지 <code>@deepbrain/next-auth-account</code>로 개발, 배포(설치만으로 적용, Atomic Design)</li>
+<li>6종 소셜 로그인(Google, MS, Apple, Facebook, WeChat <code>snsapi_login</code>, Alipay RSA-SHA256 커스텀 서명) 통합, Redis 싱글턴 세션으로 서비스 간 SSO 구현</li>
 </ul>
 <p><strong>성과</strong></p>
 <ul>
-<li>통합 인증으로 유지보수 간소화·개발 생산성 향상, 소셜 로그인으로 신규 유입 증가, SSO로 서비스 간 재로그인 제거</li>
+<li>서비스마다 구현하던 로그인을 패키지 설치로 대체하고, SSO로 서비스 간 재로그인 제거</li>
 </ul>
 <hr>
-<h4>2.3.2 <strong>로그인 인증 · 어드민 백오피스 서버</strong></h4>
-<p><strong>요구사항</strong> — 로그인 인증 중앙 서버 + 기업/부서/사용자/AI 리소스 관리 어드민 시스템</p>
-<p><strong>해결</strong></p>
+<h4>2.3.2 <strong>로그인 인증, 어드민 백오피스 서버</strong></h4>
+<p><strong>문제</strong></p>
 <ul>
-<li>회원 비즈니스 로직(Facade 패턴), Redis 기반 중복 로그인 방지(유저 key 관리), 탈퇴 후 30일 경과 계정 자동 삭제 CRON 배치</li>
-<li>기업/부서/멤버 통합 관리 어드민 페이지(관리자 권한별 기능), HOC 패턴 권한별 컴포넌트 계층화</li>
-<li>AI Voice 리소스 관리(샘플 보이스 API·입력 폼), AI Avatar 리소스 관리(Fabric.js 시각 에디터로 좌표 편집), 사용자 정의 단어사전(치환 기능)</li>
+<li>로그인 인증을 맡을 중앙 서버와, 기업, 부서, 사용자, AI 리소스를 관리할 어드민 시스템이 필요</li>
 </ul>
-<p><strong>성과</strong> — 통합 어드민으로 데이터 관리 효율·관리자 편의 향상, SSO 통합 인증 서버 운영</p>
+<p><strong>과정</strong></p>
+<ul>
+<li>회원 비즈니스 로직(Facade 패턴), Redis 기반 중복 로그인 방지(유저 key 관리), 탈퇴 후 30일이 지난 계정을 자동 삭제하는 CRON 배치</li>
+<li>기업/부서/멤버 통합 관리 어드민 페이지(관리자 권한별 기능), HOC 패턴으로 권한별 컴포넌트 계층화</li>
+<li>AI Voice 리소스 관리(샘플 보이스 API, 입력 폼), AI Avatar 리소스 관리(Fabric.js 시각 에디터로 좌표 편집), 사용자 정의 단어사전(치환 기능)</li>
+</ul>
+<p><strong>성과</strong></p>
+<ul>
+<li>기업, 부서, 멤버, AI 리소스 관리를 어드민 하나로 통합하고 SSO 통합 인증 서버 운영</li>
+</ul>
 <hr>
-<h3>2.4. 딥브레인 AI — B2B · 대형 SI 프로젝트</h3>
+<h3>2.4. 딥브레인 AI (B2B, 대형 SI 프로젝트)</h3>
 <h4>2.4.1 <strong>월드비전 꿈엽서 그리기대회 AI 시상영상</strong> (2023, 2024)</h4>
-<p><strong>문제</strong> — 매년 수만 건의 수상작을 AI 비디오로 빠르고 효율적으로 제작할 시스템이 필요</p>
-<p><strong>해결</strong> — 대규모 수상작을 빠르게 AI 비디오로 합성하는 엑셀 기반 합성 시스템 설계·개발, Job 스케줄링으로 프로세스 효율화, 합성 진행 상황 모니터링 프로그램 개발</p>
-<p><strong>성과</strong> — 자동화로 수작업 부담 경감 및 제작 속도·품질 확보</p>
+<p><strong>문제</strong></p>
+<ul>
+<li>매년 수만 건의 수상작을 AI 비디오로 제작할 시스템 필요</li>
+</ul>
+<p><strong>과정</strong></p>
+<ul>
+<li>엑셀 기반 대량 합성 시스템 설계와 개발, Job 스케줄링으로 합성 순서 관리, 합성 진행 상황 모니터링 프로그램 개발</li>
+</ul>
+<p><strong>성과</strong></p>
+<ul>
+<li>2023년과 2024년 2년 연속 수만 건 규모의 시상 영상 제작 자동화</li>
+</ul>
 <hr>
 <h4>2.4.2 <strong>KB증권 드림아바타 PoC</strong></h4>
-<p><strong>개요</strong> — 사진·목소리를 업로드하면 AI 명함을 생성하는 웹 애플리케이션 (사진·음성 업로드 → AI 분석·학습 → AI 명함 생성) · <a href="https://www.aitimes.com/news/articleView.html?idxno=156042">관련뉴스</a></p>
-<p><strong>해결</strong></p>
+<p>사진과 목소리를 업로드하면 AI 분석과 학습을 거쳐 말하는 AI 명함을 생성하는 웹 애플리케이션. <a href="https://www.aitimes.com/news/articleView.html?idxno=156042">관련뉴스</a></p>
+<p><strong>과정</strong></p>
 <ul>
-<li>사진 업로드 시 자동 얼굴 인식 바운딩 박스 생성 + 사용자가 위치·영역 조정으로 정확한 얼굴 좌표 지정</li>
-<li>자사 AI 합성 서버와 API 통합으로 사진·음성 데이터를 결합해 말하는 명함 영상 생성·제공</li>
+<li>사진 업로드 시 얼굴 인식 바운딩 박스를 자동 생성하고, 사용자가 위치와 영역을 조정해 얼굴 좌표를 지정하는 UI</li>
+<li>자사 AI 합성 서버 API와 연동해 사진과 음성을 결합한 명함 영상 생성</li>
 </ul>
-<p><strong>성과</strong> — 사진·음성 기반 개인화된 AI 명함을 웹 애플리케이션으로 제공</p>
 <hr>
 <h4>2.4.3 <strong>태블릿 AI 실시간 통역 서비스</strong></h4>
-<p><strong>개요</strong> — AI 기반 실시간 다국어 통역 서비스</p>
-<p><strong>해결</strong></p>
+<p>태블릿에서 동작하는 AI 실시간 다국어 통역 서비스</p>
+<p><strong>과정</strong></p>
 <ul>
-<li>웹 SDK 연동·제어로 실시간 AI 아나운서 구현 및 음성 합성, ChatGPT API 기반 번역(대화 이력 저장으로 문맥 반영 + 질의응답)</li>
-<li>Google·Azure STT API로 10개국 이상 언어 지원 + 자사 AI 모델 보이스 TTS, 배경·모델·로고 등 템플릿화</li>
-<li><strong>SDK 지연 로드로 초기 로드 최적화 → TTI 7.6s → 4.3s(약 43%↓)</strong></li>
+<li>웹 SDK를 연동해 실시간 AI 아나운서와 음성 합성 구현, ChatGPT API 기반 번역(대화 이력을 저장해 문맥 반영, 질의응답 지원)</li>
+<li>Google, Azure STT API로 10개 이상 언어를 인식하고 자사 AI 모델 보이스로 TTS 출력, 배경, 모델, 로고 템플릿화</li>
+<li>SDK를 지연 로드해 초기 로드 최적화</li>
 </ul>
 <img src="./assets/realtime-translation.png" width="500"/>
 
-<p><strong>관련 뉴스</strong> — <a href="https://www.the-tech.co.kr/news/article.html?no=36223">자사뉴스</a> · <a href="https://www.nps.or.kr/jsppage/mobile/ne/HM_4D0002_01.jsp?hrnkMenuId=MW_NE&menuId=MW_NE_002&seq=29046">국민연금공단</a></p>
-<p><strong>성과</strong> — 실시간 다국어 통역으로 외국인 사용자 편의성 향상, ChatGPT 연동 최적화로 번역 정확도·응답 속도 개선</p>
+<p>관련 뉴스: <a href="https://www.the-tech.co.kr/news/article.html?no=36223">자사뉴스</a>, <a href="https://www.nps.or.kr/jsppage/mobile/ne/HM_4D0002_01.jsp?hrnkMenuId=MW_NE&menuId=MW_NE_002&seq=29046">국민연금공단</a></p>
+<p><strong>성과</strong></p>
+<ul>
+<li>TTI 7.6초에서 4.3초로 약 43% 단축</li>
+</ul>
 <hr>
 <h4>2.4.4 <strong>서울시 교육청 AI 디지털 교과서</strong></h4>
-<p><strong>개요</strong> — 기존 E-book 교과서에 AI 기반 질의응답(AI 교수님) 기능을 더한 실험적 프로토타입</p>
-<p><strong>해결</strong></p>
+<p>기존 E-book 교과서에 AI 질의응답(AI 교수님) 기능을 더한 프로토타입</p>
+<p><strong>과정</strong></p>
 <ul>
-<li>웹 기반 E-book 설계·구현(교과 퍼블리싱, 확대/축소, 화면 전환, 스크롤 모드, 글꼴·크기 조절)</li>
-<li>AI SDK·챗봇 연동으로 AI 질의응답 구현, 텍스트 프롬프터(슬라이드 배속·빠른 이동·되감기, 확대/축소 가독성 최적화)</li>
+<li>웹 기반 E-book 설계와 구현(교과 퍼블리싱, 확대/축소, 화면 전환, 스크롤 모드, 글꼴/크기 조절)</li>
+<li>AI SDK와 챗봇을 연동해 AI 질의응답 구현, 텍스트 프롬프터(슬라이드 배속, 빠른 이동, 되감기, 확대/축소 가독성 최적화)</li>
 </ul>
 <p><img src="./assets/digital_book_video.gif" width="300"/> <img src="./assets/digital_book_video2.gif" width="300"/> <img src="./assets/digital_book1.png" width="300"/></p>
-<p><strong>성과</strong> — 2023 디지털 러닝페스티벌에 서울시교육청 소속으로 참여, AI 디지털 교과서의 새로운 가능성 제시</p>
+<p><strong>성과</strong></p>
+<ul>
+<li>서울시교육청 소속으로 2023 디지털 러닝페스티벌 참여</li>
+</ul>
 <hr>
 <h4>2.4.5 <strong>국민은행 금융비서 프로젝트</strong></h4>
 <ul>
-<li>자사 관리자 기능을 On-premise 형태로 탑재하여 보안성·독립성 강화</li>
-<li>약 13억 규모의 대형 프로젝트</li>
+<li>자사 관리자 기능을 온프레미스로 탑재</li>
+<li>약 13억 규모 사업</li>
 <li><a href="https://www.hellot.net/news/article.html?no=65465">관련기사</a></li>
 </ul>
 <hr>
-<h4>2.4.6 <strong>농협은행 AI 허브 플랫폼 · Kiosk</strong></h4>
-<p><strong>개요</strong> — 약 20억 규모의 대형 프로젝트로, AI Studios 기능을 농협 포털에 탑재하고 홍보용 AI Kiosk를 개발</p>
-<p><strong>해결</strong></p>
+<h4>2.4.6 <strong>농협은행 AI 허브 플랫폼과 Kiosk</strong></h4>
+<p>약 20억 규모 사업. AI Studios 기능을 농협 포털에 탑재하고 홍보용 AI Kiosk 개발</p>
+<p><strong>과정</strong></p>
 <ul>
-<li><strong>On-Premise 관리자 기능</strong> — 자사 관리자 기능을 On-Premise로 탑재해 보안성·독립성 강화</li>
-<li><strong>AI Kiosk</strong> — <code>tensorflow-models/posenet</code>으로 포즈 감지(정면 판별), 입장 시 단계별 안내 후 기념 사진 촬영 → AI로 모자이크 풍 변환 → <code>node-printer</code>로 폴라로이드 즉시 출력</li>
-<li><strong>음성 인식</strong> — KT와 협업해 STT 연동</li>
+<li>자사 관리자 기능을 온프레미스로 탑재</li>
+<li>AI Kiosk는 <code>tensorflow-models/posenet</code>으로 포즈를 감지해 정면을 판별하고, 입장 시 단계별 안내 후 기념 사진을 촬영해 AI로 모자이크 풍으로 변환한 뒤 <code>node-printer</code>로 폴라로이드 즉시 출력</li>
+<li>KT와 협업해 음성 인식(STT) 연동</li>
 </ul>
-<p><strong>관련기사</strong> — <a href="https://www.shinailbo.co.kr/news/articleView.html?idxno=1512682">농협</a></p>
-<p><strong>성과</strong> — AI Kiosk로 사용자 경험 개선·혁신 서비스 제공, On-Premise 관리자 기능으로 운영 효율 증대</p>
+<p>관련 기사: <a href="https://www.shinailbo.co.kr/news/articleView.html?idxno=1512682">농협</a></p>
+<p><strong>성과</strong></p>
+<ul>
+<li>은행 내부망에 관리자 기능을 납품하고 홍보용 AI Kiosk 제공</li>
+</ul>
 <hr>
-<h4>2.4.7 <strong>AI 학습용 데이터 라벨링 · 검수 플랫폼</strong></h4>
-<p><strong>개요</strong> — 한국인 얼굴 합성을 위한 발화 모습 이미지 연구 데이터 수집 프로젝트 (약 20억 규모 정부과제)</p>
+<h4>2.4.7 <strong>AI 학습용 데이터 라벨링/검수 플랫폼</strong></h4>
+<p>한국인 얼굴 합성을 위한 발화 모습 이미지 연구 데이터 수집 프로젝트(약 20억 규모 정부과제)</p>
 <p><strong>문제</strong></p>
 <ul>
-<li>대규모 학습용 얼굴 데이터 10만여 장 이상 확보 필요</li>
-<li>자사 AI 모델의 라벨링 정확도 미흡으로 인한 데이터 품질 문제</li>
-<li>AI 모델이 라벨링한 로우 데이터를 작업자가 쉽게 검수·보정할 플랫폼 필요</li>
+<li>대규모 학습용 얼굴 데이터 10만 장 이상 확보 필요</li>
+<li>자사 AI 모델의 라벨링 정확도가 낮아 데이터 품질 문제 발생</li>
+<li>AI 모델이 라벨링한 로우 데이터를 작업자가 쉽게 검수/보정할 플랫폼 필요</li>
 </ul>
-<p><strong>해결</strong></p>
+<p><strong>과정</strong></p>
 <ul>
-<li><strong>이미지 자동 라벨링</strong> — 매일 NAS에 업로드되는 이미지를 자동 처리하여 얼굴(눈·코·입) 좌표, 머리 색상, 곱슬/직모, 성별 등 속성 추출 Inference API 자동 실행</li>
-<li><strong>검수·보정 툴</strong> — 결과값 검토·보정 툴(얼굴 바운딩 조절·확대·crop), 교차 검증 로직으로 동일 이미지 반복 검수 방지, 관리자 승인된 데이터만 NAS 재업로드</li>
+<li>매일 NAS에 올라오는 이미지에 Inference API를 자동 실행해 얼굴(눈, 코, 입) 좌표, 머리 색상, 곱슬/직모, 성별 등 속성을 추출하는 자동 라벨링</li>
+<li>라벨링 결과를 검토하고 보정하는 툴(얼굴 바운딩 조절, 확대, crop) 개발, 교차 검증 로직으로 같은 이미지의 반복 검수 방지, 관리자가 승인한 데이터만 NAS에 재업로드</li>
 </ul>
 <img src="./assets/ai_data.jpg" width="600"/>
 
-<p><strong>성과</strong> — 자동화로 작업자 수작업 시간 대폭 단축, 검수·보정 툴로 데이터 정확도 향상 및 <strong>학습용 이미지 10만 장 이상 제작</strong></p>
-<hr>
-<h3>2.5. Deepbuild Inc — ML Engineering Team</h3>
-<p><em>(2021.07 ~ 2022.02)</em></p>
-<h4>2.5.1 <strong>인테리어 플랫폼 Pinterior 개발</strong></h4>
-<p><strong>문제</strong> — 유저가 특정 상권에 적합한 인테리어 정보를 제공받지 못하고, 인테리어 디자인 추천 기능이 부재했습니다.</p>
-<p><strong>해결</strong></p>
-<ul>
-<li><strong>상권 정보 데이터 분석</strong> — 지역·날짜·성별·나이·이동반경 등으로 특정 시간대 유동 인구 예측 및 상권 정보 제공</li>
-<li><strong>인테리어 추천</strong> — 이미지 평점·사용자 샘플 평점 기반 GNN 추천 시스템 모델 최적화, Auto Encoder 기반 유사 인테리어 추천 구현</li>
-<li><strong>AI 모델 서빙</strong> — Flask 기반 서버로 실시간 추천 결과 제공</li>
-</ul>
-<div style="display: flex; justify-content: center; align-items: center;">
-  <img src="./assets/image_search.jpg" style="width: 250px; margin-right: 10px;" />
-  <img src="./assets/img_reco.jpg" style="width: 240px; margin-right: 10px;" />
-  <img src="./assets/img_reco2.jpg" style="width: 270px;" />
-</div>
-
 <p><strong>성과</strong></p>
 <ul>
-<li>상권 데이터 분석 기반 맞춤형 인테리어 추천 시스템 구축, AI 모델 최적화로 추천 정확도·사용자 만족도 증가, 실시간 추천 API 개발·배포 및 상용 서비스 적용</li>
+<li>학습용 얼굴 이미지 10만 장 이상 제작</li>
 </ul>
   </main>
   <p class="print-hint doc-content" style="text-align: center; padding-bottom: 2rem;">

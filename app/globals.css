@@ -60,7 +60,7 @@ html {
   scroll-behavior: smooth;
 }
 
-/* sticky 헤더에 heading이 가리지 않도록 — TOC 앵커 이동 시 필요 */
+/* sticky 헤더에 heading이 가리지 않도록 (TOC 앵커 이동 시 필요) */
 h1,
 h2,
 h3,
@@ -76,7 +76,7 @@ h6 {
   }
 }
 
-/* ── Code blocks — terminal window + syntax highlight (always dark) ──── */
+/* ── Code blocks: terminal window + syntax highlight (always dark) ──── */
 .code-window {
   margin: 1.5rem 0;
   overflow: hidden;
@@ -209,6 +209,12 @@ h6 {
     --border: #d7dde7;
     --shadow: none;
     color-scheme: light;
+  }
+
+  /* 경력기술서는 분량이 길어 PDF에서만 본문(.career, 0.9375rem)을 11px로 줄인다.
+     글자 크기가 rem 기준이라 루트만 바꾸면 제목과 표도 같은 비율로 줄어든다 */
+  html:has([data-print-compact]) {
+    font-size: calc(11px / 0.9375);
   }
 
   /* 사이트 헤더(네비)는 문서에 불필요.

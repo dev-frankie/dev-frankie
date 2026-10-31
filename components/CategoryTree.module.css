@@ -86,7 +86,7 @@
     transform 0.18s ease;
 }
 
-/* 활성 표시용 좌측 바 — 기본은 접혀 있다가 hover/active에서 펴진다 */
+/* 활성 표시용 좌측 바: 기본은 접혀 있다가 hover/active에서 펴진다 */
 .link::before {
   content: "";
   position: absolute;

@@ -107,74 +107,333 @@
   border-radius: 6px;
 }
 
-/* ── Career variant — compact document (tighter than default prose) ── */
+/* ── Career variant: 경력기술서 문서 ────────────────────────────────
+   위계는 h2(큰 묶음) 구분선, h3(회사, 절) 큰 제목, h4(사례) 중간 제목,
+   문제/과정/성과 라벨 칩 순서. 번호와 라벨은 rehypeHeadingNumbers와
+   rehypeBlockRoles가 붙인 data 속성으로 고른다. (resume 규칙과 섞지 않는다) */
 .career {
-  font-size: 0.9rem;
-  line-height: 1.6;
+  font-size: 0.9375rem;
+  line-height: 1.75;
 }
 
 .career :global(h1) {
   font-size: 1.5rem;
 }
 
-.career :global(h2) {
-  margin: 1.75rem 0 0.75rem;
-  padding-top: 1rem;
-  font-size: 1.2rem;
-  letter-spacing: -0.01em;
-  border-top: 1px solid var(--border);
-}
-
-.career :global(h2:first-child) {
-  margin-top: 0;
-  padding-top: 0;
-  border-top: none;
-}
-
-.career :global(h3) {
-  margin: 1.5rem 0 0.5rem;
-  font-size: 1.05rem;
+/* 개요 번호: 제목 글자와 떼어 고정폭 숫자로 */
+.career :global([data-heading-number]) {
+  margin-right: 0.2em;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
   color: var(--accent);
 }
 
-.career :global(h4) {
-  margin: 1.25rem 0 0.35rem;
-  font-size: 0.95rem;
+/* h2: 큰 묶음의 구분선. 사이드바 머리글처럼 작은 대문자에 선을 잇는다 */
+.career :global(h2) {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 4rem 0 1.5rem;
+  padding: 0;
+  font-size: 0.75rem;
   font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: none;
+}
+
+.career :global(h2::after) {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.career :global(h2 [data-heading-number]) {
+  margin-right: 0;
+  font-size: 1em;
+  font-weight: 700;
+}
+
+.career > :global(h2:first-child) {
+  margin-top: 0;
+}
+
+/* h3: 회사와 개요의 절 */
+.career :global(h3) {
+  margin: 3.25rem 0 0.75rem;
+  font-size: 1.3125rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
   color: var(--text);
 }
 
-.career :global(p),
-.career :global(li) {
-  margin: 0.28rem 0;
+.career :global(h2 + h3) {
+  margin-top: 0;
+}
+
+/* h4: 사례 제목. 번호는 회색으로 한 단계 낮춘다 */
+.career :global(h4) {
+  margin: 2.5rem 0 0.25rem;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.career :global(h4 [data-heading-number]) {
+  color: var(--muted);
+}
+
+.career :global(hr) {
+  margin: 2.5rem 0;
+  border-top-color: var(--border);
+}
+
+.career :global(hr + h4) {
+  margin-top: 0;
+}
+
+.career :global(p) {
+  margin: 0.6rem 0;
 }
 
 .career :global(ul),
 .career :global(ol) {
-  padding-left: 1.15rem;
+  margin: 0.5rem 0;
+  padding-left: 1.2rem;
 }
 
+.career :global(li) {
+  margin: 0.3rem 0;
+  padding-left: 0.1rem;
+}
+
+.career :global(li::marker) {
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in srgb, var(--accent) 55%, var(--muted));
+}
+
+/* 문제/과정/성과 라벨: 칩. 괄호 설명은 칩 밖에 작게 */
+.career > :global(p[data-block="label"]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.5rem;
+  margin: 1.5rem 0 0.35rem;
+  line-height: 1.5;
+}
+
+.career > :global(h4 + p[data-block="label"]) {
+  margin-top: 0.9rem;
+}
+
+.career > :global(p[data-block="label"] > strong) {
+  padding: 0.1rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 999px;
+}
+
+.career > :global(p[data-block="label"] > [data-label-note]) {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.career > :global(p[data-block="label"] + ul),
+.career > :global(p[data-block="label"] + ol) {
+  margin-top: 0.25rem;
+}
+
+/* 사례 안의 기능 묶음 제목 (여러 단어로 된 굵은 단락) */
+.career > :global(p[data-block="subheading"]) {
+  margin: 1.75rem 0 0.35rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* 이미지만 있는 단락: 여러 장이면 한 줄에 나란히 */
+.career > :global(p[data-block="media"]) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1rem 0 1.25rem;
+}
+
+.career :global(img) {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+/* 인용문: 요약 카드와 요구사항 설명. 본문 색으로 읽히게 한다 */
 .career :global(blockquote) {
-  margin: 0.6rem 0;
-  padding: 0.4rem 0.9rem;
-  font-size: 0.95em;
+  margin: 1rem 0 1.5rem;
+  padding: 0.9rem 1.15rem;
+  color: var(--text);
+  border-radius: 0 10px 10px 0;
 }
 
-.career :global(hr) {
-  margin: 1.5rem 0;
+.career :global(blockquote > :first-child) {
+  margin-top: 0;
 }
 
+.career :global(blockquote > :last-child) {
+  margin-bottom: 0;
+}
+
+.career :global(blockquote p) {
+  margin: 0.35rem 0;
+}
+
+.career :global(blockquote ul) {
+  margin: 0.3rem 0 0.8rem;
+}
+
+/* 표: 세로선 없이 가로줄만, 첫 열은 한 줄로 */
 .career :global(table) {
-  font-size: 0.9em;
+  margin: 1rem 0 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
 }
 
-/* ── Resume variant — document layout (이수빈-style) ──────────────── */
+.career :global(th),
+.career :global(td) {
+  padding: 0.6rem 0.75rem;
+  vertical-align: top;
+  border: none;
+  border-bottom: 1px solid var(--border);
+}
+
+.career :global(th) {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  background: none;
+}
+
+.career :global(th:first-child),
+.career :global(td:first-child) {
+  width: 1%;
+  padding-left: 0;
+  white-space: nowrap;
+}
+
+.career :global(td:first-child) {
+  font-weight: 600;
+}
+
+.career :global(th:last-child),
+.career :global(td:last-child) {
+  padding-right: 0;
+}
+
+/* 문서 첫 절(Outline > Profile)의 첫 두 단락은 문서 머리처럼:
+   이름과 직함 한 줄, 연락처 한 줄 */
+.career > :global(h2:first-child + h3 + p) {
+  margin: 0.5rem 0 0.2rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.career > :global(h2:first-child + h3 + p > strong:first-child) {
+  margin-right: 0.35rem;
+  font-size: 1.625rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.career > :global(h2:first-child + h3 + p + p) {
+  margin: 0 0 1.5rem;
+  padding-bottom: 1.25rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.career > :global(h2:first-child + h3 + p + p a) {
+  color: inherit;
+  text-decoration-color: var(--border);
+}
+
+.career > :global(h2:first-child + h3 + p + p a:hover) {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+@media print {
+  .career > :global(p[data-block="label"] > strong) {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* 화면용 여백은 PDF에서 페이지 수만 늘리므로 간격을 줄인다 */
+  .career {
+    line-height: 1.6;
+  }
+
+  .career :global(h2) {
+    margin: 2.5rem 0 1rem;
+  }
+
+  .career :global(h3) {
+    margin: 2rem 0 0.5rem;
+  }
+
+  .career :global(h4) {
+    margin: 1.5rem 0 0.25rem;
+  }
+
+  .career :global(hr) {
+    margin: 1.5rem 0;
+  }
+
+  .career > :global(p[data-block="label"]) {
+    margin: 0.9rem 0 0.25rem;
+  }
+
+  /* 문제/과정/성과 라벨과 요구사항 카드가 페이지 끝에 홀로 남지 않게 */
+  .career > :global(p[data-block="label"]),
+  .career > :global(blockquote) {
+    break-after: avoid;
+  }
+
+  .career > :global(p[data-block="media"]) {
+    margin: 0.6rem 0 0.8rem;
+  }
+
+  /* 스크린샷은 화면 구성을 보여 주는 용도라 작게 둔다.
+     MarkdownContent가 img에 inline max-width를 넣어서 !important가 필요하다 */
+  .career :global(img) {
+    max-width: 340px !important;
+  }
+
+  /* 긴 요약 카드가 통째로 다음 페이지로 넘어가며 남기는 빈 공간을 막는다 */
+  .career :global(blockquote) {
+    margin: 0.75rem 0 1rem;
+    padding: 0.7rem 1rem;
+    break-inside: auto;
+  }
+}
+
+/* ── Resume variant: document layout (이수빈-style) ──────────────── */
 .resume {
   font-size: 0.76rem;
   line-height: 1.6;
 }
 
-/* ----- header: name + role (left) · contact (right) · thick rule ----- */
+/* ----- header: name + role (left), contact (right), thick rule ----- */
 
 /* contact line = first paragraph (placed above the name in source) → top-right */
 .resume > :global(p:first-child) {
@@ -218,7 +477,7 @@
   border-top: none;
 }
 
-/* ----- company (h3): accent name · right-aligned date · gray description ----- */
+/* ----- company (h3): accent name, right-aligned date, gray description ----- */
 .resume :global(h3) {
   margin: 2.4rem 0 0.15rem;
   font-size: 1.0625rem;
@@ -312,7 +571,7 @@
   padding: 0.4rem 0.6rem;
 }
 
-/* 1열(영역)은 한 줄로 고정 — 폭은 내용에 맞춰 늘고 나머지는 다른 열이 가져간다 */
+/* 1열(영역)은 한 줄로 고정. 폭은 내용에 맞춰 늘고 나머지는 다른 열이 가져간다 */
 .resume :global(th:first-child),
 .resume :global(td:first-child) {
   width: 1%;

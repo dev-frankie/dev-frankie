@@ -1,0 +1,22 @@
+.main {
+  min-height: calc(100vh - 4rem);
+}
+
+/* 블로그 목록 페이지의 제목(app/blog/blog.module.css)과 같은 크기 */
+.pageTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.pageDescription {
+  margin: 0 0 2.5rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+@media print {
+  .main {
+    min-height: 0;
+  }
+}

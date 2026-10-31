@@ -14,7 +14,7 @@
   height: auto;
 }
 
-/* 렌더 전(로드 중) — 원본을 옅게 보여줘 레이아웃이 튀지 않게 */
+/* 렌더 전(로드 중): 원본을 옅게 보여줘 레이아웃이 튀지 않게 */
 .pending,
 .failed {
   overflow-x: auto;
@@ -32,7 +32,7 @@
   border: 1px solid var(--border);
 }
 
-/* 문법 오류 — 원본을 그대로 남기고 테두리로 표시 */
+/* 문법 오류: 원본을 그대로 남기고 테두리로 표시 */
 .failed {
   color: var(--text);
   background: var(--surface);

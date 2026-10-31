@@ -25,11 +25,11 @@ export default function Home() {
           )}
           <div className={styles.heroText}>
             <div className={styles.heroNameRow}>
-              <h1 className={styles.heroTitle}>안동주 · Frankie</h1>
+              <h1 className={styles.heroTitle}>안동주 (Frankie)</h1>
               <SocialLinks />
             </div>
             <p className={styles.heroIntro}>
-              Selectstar 프론트엔드 리드 · 성능을 측정하고 수치로 개선을 증명하는
+              Selectstar 프론트엔드 리드이자, 성능을 측정하고 수치로 개선을 증명하는
               개발자입니다.
             </p>
           </div>

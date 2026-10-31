@@ -1,0 +1,265 @@
+/* ── 블로그 셸(app/blog/blog.module.css)과 같은 폭, 간격, sticky 위치 ─── */
+.shell {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  gap: 4rem;
+  max-width: 94rem;
+  margin: 0 auto;
+  padding: 2.5rem 2.5rem 4rem;
+}
+
+/* 스크롤을 따라오는 좌측 목차 (목록이 길면 내부에서만 스크롤) */
+.sidebar {
+  position: sticky;
+  top: 4rem;
+  align-self: start;
+  max-height: calc(100vh - 5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.content {
+  min-width: 0;
+}
+
+/* 본문은 남는 폭 안에서 가운데 (블로그 글, 목록과 같은 최대 폭) */
+.document {
+  max-width: 46rem;
+  margin: 0 auto;
+}
+
+/* ── 목차 트리: 모양은 CategoryTree.module.css, 여기는 다른 점만 ───────── */
+
+.groups {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.group + .group {
+  margin-top: 1.5rem;
+}
+
+/* 큰 묶음(h2) 링크. 블로그 사이드바의 CATEGORY 머리글과 같은 글꼴, 자리 */
+.groupLink {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin: 0 0 0.6rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-radius: 4px;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.18s ease;
+}
+
+.groupLink:hover,
+.groupLinkOnPath {
+  color: var(--text);
+}
+
+.groupLinkActive,
+.groupLinkActive:hover {
+  color: var(--accent);
+}
+
+.groupLink:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.groupLink .number {
+  font-size: 1em;
+  letter-spacing: 0;
+  opacity: 1;
+}
+
+/* 절 제목은 길어서 말줄임 대신 줄을 바꾼다. 캐럿은 첫 줄에 맞춘다 */
+.nav .row {
+  align-items: flex-start;
+}
+
+.nav .toggle {
+  margin-top: 0.42rem;
+}
+
+.nav .link {
+  line-height: 1.4;
+}
+
+.nav .label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+}
+
+.number {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}
+
+.title {
+  min-width: 0;
+}
+
+.caretIcon {
+  display: block;
+  width: 1em;
+  height: 1em;
+}
+
+/* ── 좁은 화면: 헤더 아래에 붙는 접이식 목차 ──────────────────────── */
+.menu {
+  display: none;
+}
+
+.menuSummary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.6rem;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--muted);
+  list-style: none;
+  cursor: pointer;
+  border-radius: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menuSummary::-webkit-details-marker {
+  display: none;
+}
+
+.menuSummary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.menuLabel {
+  flex-shrink: 0;
+}
+
+.menuCurrent {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 500;
+  color: var(--text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menuCurrent .number {
+  margin-right: 0.4rem;
+}
+
+.chevron {
+  flex-shrink: 0;
+  width: 0.75rem;
+  height: 0.75rem;
+  transition: transform 0.18s ease;
+}
+
+.menu[open] .chevron {
+  transform: rotate(180deg);
+}
+
+.menuPanel {
+  position: absolute;
+  top: calc(100% + 0.375rem);
+  right: 0;
+  left: 0;
+  max-height: min(65vh, 32rem);
+  padding: 0.875rem 0.75rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+@media (max-width: 1080px) {
+  .shell {
+    gap: 2.5rem;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+}
+
+@media (max-width: 860px) {
+  /* grid 항목의 sticky는 자기 칸 안에서만 움직인다. 목차 상자가 문서 끝까지
+     붙어 있도록 좁은 화면에서는 block 흐름으로 바꾼다 */
+  .shell {
+    display: block;
+    padding: 1.5rem 1.25rem 3rem;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .menu {
+    position: sticky;
+    top: calc(var(--site-header-height, 3.95rem) + 0.5rem);
+    z-index: 5;
+    display: block;
+    margin: 0 0 1.75rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+
+  /* 앵커로 이동한 heading이 헤더와 목차 상자 아래에 보이도록 */
+  .shell :is(h1, h2, h3, h4, h5, h6) {
+    scroll-margin-top: calc(var(--site-header-height, 3.95rem) + 4.25rem);
+  }
+}
+
+@media (max-width: 640px) {
+  /* 헤더가 두 줄이 되는 폭. JS가 실제 높이를 넣기 전의 기본값만 바꾼다 */
+  .menu {
+    top: calc(var(--site-header-height, 6.2rem) + 0.5rem);
+  }
+
+  .shell :is(h1, h2, h3, h4, h5, h6) {
+    scroll-margin-top: calc(var(--site-header-height, 6.2rem) + 4.25rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron,
+  .groupLink {
+    transition: none;
+  }
+}
+
+@media print {
+  .sidebar,
+  .menu {
+    display: none !important;
+  }
+
+  .shell {
+    display: block;
+    max-width: none;
+    padding: 0;
+  }
+
+  .document {
+    max-width: none;
+  }
+}

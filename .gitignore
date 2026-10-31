@@ -43,3 +43,7 @@ next-env.d.ts
 # claude code
 .claude/
 /.next-build/
+
+# company-specific resumes (kept local)
+/RESUME_FDE.*
+/RESUME_TOSS.*

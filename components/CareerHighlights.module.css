@@ -1,0 +1,242 @@
+.root {
+  display: grid;
+  gap: 1.75rem;
+  margin: 2rem 0;
+}
+
+/* 경력기술서 본문의 h3(Prose .career)와 같은 크기, 굵기로 맞춘다 */
+.title {
+  margin: 0;
+  font-size: 1.3125rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+  color: var(--text);
+}
+
+.block {
+  display: grid;
+  gap: 0.875rem;
+  break-inside: avoid;
+}
+
+.eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  margin: 0;
+  padding-bottom: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+.arrow {
+  flex-shrink: 0;
+  width: 1.1em;
+  height: 0.7em;
+  vertical-align: -0.02em;
+}
+
+/* Before / After 막대 */
+.bars {
+  display: grid;
+  gap: 1rem;
+}
+
+.barRow {
+  display: grid;
+  grid-template-columns: minmax(0, 11.5rem) minmax(0, 1fr) 4.25rem;
+  gap: 0.375rem 1rem;
+  align-items: center;
+}
+
+.barLabel {
+  display: grid;
+  min-width: 0;
+  line-height: 1.4;
+}
+
+.barLabel b {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.barLabel small {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.barTrack {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  min-width: max-content;
+  height: 1.3rem;
+  padding-inline: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  border-radius: 3px;
+}
+
+.before {
+  width: 100%;
+  color: var(--muted);
+  background: var(--surface);
+}
+
+.after {
+  color: var(--bg);
+  background: var(--accent);
+}
+
+.zero {
+  padding-left: 0.375rem;
+  color: var(--accent);
+  border-left: 3px solid var(--accent);
+}
+
+.delta {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--accent);
+}
+
+/* 없던 것을 만든 수치 카운터 */
+.counters {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.counter {
+  display: grid;
+  align-content: start;
+  gap: 0.25rem;
+  padding: 0.875rem 0.875rem 1rem;
+  background: var(--bg);
+}
+
+.from {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.from .arrow {
+  margin-left: 0.3rem;
+}
+
+.to {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.unit {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.note {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+/* 규모 표 */
+.ledger {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 2rem;
+  margin: 0;
+}
+
+.ledger div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.5rem;
+  border-bottom: 1px dashed var(--border);
+}
+
+.ledger dt {
+  min-width: 0;
+  font-size: 0.875rem;
+}
+
+.ledger dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* 화면에는 숨기고 스크린 리더에는 읽힌다 */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 640px) {
+  .barRow {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .barTrack {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .counters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ledger {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -6,7 +6,7 @@ const POSTS_DIR = path.join(process.cwd(), "content/posts");
 const CATEGORY_META_FILE = "_category.json";
 
 export interface PostMeta {
-  /** 파일 경로 기반 slug — 예: "frontend/performance/bundle-analysis" */
+  /** 파일 경로 기반 slug. 예: "frontend/performance/bundle-analysis" */
   slug: string;
   /** slug를 세그먼트로 나눈 값 */
   segments: string[];
@@ -28,9 +28,9 @@ export interface Post extends PostMeta {
 export interface CategoryNode {
   /** 디렉터리 이름 (URL 세그먼트) */
   name: string;
-  /** 표시용 이름 — _category.json의 label, 없으면 디렉터리 이름 */
+  /** 표시용 이름: _category.json의 label, 없으면 디렉터리 이름 */
   label: string;
-  /** 루트 기준 경로 — 예: "frontend/performance" */
+  /** 루트 기준 경로. 예: "frontend/performance" */
   path: string;
   segments: string[];
   description: string;
@@ -49,7 +49,7 @@ interface CategoryMeta {
 
 const isMarkdown = (file: string) => /\.mdx?$/.test(file);
 
-/** `.`/`_`로 시작하는 파일·디렉터리는 비공개로 취급 */
+/** `.`/`_`로 시작하는 파일/디렉터리는 비공개로 취급 */
 const isHidden = (name: string) => name.startsWith(".") || name.startsWith("_");
 
 const readCategoryMeta = (segments: string[]): CategoryMeta => {
@@ -221,7 +221,7 @@ export const isCategory = (segments: string[]): boolean => {
   );
 };
 
-/** 카테고리에 속한 글 — 기본값은 하위 카테고리까지 포함 */
+/** 카테고리에 속한 글: 기본값은 하위 카테고리까지 포함 */
 export const getPostsInCategory = (
   segments: string[],
   { recursive = true }: { recursive?: boolean } = {},
@@ -277,7 +277,7 @@ export const getCategoryTree = (): CategoryNode[] =>
     .map((entry) => buildCategoryNode([entry.name]))
     .sort(compareCategories);
 
-/** 브레드크럼용 — 각 상위 카테고리의 라벨과 경로 */
+/** 브레드크럼용: 각 상위 카테고리의 라벨과 경로 */
 export const getCategoryTrail = (
   segments: string[],
 ): Array<{ label: string; path: string }> =>

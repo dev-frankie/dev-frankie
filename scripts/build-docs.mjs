@@ -10,7 +10,7 @@ const wrapPage = ({ title, body, current }) => `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${title} · 안동주</title>
+  <title>${title} | 안동주</title>
   <link rel="stylesheet" href="./assets/resume.css" />
 </head>
 <body>
